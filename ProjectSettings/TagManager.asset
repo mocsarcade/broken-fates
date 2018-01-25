@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Floor
+    uniqueID: 686415479
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Players and Monsters
+    uniqueID: 1603478371
+    locked: 0
+  - name: Shimers and magic
+    uniqueID: 422911219
+    locked: 0
+  - name: Geographical effects
+    uniqueID: 3806850439
+    locked: 0
