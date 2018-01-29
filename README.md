@@ -6,4 +6,5 @@ In a terminal, use git clone https://github.com/computc/Broken-Fates.git to down
 Most commits will be made in the Development Branch.
 
 *Note: Git commands should be done in a console with admin privilege, or you could get a permissions error.
+
 *We are using Unity version 2017.3 (Free edition). Contributing with Unity version 2017.2 / previous versions can cause errors.
