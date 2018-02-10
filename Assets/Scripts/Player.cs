@@ -20,24 +20,7 @@ public class Player : MovingObject {
 
     //*******************Player Inventory*********************//
     // For the player inventory, we're going to create a list of items. - JRT
-    public List<InventoryItem> Inventory { get; set; }
-
-    // Inventory accepts two parameters: (Item, Quantity). - JRT
-    public void AddItemToInventory(Item itemToAdd)
-    {
-        foreach (InventoryItem i in Inventory)
-        {
-            // Do they already have the item?
-            if (i.Details.ID == itemToAdd.ID)
-            {
-                // If so:
-                i.Quantity++;
-                return;
-            }
-        }
-        // If they didn't have the item:
-        Inventory.Add(new InventoryItem(itemToAdd, 1));
-    }
+    
 
 
     //***************Player Movement**********************//
