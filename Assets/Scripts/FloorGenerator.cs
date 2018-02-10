@@ -19,8 +19,8 @@ public class FloorGenerator : MonoBehaviour {
 		//Initialize camera's position variables. THIS SCRIPT USES CAMERA'S POSITION, NOT THE PLAYER'S
 		playerPosit = gameObject.transform.position;
 		//Initialize screen size variables
-		width = Screen.width;
-		height = Screen.width;
+		width = Screen.width/2;
+		height = Screen.width/2;
 		//Initialize bound ints. These will keep track of the x,y coordinates of the uppermost, leftmost, rightmost, and lowermost floor tiles
 		LRBound = new int[2]; LRBound[0]=(-width/40-1); LRBound[1]=(width/40 + 1);
 		UDBound = new int[2]; UDBound[0]=(-height/40-1); UDBound[1]=(height/40 + 1);
