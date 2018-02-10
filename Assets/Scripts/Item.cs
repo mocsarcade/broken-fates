@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Item : MonoBehaviour {
+// CreateAssetMenu allows you to construct a new item as you would a new C# script. Right click in assets, check under Inventory, then Item. 
+[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
+public class Item : ScriptableObject {
 
-    // You should be able to return ID by: nameOfItem.ID <-- You could also set the value by doing --> nameOfItem.ID = 42;
-    public int ID { get; set; }
-    public string itemName { get; set; }
-    public string itemNamePlural { get; set; }
-
-    public Item(int givenID, string aItemName, string aItemNamePlural)
+    // Every item needs to have an id that can be referenced in the future. So, calls to items in scripts should be done by ID.
+    public int ID;
+    new public string name;
+    public Sprite icon = null;
+    public ItemType Type;
+    
+    public enum ItemType
     {
-        ID = givenID;
-        itemName = aItemName;
-        itemNamePlural = aItemNamePlural;
-    }
+        Consumable,
+        Equipment,
+        Key
+    };
 }

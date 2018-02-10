@@ -291,11 +291,14 @@
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\FloorGenerator.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Interactable.cs" />
+    <Compile Include="Assets\Scripts\Inventory.cs" />
     <Compile Include="Assets\Scripts\Item.cs" />
+    <Compile Include="Assets\Scripts\ItemPickup.cs" />
     <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\Mechanics.cs" />
     <Compile Include="Assets\Scripts\MovingObject.cs" />
-    <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\QuickLife.cs" />
     <Compile Include="Assets\Scripts\RockMovement.cs" />
     <Compile Include="Assets\Scripts\RockSummon.cs" />
