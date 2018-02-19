@@ -21,7 +21,7 @@ public class Inventory : MonoBehaviour {
 
     #endregion
 
-    public int space = 10;
+    public int space = 20;
     public List<Item> items = new List<Item>();
 
     public bool Add(Item item)

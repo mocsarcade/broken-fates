@@ -33,7 +33,8 @@ public class ItemPickup : MonoBehaviour {
         bool wasPickedUp = Inventory.instance.Add(item);
         if (wasPickedUp)
         {
-            DestroyObject(gameObject);
+            Debug.Log("Deleting object.");
+            DestroyObject(gameObject, 0);
         }
     }
 

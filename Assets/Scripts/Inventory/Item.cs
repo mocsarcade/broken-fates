@@ -6,6 +6,7 @@ public class Item : ScriptableObject {
 
     // Every item needs to have an id that can be referenced in the future. So, calls to items in scripts should be done by ID.
     public int ID;
+    public string description;
     new public string name;
     public Sprite icon = null;
     public ItemType Type;
