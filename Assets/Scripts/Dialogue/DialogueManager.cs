@@ -20,6 +20,8 @@ public class DialogueManager : MonoBehaviour {
 
     public void StartDialogue(Dialogue dialogue)
     {
+        // Make the player still (be nice and pay attention)
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().Halt();
         // Whenever IsOpen is set to true, the dialogue animation will move the dialoguebox to the screen.
         animator.SetBool("IsOpen", true);
         // The UI's nameText will be the name of the speaker, as designated in the inspector.
@@ -43,12 +45,27 @@ public class DialogueManager : MonoBehaviour {
             return;
         }
         string sentence = sentences.Dequeue();
-        dialogueText.text = sentence;
+        // If text is being displayed, it will stop!
+        StopAllCoroutines();
+        StartCoroutine(TypeSentence(sentence));
+    }
+
+    // The purpose of TypeSentence is so that we can display the dialogue slowly (character by character)
+    IEnumerator TypeSentence(string sentence)
+    {
+        dialogueText.text = "";
+        foreach (char letter in sentence.ToCharArray())
+        {
+            dialogueText.text += letter;
+            // This makes it wait
+            yield return null;
+        }
     }
 
     void EndDialogue()
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
         animator.SetBool("IsOpen", false);
+        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().Resume();
     }
 }
