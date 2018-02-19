@@ -19,7 +19,7 @@ public class ItemPickup : MonoBehaviour {
         player = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    void Update()
+    private void Update()
     {
         if(Input.GetMouseButtonDown(1) && (this.Distance() <= pickupRange))
         {
