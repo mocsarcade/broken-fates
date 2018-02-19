@@ -6,7 +6,9 @@ using UnityEngine;
 public class ItemPickup : MonoBehaviour {
 
     public Item item;
-    public float pickupRange = 1;
+    private float pickupRange = 2;
+    // This is for writing to the screen whenever you pick up an item.
+    public Dialogue dialogue;
 
     // We will need to see where the item and player are in relation to each other
     // thisItem will take the transform value of the item it is attached to
@@ -31,6 +33,7 @@ public class ItemPickup : MonoBehaviour {
     {
         // Add returns true if it an item can be picked up.
         bool wasPickedUp = Inventory.instance.Add(item);
+        TriggerDialogue();
         if (wasPickedUp)
         {
             Debug.Log("Deleting object.");
@@ -41,6 +44,11 @@ public class ItemPickup : MonoBehaviour {
     public float Distance()
     {      
         return Vector3.Distance(thisItem.position, player.position);
+    }
+
+    public void TriggerDialogue()
+    {
+        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
     }
 
 }
