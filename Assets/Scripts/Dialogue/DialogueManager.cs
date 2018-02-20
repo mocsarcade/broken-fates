@@ -13,6 +13,11 @@ public class DialogueManager : MonoBehaviour {
     // A Queue type works things in a first-in, first-out order.
     private Queue<string> sentences;
 
+	void Awake()
+	{
+		HideDialogue ();
+	}
+
     private void Start()
     {
         sentences = new Queue<string>();
@@ -23,7 +28,7 @@ public class DialogueManager : MonoBehaviour {
         // Make the player still (be nice and pay attention)
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().Halt();
         // Whenever IsOpen is set to true, the dialogue animation will move the dialoguebox to the screen.
-        animator.SetBool("IsOpen", true);
+		ActivateDialogue();
         // The UI's nameText will be the name of the speaker, as designated in the inspector.
         nameText.text = dialogue.name;
         // Clear the queue so the dialogue is new
@@ -65,7 +70,18 @@ public class DialogueManager : MonoBehaviour {
     void EndDialogue()
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
-        animator.SetBool("IsOpen", false);
+		HideDialogue();
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().Resume();
     }
+
+	void HideDialogue()
+	{
+		GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled = 
+			!GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled;
+	}
+
+	void ActivateDialogue()
+	{
+		GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled = true;
+	}
 }
