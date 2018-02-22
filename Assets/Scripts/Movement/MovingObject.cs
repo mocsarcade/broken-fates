@@ -26,7 +26,9 @@ public class MovingObject : MonoBehaviour {
 	//Every update, the players' movement will be calculated using the ComputeVelo method of the inheriting objects
 	void Update() {
 		calcMovement = Vector2.zero;
+		//Get movement direction and set animator vars
 		ComputeVelo();
+		UpdateAnimator(calcMovement);
 	}
 	
 	//Every fixed update, the player will move. This will keep the players' movements uniform regardless of computer lag
@@ -40,10 +42,12 @@ public class MovingObject : MonoBehaviour {
     }
 	
 	//The "virtual" is important to show this method will be overriden
-	//This is the method that will be overriden by findVelo in any method that inherits this class. This is how all moving objects decide their move patterns
-	protected virtual void ComputeVelo () {
-		
-	}
+	//This is the method that will be overriden in any method that inherits this class. This is how all moving objects decide their move patterns
+	protected virtual void ComputeVelo () {}
+
+	//The "virtual" is important to show this method will be overriden
+	//This is how all moving objects decide their move animations
+	protected virtual void UpdateAnimator (Vector2 direction) {}
 
 	// When a script is called or time is stopped, the player will have to freeze
 	public void SetMobility(bool mobility)
