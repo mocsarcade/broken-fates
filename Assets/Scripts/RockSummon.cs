@@ -32,7 +32,7 @@ public class RockSummon : Mechanics {
 			//Variable magicTar is used for when magicTar has to be destroyed when the activation key (ex: F) is released
 			magicTar = Instantiate(target, tarPos, Quaternion.identity);
 			//Freeze player so he won't move while target is moving
-			playerMoveScript.Halt();
+			playerMoveScript.SetMobility(false);
 		}
 		if(Input.GetKeyUp(KeyCode.F)) {
 			if((Vector2) magicTar.transform.position != tarPos) {
@@ -50,7 +50,7 @@ public class RockSummon : Mechanics {
 				Destroy(magicTar);
 			}
 			//Unfreeze player when target has made the rock
-			playerMoveScript.Resume();
+			playerMoveScript.SetMobility(true);
 		}
 	}
 	

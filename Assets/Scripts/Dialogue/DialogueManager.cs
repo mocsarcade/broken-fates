@@ -26,7 +26,7 @@ public class DialogueManager : MonoBehaviour {
     public void StartDialogue(Dialogue dialogue)
     {
         // Make the player still (be nice and pay attention)
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().Halt();
+		GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().SetMobility(false);
         // Whenever IsOpen is set to true, the dialogue animation will move the dialoguebox to the screen.
 		ActivateDialogue();
         // The UI's nameText will be the name of the speaker, as designated in the inspector.
@@ -71,7 +71,7 @@ public class DialogueManager : MonoBehaviour {
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
 		HideDialogue();
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().Resume();
+		GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().SetMobility(true);
     }
 
 	void HideDialogue()

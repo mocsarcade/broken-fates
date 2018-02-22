@@ -46,15 +46,9 @@ public class MovingObject : MonoBehaviour {
 	}
 
 	// When a script is called or time is stopped, the player will have to freeze
-	public void Halt()
+	public void SetMobility(bool mobility)
 	{
-		frozen = true;
-	}
-
-	// Let player move again
-	public void Resume()
-	{
-		frozen = false;
+		frozen = mobility;
 	}
 
 }
