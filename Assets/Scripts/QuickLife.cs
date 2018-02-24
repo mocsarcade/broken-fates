@@ -34,7 +34,7 @@ public class QuickLife : Mechanics
     {
         x_coord = gameObject.transform.position.x;
         y_coord = gameObject.transform.position.y;
-        string s = String.Format("Coords: {0:F2}, {1:F2} \n Saves: {2} of {3}", x_coord, y_coord, saves_used, MAXSAVES);
+        string s = String.Format("Coords: {0:F2}, {1:F2} \nSaves: {2} of {3}", x_coord, y_coord, saves_used, MAXSAVES);
         GUI.Label(new Rect(10, 10, 150, 50), s);
     }
 

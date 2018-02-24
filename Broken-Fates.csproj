@@ -305,6 +305,7 @@
     <Compile Include="Assets\Scripts\Movement\TargetMovement.cs" />
     <Compile Include="Assets\Scripts\QuickLife.cs" />
     <Compile Include="Assets\Scripts\RockSummon.cs" />
+    <Compile Include="Assets\Scripts\Stamina - Abilities\PlayerStamina.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
