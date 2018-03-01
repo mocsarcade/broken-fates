@@ -54,7 +54,7 @@ public class DialogueManager : MonoBehaviour {
     }
 
     // The purpose of TypeSentence is so that we can display the dialogue slowly (character by character)
-    IEnumerator TypeSentence(string sentence)
+    private IEnumerator TypeSentence(string sentence)
     {
         dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
@@ -65,14 +65,14 @@ public class DialogueManager : MonoBehaviour {
         }
     }
 
-    void EndDialogue()
+    private void EndDialogue()
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
         GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().SetMobility(false);
         HideDialogue();
     }
 
-	void HideDialogue()
+	private void HideDialogue()
 	{
 		GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled = 
 			!GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled;
