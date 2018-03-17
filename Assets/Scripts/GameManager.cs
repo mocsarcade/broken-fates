@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
 
 	public static GameManager instance = null;
+	//The three slots for keys' mechanics. Initialized to TimeBlink, Dash and Stone
+	public static Types.Mechanics[] keyMechanics = {Types.Mechanics.TimeBlink, Types.Mechanics.Dash, Types.Mechanics.Stone};
 
 	// Use this for initialization
 	void Awake () {

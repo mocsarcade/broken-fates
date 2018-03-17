@@ -12,6 +12,7 @@ public class RockMovement : MonoBehaviour {
 	
     protected Rigidbody2D rb2d;
 	public Vector2 realPosition;
+	public Vector2 curPosition;
 	public Vector2 speed;
 
 	// Use this for initialization
@@ -21,7 +22,7 @@ public class RockMovement : MonoBehaviour {
 		realPosition = transform.position;
 		//set position to accomodate z
 		  //Create temp variable to hold what visible position will be
-		  Vector3 curPosition = realPosition;
+		  curPosition = realPosition;
 		  curPosition.y -= z;
 		  //Change position
 		  transform.position = curPosition;

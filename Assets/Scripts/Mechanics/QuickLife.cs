@@ -12,8 +12,9 @@ public class QuickLife : Mechanics
 
     public float x_coord;
     public float y_coord;
+	//In case we decide there will be more than one save
     public int saves_used;
-    public const int MAXSAVES = 3;
+    public const int MAXSAVES = 1;
 
     // Use this for initialization
     void Awake()

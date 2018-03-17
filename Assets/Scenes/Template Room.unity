@@ -479,7 +479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 150
-  maxVel: 150
+  maxVel: 300
   calcMovement: {x: 0, y: 0}
 --- !u!50 &329745725
 Rigidbody2D:

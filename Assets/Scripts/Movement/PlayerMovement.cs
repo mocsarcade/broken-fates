@@ -7,12 +7,17 @@ using UnityEngine;
 public class PlayerMovement : MovingObject
 {
 
-    private Animator animator;
+	private Animator animator;
+	public const int WALK_SPEED = 150;
+	public const int RUN_SPEED = 250;
+
+	private int count;
 
     // animator gets its component every time this script is "enabled". Basically when the script begins.
     void Awake()
     {
         animator = GetComponent<Animator>();
+		count = 0;
     }
 
 	//ComputeVelo sets character's movement speed by keys being pushed. It computes velocity
@@ -42,5 +47,26 @@ public class PlayerMovement : MovingObject
 				animator.SetBool("Moving", false);
 			}
 		}
+	}
+
+	protected override void CheckVibration () {
+		count++;
+		if (count > 20) {
+			//Make Vibration at my position
+			//
+			//Put Code here
+			//
+			count = 0;
+		}
+	}
+
+	public void run()
+	{
+		speed = RUN_SPEED;
+	}
+
+	public void walk()
+	{
+		speed = WALK_SPEED;
 	}
 }
