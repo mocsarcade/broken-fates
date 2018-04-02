@@ -10,7 +10,6 @@ public class MovingObject : MonoBehaviour {
     protected Rigidbody2D rb2d;
 	public Vector2 calcMovement;
 	protected bool frozen;
-	public GameObject Vibration;
 
 	// rb2d gets its component every time this script is "enabled". Basically when the script begins.
     void OnEnable()

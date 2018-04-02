@@ -481,7 +481,6 @@ MonoBehaviour:
   speed: 150
   maxVel: 300
   calcMovement: {x: 0, y: 0}
-  Vibration: {fileID: 1657263981862952, guid: 938e2d31078ee9b4da6088855477388c, type: 2}
 --- !u!50 &329745725
 Rigidbody2D:
   serializedVersion: 4
@@ -2212,11 +2211,6 @@ Prefab:
     - target: {fileID: 1648481495846886, guid: 0f5e3de13114095489bc46061a937804, type: 2}
       propertyPath: m_Name
       value: Wall (32)
-      objectReference: {fileID: 0}
-    - target: {fileID: 212191107935862360, guid: 0f5e3de13114095489bc46061a937804,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0f5e3de13114095489bc46061a937804, type: 2}

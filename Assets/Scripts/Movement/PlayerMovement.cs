@@ -8,10 +8,8 @@ public class PlayerMovement : MovingObject
 {
 
 	private Animator animator;
-	public const int WALK_SPEED = 50;
-	public const int RUN_SPEED = 150;
-	public const int INVERSE_RING_SIZE = 2;
-	public const int VIBRATION_DELAY = 25;
+	public const int WALK_SPEED = 150;
+	public const int RUN_SPEED = 250;
 
 	private int count;
 
@@ -53,9 +51,11 @@ public class PlayerMovement : MovingObject
 
 	protected override void CheckVibration () {
 		count++;
-		if (count > VIBRATION_DELAY) {
-			//Make Vibration at my position and call Initialization method to set age of ring
-			Instantiate(Vibration, transform.position, Quaternion.identity).GetComponent<DrawCircle>().Initialize ((int) speed/INVERSE_RING_SIZE);
+		if (count > 20) {
+			//Make Vibration at my position
+			//
+			//Put Code here
+			//
 			count = 0;
 		}
 	}
