@@ -5,10 +5,11 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
-public class QuickLife : Mechanics
+public class QuickLife : PlayerMechanics
 {
 
     public static QuickLife control;
+    public const int STAMINA_COST = 250;
 
     public float x_coord;
     public float y_coord;
@@ -29,6 +30,24 @@ public class QuickLife : Mechanics
             Destroy(gameObject);
         }
         saves_used = 0;
+    }
+
+    public override bool Activate() {
+      Debug.Log("ACTIVATED!");
+        if(saves_used == 0) {
+            Save();
+            return true;
+        }
+        else {
+            bool status = GameManager.instance.DrainStamina(STAMINA_COST);
+            if(status) {
+              Load();
+              return true;
+            }
+            else {
+              return false;
+            }
+        }
     }
 
     private void OnGUI()
