@@ -37,12 +37,12 @@ public class ItemPickup : MonoBehaviour {
         if (wasPickedUp)
         {
             Debug.Log("Deleting object.");
-            DestroyObject(gameObject, 0);
+            Destroy(gameObject, 0);
         }
     }
 
     public float Distance()
-    {      
+    {
         return Vector3.Distance(thisItem.position, player.position);
     }
 

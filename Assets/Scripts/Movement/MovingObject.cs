@@ -13,17 +13,17 @@ public class MovingObject : MonoBehaviour {
 	public GameObject Vibration;
 
 	// rb2d gets its component every time this script is "enabled". Basically when the script begins.
-    void OnEnable()
-    {
-		//Initialize RigidBody, which will move the object when it is moved
-        rb2d = GetComponent<Rigidbody2D>();
-    }
+  void OnEnable()
+  {
+	   //Initialize RigidBody, which will move the object when it is moved
+    rb2d = GetComponent<Rigidbody2D>();
+  }
 
 	void Awake()
 	{
 		frozen = false;
 	}
-	
+
 	//Every update, the players' movement will be calculated using the ComputeVelo method of the inheriting objects
 	void Update() {
 		calcMovement = Vector2.zero;
@@ -31,7 +31,7 @@ public class MovingObject : MonoBehaviour {
 		ComputeVelo();
 		UpdateAnimator(calcMovement);
 	}
-	
+
 	//Every fixed update, the player will move. This will keep the players' movements uniform regardless of computer lag
     void FixedUpdate () {
 		//We don't want our objects to go too fast, so first we must check that the objects' velocity hasn't grown too high
@@ -39,16 +39,16 @@ public class MovingObject : MonoBehaviour {
 			//Move the rigidbody by applying force, and the object will move too
 			rb2d.AddForce (calcMovement * speed);//, ForceMode.VelocityChange);
 			//Check object's method to see if a vibration should be made
-			CheckVibration();
+			MakeVibration();
 		} else if (calcMovement.magnitude >= maxVel && frozen == false) {
 			//If speed is too high, just decrease it to fit the maxvel
 			rb2d.AddForce (calcMovement * maxVel / calcMovement.magnitude);//, ForceMode.VelocityChange);
 			//Check object's method to see if a vibration should be made
-			CheckVibration();
+			MakeVibration();
 		}
 		//Add force to move our character. VelocityChange ignores mass to remove stopping latency
     }
-	
+
 	//The "virtual" is important to show this method will be overriden
 	//This is the method that will be overriden in any method that inherits this class. This is how all moving objects decide their move patterns
 	protected virtual void ComputeVelo () {}
@@ -59,12 +59,16 @@ public class MovingObject : MonoBehaviour {
 
 	//The "virtual" is important to show this method will be overriden
 	//This is how all moving objects decide when vibrations are made
-	protected virtual void CheckVibration () {}
+	protected virtual void MakeVibration () {}
+
+  //The "virtual" is important to show this method will be overriden
+	//This method is called whenever a vibration touches a moving object in the BlockingLayer collision layer
+	protected virtual void FeelVibration (Vector2 sourcePosition) {}
 
 	// When a script is called or time is stopped, the player will have to freeze
 	public void SetMobility(bool mobility)
 	{
-		frozen = mobility;
+		frozen = !mobility;
 	}
 
 }

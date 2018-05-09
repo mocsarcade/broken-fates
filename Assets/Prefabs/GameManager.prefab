@@ -53,6 +53,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f35eea8305396489aca689a84da31e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mechanicObjects:
+  - {fileID: 114090820670736574, guid: 9cf539161f9176740a9fcc7c44f81dbf, type: 2}
+  - {fileID: 114114117765478778, guid: 81f90f7c765114849a1ce5727c60738a, type: 2}
+  keyMechanics: []
 --- !u!114 &114570222015350722
 MonoBehaviour:
   m_ObjectHideFlags: 1

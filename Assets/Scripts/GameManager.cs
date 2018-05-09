@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour {
 		DontDestroyOnLoad (gameObject);
 
 		//Place an instantiated (constructed) object for each prefab in its own array
-		//This will be called to change the mechanics chosen in the MechanicsManager
+		//This will be called to change keyMechanics
 
 		keyMechanics = new PlayerMechanics[MECHANIC_SLOTS];
 		for (int slot=0; slot<MECHANIC_SLOTS; slot++) {

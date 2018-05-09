@@ -5,15 +5,21 @@ using System.Linq;
 
 public class DrawCircle : MonoBehaviour {
 
+	//Vibration display settings
 	public Color FillColor = Color.white;
 	public const float RING_SPEED = 0.03f;
 	public const float BEGINNING_THICKNESS = 0.05f;
+	private LineRenderer _lineRenderer;
+	private VibrationCollision colliderScript;
+	//Position
+	private Vector2 edge;
 
+	//Vibration Lastability settings
 	public int time;
 	private int beginningTime;
-	private LineRenderer _lineRenderer;
-	private CircleCollider2D _circleCollider2D;
-	private Vector2 edge;
+
+	//Object that made this vibration
+	private GameObject parent;
 
 	// Start and end vertices (in absolute coordinates)
 	private readonly List<Vector2> _vertices = new List<Vector2>(2);
@@ -23,15 +29,17 @@ public class DrawCircle : MonoBehaviour {
 	private void Awake()
 	{
 		_lineRenderer = GetComponent<LineRenderer>();
-		_circleCollider2D = GetComponent<CircleCollider2D>();
+		colliderScript = GetComponent<VibrationCollision>();
 		edge = transform.position;
 		time = 250;
 		beginningTime = time;
 	}
 
-	public void Initialize(int timer) {
+	public void Initialize(int timer, GameObject _parent) {
 		time = timer;
 		beginningTime = time;
+		parent = _parent;
+		colliderScript.Initialize(_parent);
 	}
 
 	private void FixedUpdate()
@@ -71,11 +79,11 @@ public class DrawCircle : MonoBehaviour {
 		_lineRenderer.SetPositions(circle.vertices);
 
 		// Update the collider
-		_circleCollider2D.radius = Vector2.Distance(_vertices[0], _vertices[1]);
+		colliderScript.UpdateCircle(_vertices);
 	}
 
 	/// <summary>
-	/// Creates and returns a circle mesh given two vertices on its center 
+	/// Creates and returns a circle mesh given two vertices on its center
 	/// and any outer edge point.
 	/// </summary>
 	private static Mesh CircleMesh(Vector2 v0, Vector2 v1, Color fillColor)
@@ -123,7 +131,7 @@ public class DrawCircle : MonoBehaviour {
 		//Initialize RigidBody, which will move the object when it is moved
 		count = 0;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		count++;
@@ -181,8 +189,8 @@ public static class Util
 	}
 
 	/// <summary>
-	/// Extension that, given a collection of vectors, returns a centroid 
-	/// (i.e., an average of all vectors) 
+	/// Extension that, given a collection of vectors, returns a centroid
+	/// (i.e., an average of all vectors)
 	/// </summary>
 	public static Vector2 Centroid(this ICollection<Vector2> vectors)
 	{

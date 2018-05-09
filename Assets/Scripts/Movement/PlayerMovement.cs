@@ -8,18 +8,22 @@ public class PlayerMovement : MovingObject
 {
 
 	private Animator animator;
-	public const int WALK_SPEED = 50;
-	public const int RUN_SPEED = 150;
+	public const int WALK_SPEED = 100;
+	public const int RUN_SPEED = 200;
 	public const int INVERSE_RING_SIZE = 2;
 	public const int VIBRATION_DELAY = 25;
+
+	//offset Vibrations are placed at
+	private readonly Vector3 FEET_POSITION = new Vector3(0,-0.5f,0);
 
 	private int count;
 
     // animator gets its component every time this script is "enabled". Basically when the script begins.
     void Awake()
     {
+				speed = WALK_SPEED;
         animator = GetComponent<Animator>();
-		count = 0;
+				count = 0;
     }
 
 	//ComputeVelo sets character's movement speed by keys being pushed. It computes velocity
@@ -51,13 +55,18 @@ public class PlayerMovement : MovingObject
 		}
 	}
 
-	protected override void CheckVibration () {
+	protected override void MakeVibration () {
 		count++;
 		if (count > VIBRATION_DELAY) {
 			//Make Vibration at my position and call Initialization method to set age of ring
-			Instantiate(Vibration, transform.position, Quaternion.identity).GetComponent<DrawCircle>().Initialize ((int) speed/INVERSE_RING_SIZE);
+			Instantiate(Vibration, transform.position + FEET_POSITION, Quaternion.identity).GetComponent<DrawCircle>().Initialize ((int) speed/INVERSE_RING_SIZE, gameObject);
 			count = 0;
 		}
+	}
+
+	//When Vibration is felt from other objects
+	protected override void FeelVibration (Vector2 sourcePosition) {
+		Debug.Log("Touched by a Vibration!!");
 	}
 
 	public void run()
