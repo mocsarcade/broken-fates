@@ -12,7 +12,7 @@ public class MechanicsManager : MonoBehaviour {
 			keys = new KeyCode[] { KeyCode.A, KeyCode.S, KeyCode.D };
 			player = GameObject.FindGameObjectWithTag("Player");
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
 		//Check the STATIC OBJECT ARRAY, which is an array of PowerSlot Objects, and if either 0, 1 or 2 has a keycode that is being

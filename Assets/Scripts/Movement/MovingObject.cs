@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class MovingObject : MonoBehaviour {
 
-    //Initialize important variables
-    public float speed;
-    public float maxVel;
-    protected Rigidbody2D rb2d;
+  //Initialize important variables
+  public float speed;
+  public float maxVel;
+  protected Rigidbody2D rb2d;
 	public Vector2 calcMovement;
 	protected bool frozen;
 	public GameObject Vibration;
@@ -38,13 +38,13 @@ public class MovingObject : MonoBehaviour {
 		if (calcMovement.magnitude < maxVel && calcMovement.magnitude > 0.1 && frozen == false) {
 			//Move the rigidbody by applying force, and the object will move too
 			rb2d.AddForce (calcMovement * speed);//, ForceMode.VelocityChange);
-			//Check object's method to see if a vibration should be made
-			MakeVibration();
+			//Check object's method to see if a vibration should be made - this has been replaced with animator events
+			//MakeVibration();
 		} else if (calcMovement.magnitude >= maxVel && frozen == false) {
 			//If speed is too high, just decrease it to fit the maxvel
 			rb2d.AddForce (calcMovement * maxVel / calcMovement.magnitude);//, ForceMode.VelocityChange);
-			//Check object's method to see if a vibration should be made
-			MakeVibration();
+			//Check object's method to see if a vibration should be made - this has been replaced with animator events
+			//MakeVibration();
 		}
 		//Add force to move our character. VelocityChange ignores mass to remove stopping latency
     }

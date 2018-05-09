@@ -12,17 +12,18 @@ public class Inventory : MonoBehaviour {
 
     void Awake()
     {
-        if (instance != null)
-        {
-            Debug.LogWarning("More than one inventory existing.");
-        }
-        instance = this;
+  		//Make GameManager a Singleton
+  		if (instance == null)
+  			instance = this;
+  		else if (instance != this)
+  			Destroy(gameObject);
     }
 
     #endregion
 
-    public int space = 20;
+    public int space = 5;
     public List<Item> items = new List<Item>();
+    private int index;
 
     public bool Add(Item item)
     {
@@ -39,6 +40,46 @@ public class Inventory : MonoBehaviour {
     public void Remove(Item item)
     {
         items.Remove(item);
+    }
+
+    //This method returns the list of objects for GUI to display
+    public List<Item> getList()
+    {
+        return items;
+    }
+
+    public Item getObjectInHand(int atIndex)
+    {
+      return items[atIndex];
+    }
+
+    //Switches out held item for the one to the right in the list and returns the object to be displayed on the GUI
+    public Item toggleHandRight()
+    {
+      index++;
+      if(index>=space)
+        index=0;
+      return getObjectInHand(index);
+    }
+
+    //Switches out held item for the one to the left in the list and returns the object to be displayed on the GUI
+    public Item toggleHandLeft()
+    {
+      index--;
+      if(index<0)
+        index=space-1;
+      return getObjectInHand(index);
+    }
+
+    //Calls object in hand to use it
+    public void useHeldItem()
+    {
+      //Write later
+    }
+
+    public void Sort()
+    {
+      //Write later
     }
 
 }
