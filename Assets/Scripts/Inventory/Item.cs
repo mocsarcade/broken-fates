@@ -4,19 +4,20 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item")]
 public class Item : ScriptableObject {
 
-	public int ID;
 	public string description;
 	new public string name;
 	public Sprite icon = null;
 	public ItemType Type;
+	//This variable will hold the prefab for the concrete version of the object
+	//This will be useful when the object is being thrown, which will need the material object to be instantiated
+	public GameObject concreteObject;
 
-	//This will hold the Use() method for every item
-	public ItemScript effect;
 	//Prefab for if item should be thrown
 	public GameObject itemObject;
 
 	public enum ItemType
 	{
+			Object,
 			Consumable,
 			Equipment,
 			Key

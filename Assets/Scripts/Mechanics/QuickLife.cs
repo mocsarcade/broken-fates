@@ -7,8 +7,7 @@ using System.IO;
 
 public class QuickLife : PlayerMechanics
 {
-
-    public static QuickLife control;
+  
     public const int STAMINA_COST = 250;
 
     public float x_coord;
@@ -20,15 +19,6 @@ public class QuickLife : PlayerMechanics
     // Use this for initialization
     void Awake()
     {
-        if (control == null)
-        {
-            DontDestroyOnLoad(gameObject);
-            control = this;
-        }
-        else if (control != this)
-        {
-            Destroy(gameObject);
-        }
         saves_used = 0;
     }
 

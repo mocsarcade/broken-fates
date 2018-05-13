@@ -205,48 +205,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0f5e3de13114095489bc46061a937804, type: 2}
   m_IsPrefabParent: 0
---- !u!1001 &40656164
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -2.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0.94
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4685800977564432, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-      propertyPath: m_RootOrder
-      value: 51
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: ab143a6eee2e3864f8c023896d328b9b, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1001 &157202721
 Prefab:
   m_ObjectHideFlags: 0
@@ -520,10 +478,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cf23d24dd49f21418eddb24326d241d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weight: 2
+  size: 14
+  myTransform: {fileID: 0}
+  shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
+  rb2d: {fileID: 0}
   speed: 150
   maxVel: 300
   calcMovement: {x: 0, y: 0}
-  Vibration: {fileID: 1657263981862952, guid: 938e2d31078ee9b4da6088855477388c, type: 2}
 --- !u!50 &329745725
 Rigidbody2D:
   serializedVersion: 4

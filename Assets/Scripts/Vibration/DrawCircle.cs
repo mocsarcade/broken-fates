@@ -10,7 +10,7 @@ public class DrawCircle : MonoBehaviour {
 	public const float RING_SPEED = 0.03f;
 	public const float BEGINNING_THICKNESS = 0.05f;
 	private LineRenderer _lineRenderer;
-	private VibrationCollision colliderScript;
+	private CircleVibrationCollision colliderScript;
 	//Position
 	private Vector2 edge;
 
@@ -29,7 +29,7 @@ public class DrawCircle : MonoBehaviour {
 	private void Awake()
 	{
 		_lineRenderer = GetComponent<LineRenderer>();
-		colliderScript = GetComponent<VibrationCollision>();
+		colliderScript = GetComponent<CircleVibrationCollision>();
 		edge = transform.position;
 		time = 250;
 		beginningTime = time;

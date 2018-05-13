@@ -24,9 +24,9 @@ public class DialogueManager : MonoBehaviour {
     public void StartDialogue(Dialogue dialogue)
     {
         // Make the player still (be nice and pay attention)
-		GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().SetMobility(true);
+        Player.getPlayer().SetMobility(true);
         // Whenever IsOpen is set to true, the dialogue animation will move the dialoguebox to the screen.
-		HideDialogue();
+		    HideDialogue();
         // The UI's nameText will be the name of the speaker, as designated in the inspector.
         nameText.text = dialogue.name;
         // Clear the queue so the dialogue is new
@@ -68,13 +68,13 @@ public class DialogueManager : MonoBehaviour {
     private void EndDialogue()
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
-        GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerMovement>().SetMobility(false);
+        Player.getPlayer().SetMobility(false);
         HideDialogue();
     }
 
 	private void HideDialogue()
 	{
-		GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled = 
+		GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled =
 			!GameObject.FindGameObjectWithTag("DialogueBox").GetComponent<Canvas>().enabled;
 	}
 }
