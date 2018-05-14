@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114797247855941894}
   - component: {fileID: 120173048106931154}
   - component: {fileID: 58332735016906316}
-  m_Layer: 8
+  m_Layer: 10
   m_Name: Vibration
   m_TagString: Untagged
   m_Icon: {fileID: 0}

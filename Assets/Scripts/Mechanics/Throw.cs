@@ -24,24 +24,24 @@ public class Throw : PlayerMechanics {
 				tarPos = playerObject.transform.position;
 				//Variable magicTar is used for when magicTar has to be destroyed when the activation key (ex: F) is released
 				magicTar = Instantiate(target, tarPos, Quaternion.identity);
+				int weight = Inventory.instance.getWeight();
+				if(weight>0) {
+					magicTar.GetComponent<TargetMovement>().Initialize(tarPos, Inventory.instance.getStrength(), weight);
+				}
 				//Freeze player so he won't move while target is moving
 				Player.getPlayer().SetMobility(false);
-
 				return true;
 			} else {
 				return false;
 			}
 		}
 
-		// FUTURE UPDATES: MAKE STAMINA COST DEPENDANT ON DISTANCE FROM PLAYER
-		// FUTURE UPDATES: DISTANCE OBJECT CAN BE THROWN DEPENDS ON OBJECT'S WEIGHT AND YOUR STRENGTH
 		public override void Release () {
+			if(Inventory.instance.itemsInInventory() > 0) {
 				if((Vector2) magicTar.transform.position != tarPos) {
-					Debug.Log("Past first if!");
 					//Drain stamina for using spell. Status is the status variable for whether player had enough stamina for activation
 					bool status = GameManager.instance.DrainStamina(STAMINA_COST);
 					if(status == true) {
-						Debug.Log("Past second if!");
 						//Find target's position so rock can be created there
 						tarPos = magicTar.transform.position;
 						Inventory.instance.throwHeldItem((Vector2) playerObject.transform.position, tarPos);
@@ -51,5 +51,5 @@ public class Throw : PlayerMechanics {
 				Destroy(magicTar);
 				Player.getPlayer().SetMobility(true);
 		}
-
+	}
 }

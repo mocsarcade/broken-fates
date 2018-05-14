@@ -18,7 +18,7 @@ public class Vibration : MonoBehaviour {
 
 	public void MakeVibration(int ringSize, Vector2 myPosition, GameObject parent) {
 		//Create Vibration Ring
-		Instantiate(VibrationPrefab, myPosition, Quaternion.identity).GetComponent<DrawCircle>().Initialize (ringSize, parent);
+		Instantiate(VibrationPrefab, myPosition, Quaternion.identity).GetComponent<DrawShape>().Initialize (ringSize, parent);
 	}
 
 }

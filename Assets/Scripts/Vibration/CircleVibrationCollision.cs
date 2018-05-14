@@ -25,7 +25,7 @@ public class CircleVibrationCollision : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D touched) {
 		GameObject touchedObj = touched.gameObject;
 		if(touchedObj != parent) {
-			touchedObj.SendMessage("FeelVibration", (Vector2) transform.position, SendMessageOptions.RequireReceiver);
+			touchedObj.GetComponent<Material>().FeelVibration((Vector2) transform.position);
 		}
 	}
 }

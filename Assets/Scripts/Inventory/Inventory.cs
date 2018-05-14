@@ -26,8 +26,8 @@ public class Inventory : MonoBehaviour {
     #endregion
 
     public List<Item> items = new List<Item>();
-    public int handIndex; //Was private. Turn back after testing
-    public GameObject handObject = null; //Was private. Turn back after testing
+    private int handIndex;
+    private GameObject handObject = null;
     private ConcreteItem handScript;
 
     //Variables for entire program. Changes depending on equipment
@@ -140,6 +140,18 @@ public class Inventory : MonoBehaviour {
         StartCoroutine(handObject.GetComponent<Material>().Throw(start, target, strength));
         Remove(handIndex);
       }
+    }
+
+    public float getStrength() {
+      return strength;
+    }
+
+    public int getWeight() {
+      //If inventory isn't empty
+      if(handObject != null) {
+        return handObject.GetComponent<Material>().weight;
+      }
+      return -1;
     }
 
     //Is this needed? Decide later

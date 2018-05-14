@@ -51,5 +51,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deac79fdc67400d4d80681472475eba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VibrationPrefab: {fileID: 1657263981862952, guid: 938e2d31078ee9b4da6088855477388c,
+  VibrationPrefab: {fileID: 1251824922016766, guid: 12287df184a784243808e33b7c474522,
     type: 2}

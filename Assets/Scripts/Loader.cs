@@ -12,7 +12,7 @@ public class Loader : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		if (GameManager.instance == null) {
-			GameObject gameController = Instantiate (gameManager);
+			Instantiate (gameManager);
 			//gameController.GetComponent<DialogueManager>().nameText = subNameText;
 			//gameController.GetComponent<DialogueManager>().dialogueText = subDialogueText;
 		}

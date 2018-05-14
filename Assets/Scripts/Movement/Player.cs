@@ -75,7 +75,7 @@ public class Player : MovingObject
 	}
 
 	//When Vibration is felt from other objects
-	protected override void FeelVibration (Vector2 sourcePosition) {
+	public override void FeelVibration (Vector2 sourcePosition) {
 		Debug.Log("Touched by a Vibration!!");
 	}
 

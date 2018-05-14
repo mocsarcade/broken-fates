@@ -16,8 +16,8 @@ TagManager:
   - 
   - BlockingLayer
   - Simple Objects
-  - 
-  - 
+  - Vibration
+  - Vibration-Feeling-Objects
   - 
   - 
   - 
@@ -47,6 +47,12 @@ TagManager:
     locked: 0
   - name: Floor Effects
     uniqueID: 3878874161
+    locked: 0
+  - name: Level Design and Walls
+    uniqueID: 1031746619
+    locked: 0
+  - name: Items
+    uniqueID: 1879765641
     locked: 0
   - name: Players and Monsters
     uniqueID: 1603478371

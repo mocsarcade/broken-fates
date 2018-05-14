@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class SimpleMovingObject : MonoBehaviour {
 
-	  //Initialize important variables
-	  public float speed;
-	  public float maxVel;
-		public Vector2 calcMovement;
-		protected bool frozen = false;
+	 //Initialize important variables
+	public float speed;
+	public float maxVel;
+	public Vector2 calcMovement;
+	protected bool frozen = false;
 
-    public Rigidbody2D rb2d;
+  public Rigidbody2D rb2d;
 
-    protected virtual void Awake() {
-      rb2d = GetComponent<Rigidbody2D>();
-    }
+	//public virtual void Awake() {
+	void Awake() {
+    rb2d = GetComponent<Rigidbody2D>();
+	}
 
 	//Every update, the players' movement will be calculated using the ComputeVelo method of the inheriting objects
 	void Update() {
@@ -25,7 +26,7 @@ public class SimpleMovingObject : MonoBehaviour {
 	}
 
 	//Every fixed update, the player will move. This will keep the players' movements uniform regardless of computer lag
-		void FixedUpdate () {
+		public virtual void FixedUpdate () {
 		//We don't want our objects to go too fast, so first we must check that the objects' velocity hasn't grown too high
 		if (calcMovement.magnitude < maxVel && calcMovement.magnitude > 0.1 && frozen == false) {
 			//Move the rigidbody by applying force, and the object will move too

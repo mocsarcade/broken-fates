@@ -43,8 +43,6 @@ public class Material : MonoBehaviour {
       float throwSpeed = (strength+3)/3;
       //Check that start is at least close to the object's actual position
       if(Vector2.Distance(myPosition, start) > 2) {
-        Debug.Log(myPosition);
-        Debug.Log(start);
         Debug.LogException(new Exception("Throw method used TOO FAR from the actual object"), this);
         yield break;
       }
@@ -93,7 +91,7 @@ public class Material : MonoBehaviour {
 
     //The "virtual" is important to show this method will be overriden
   	//This method is called whenever a vibration touches a moving object in the BlockingLayer collision layer
-  	protected virtual void FeelVibration (Vector2 sourcePosition) {}
+  	public virtual void FeelVibration (Vector2 sourcePosition) {}
 
     //Picks up this object and returns either an "Item" asset object for concreteItem objects
     //or null, telling the program the Use() function cannot be done on the item in the players' hand

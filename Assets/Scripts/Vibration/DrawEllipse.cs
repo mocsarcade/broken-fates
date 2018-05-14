@@ -3,31 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class DrawEllipse : MonoBehaviour {
+public class DrawEllipse : DrawShape {
 
 	//Vibration display settings
-	public Color FillColor = Color.white;
-	public const float RING_SPEED = 0.03f;
-	public const float BEGINNING_THICKNESS = 0.05f;
-	private LineRenderer _lineRenderer;
 	private EllipseVibrationCollision colliderScript;
-	//Position
-	private Vector2 edge;
 
-	//Vibration Lastability settings
-	public int time;
-	private int beginningTime;
-
-	//Object that made this vibration
-	private GameObject parent;
-
-	// Start and end vertices (in absolute coordinates)
-	private readonly List<Vector2> _vertices = new List<Vector2>(2);
-
-	public bool ShapeFinished { get { return _vertices.Count >= 2; } }
-
-	private void Awake()
+	public override void Awake()
 	{
+		base.Awake();
 		_lineRenderer = GetComponent<LineRenderer>();
 		colliderScript = GetComponent<EllipseVibrationCollision>();
 		edge = transform.position;
@@ -35,38 +18,12 @@ public class DrawEllipse : MonoBehaviour {
 		beginningTime = time;
 	}
 
-	public void Initialize(int timer, GameObject _parent) {
-		time = timer;
-		beginningTime = time;
-		parent = _parent;
-		colliderScript.Initialize(_parent);
-	}
-
-	private void FixedUpdate()
-	{
-		edge = edge + new Vector2(RING_SPEED,0);
-		AddVertex (edge);
-		time--;
-		if (time > 0) {
-			_lineRenderer.startWidth = time * BEGINNING_THICKNESS/ beginningTime;
-			_lineRenderer.endWidth = time * BEGINNING_THICKNESS/ beginningTime;
-		}
-		else {
-			Destroy(gameObject);
-		}
-	}
-
-	public void AddVertex(Vector2 vertex)
-	{
-		if (ShapeFinished) {
-			UpdateShape(vertex);
-			return;
+		public override void Initialize(int timer, GameObject _parent) {
+			base.Initialize(timer, _parent);
+			colliderScript.Initialize(_parent);
 		}
 
-		_vertices.Add(vertex);
-	}
-
-	public void UpdateShape(Vector2 newVertex)
+	public override void UpdateShape(Vector2 newVertex)
 	{
 		_vertices[_vertices.Count - 1] = newVertex;
 
@@ -75,14 +32,14 @@ public class DrawEllipse : MonoBehaviour {
 		var v1Relative = _vertices[1] - _vertices[0];
 
 		float radiusx = Vector2.Distance(v0Relative, v1Relative);
-		float radiusy = 2*radiusx;
+		float radiusy = radiusx/1.5f;
 		Mesh ellipse = EllipseMesh(radiusx, radiusy, FillColor);
 
 		_lineRenderer.positionCount = ellipse.vertices.Length;
 		_lineRenderer.SetPositions(ellipse.vertices);
 
 		// Update the collider
-		colliderScript.UpdateEllipse(_vertices);
+		colliderScript.UpdateEllipse(ellipse.vertices);
 	}
 
 			/// <summary>
@@ -127,33 +84,3 @@ public class DrawEllipse : MonoBehaviour {
 			}
 
 }
-
-/*
-public static class Util
-{
-	/// <summary>
-	/// Extension that converts an array of Vector2 to an array of Vector3
-	/// </summary>
-	public static Vector3[] ToVector3(this Vector2[] vectors)
-	{
-		return System.Array.ConvertAll<Vector2, Vector3>(vectors, v => v);
-	}
-
-	/// <summary>
-	/// Extension that, given a collection of vectors, returns a centroid
-	/// (i.e., an average of all vectors)
-	/// </summary>
-	public static Vector2 Centroid(this ICollection<Vector2> vectors)
-	{
-		return vectors.Aggregate((agg, next) => agg + next) / vectors.Count();
-	}
-
-	/// <summary>
-	/// Extension returning the absolute value of a vector
-	/// </summary>
-	public static Vector2 Abs(this Vector2 vector)
-	{
-		return new Vector2(Mathf.Abs(vector.x), Mathf.Abs(vector.y));
-	}
-}
-*/

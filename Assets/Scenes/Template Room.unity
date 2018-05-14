@@ -156,6 +156,10 @@ Prefab:
       propertyPath: m_Name
       value: Wall (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1648481495846886, guid: 0f5e3de13114095489bc46061a937804, type: 2}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0f5e3de13114095489bc46061a937804, type: 2}
   m_IsPrefabParent: 0
@@ -402,7 +406,7 @@ GameObject:
   - component: {fileID: 329745726}
   - component: {fileID: 329745727}
   - component: {fileID: 329745724}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
