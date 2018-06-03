@@ -1,4 +1,4 @@
-﻿//NOTE FROM AN EDITOR: When the time comes to add running, just change the "speed" varaible from MovingObject. The default speed is 150, and changing that will change the players' speed
+﻿//NOTE FROM AN EDITOR: When the time comes to add dashing, just change the "speed" varaible from MovingObject. The default speed is 100, and changing that will change the players' speed
 
 using System.Collections;
 using System.Collections.Generic;
@@ -77,6 +77,10 @@ public class Player : MovingObject
 	//When Vibration is felt from other objects
 	public override void FeelVibration (Vector2 sourcePosition) {
 		Debug.Log("Touched by a Vibration!!");
+	}
+
+	public override void PickUp(GameObject item) {
+		Inventory.instance.PickUp(item);
 	}
 
 	public void run()

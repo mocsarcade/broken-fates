@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 114018190165384232}
   - component: {fileID: 114570222015350722}
   - component: {fileID: 114629128478098464}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,6 +85,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 34335454f4f2f044c818d9765dc972f6, type: 2}
   - {fileID: 11400000, guid: 34335454f4f2f044c818d9765dc972f6, type: 2}
   - {fileID: 11400000, guid: 34335454f4f2f044c818d9765dc972f6, type: 2}
+  ItemMementos: []
   handIndex: 0
-  handObject: {fileID: 0}
+  MementoType: {fileID: 0}
   space: 5

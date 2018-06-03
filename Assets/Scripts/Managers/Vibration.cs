@@ -6,6 +6,7 @@ public class Vibration : MonoBehaviour {
 
 	protected static Vibration _instance = null;
 	public GameObject VibrationPrefab;
+	public GameObject TimeVibrationPrefab;
 
 	// Make Singleton by using a static instance of Vibration
 	public static Vibration Vibrator () {
@@ -19,6 +20,11 @@ public class Vibration : MonoBehaviour {
 	public void MakeVibration(int ringSize, Vector2 myPosition, GameObject parent) {
 		//Create Vibration Ring
 		Instantiate(VibrationPrefab, myPosition, Quaternion.identity).GetComponent<DrawShape>().Initialize (ringSize, parent);
+	}
+
+	public void MakeTimeVibration(int ringSize, Vector2 myPosition, GameObject parent) {
+		//Create Vibration Ring
+		Instantiate(TimeVibrationPrefab, myPosition, Quaternion.identity).GetComponent<DrawShape>().Initialize (ringSize, parent);
 	}
 
 }

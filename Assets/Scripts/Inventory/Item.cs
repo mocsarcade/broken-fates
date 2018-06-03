@@ -12,9 +12,6 @@ public class Item : ScriptableObject {
 	//This will be useful when the object is being thrown, which will need the material object to be instantiated
 	public GameObject concreteObject;
 
-	//Prefab for if item should be thrown
-	public GameObject itemObject;
-
 	public enum ItemType
 	{
 			Object,

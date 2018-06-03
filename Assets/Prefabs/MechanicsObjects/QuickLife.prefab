@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4378453714560240}
   - component: {fileID: 114090820670736574}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: QuickLife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -51,6 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 396addaa0c95623498aee8c0f7f62c9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x_coord: 0
-  y_coord: 0
+  ringSize: 125
   saves_used: 0
+  savedObjects: []

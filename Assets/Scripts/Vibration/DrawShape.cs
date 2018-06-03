@@ -7,7 +7,7 @@ public class DrawShape : MonoBehaviour {
 
 		//Vibration display settings
 		public Color FillColor = Color.white;
-		public const float RING_SPEED = 0.03f;
+		public float RING_SPEED = 0.03f;
 		public const float BEGINNING_THICKNESS = 0.05f;
 		protected LineRenderer _lineRenderer;
 

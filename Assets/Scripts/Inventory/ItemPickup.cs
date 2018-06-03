@@ -31,7 +31,7 @@ public class ItemPickup : MonoBehaviour {
 
     public void PickUp()
     {
-        // Add returns true if it an item can be picked up.
+        // Add returns true if it can be picked up.
         bool wasPickedUp = Inventory.instance.Add(item);
         TriggerDialogue();
         if (wasPickedUp)

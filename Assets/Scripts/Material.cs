@@ -20,7 +20,12 @@ public class Material : MonoBehaviour {
     public GameObject shadowObj;
     public Rigidbody2D rb2d;
     protected Shadow shadow;
-  	protected bool pickedUp;
+    //PickedUp object holds the object holding this object. Otherwise, it is null
+  	protected GameObject holder;
+
+    //Mechanics-based Variables
+    public GameObject MementoType;
+
 
     protected virtual void Awake() {
       myTransform = GetComponent<Transform>();
@@ -33,11 +38,21 @@ public class Material : MonoBehaviour {
       //give reference to transform so shadow will follow
       shadow = Instantiate(shadowObj, transform.position, Quaternion.identity).GetComponent<Shadow>();
       shadow.Initialize(myTransform, size, y_offset);
+      holder = null;
+      LoadMemento();
+    }
+
+    //Subclasses of Material will need Mementos that are more detailed.
+    //This method encapsulates the Memento-choosing process
+    protected virtual void LoadMemento() {
+      MementoType = (GameObject) Resources.Load("BasicMemento");
+      Debug.Log("Loading Memento!");
     }
 
     //Throw this object from x starting position to y target
     //This method is a coroutine
     public virtual IEnumerator Throw(Vector2 start, Vector2 target, float strength) {
+      Drop();
       Vector2 myPosition = shadow.getPosition();
       Vector2 nextPosition = myPosition;
       float throwSpeed = (strength+3)/3;
@@ -95,11 +110,53 @@ public class Material : MonoBehaviour {
 
     //Picks up this object and returns either an "Item" asset object for concreteItem objects
     //or null, telling the program the Use() function cannot be done on the item in the players' hand
-    public virtual Item pickUp(GameObject holder) {
-      //Turn on functionality to attach this object to the player and move where the player does
+    public virtual Item PickedUp(GameObject _holder) {
+      holder = _holder;
+      //Put the items together
+      if(_holder != null) {
+        Transform newPosition = _holder.transform;
+    		transform.position = newPosition.position;
+        transform.parent = newPosition;
+      } else {
+        transform.parent = null;
+      }
+      //NOTE FOR LATER: Create functionality to attach this object to the player and move where the player does,
+      //so it looks like "holding" the object. Current code just makes it follow player awkwardly
 
-      //Return null so this object cannot be "Used" like an item
+      //Return null so this object cannot be "Used" like an item; only thrown
       return null;
     }
+
+    public virtual void PickUp(GameObject item) {
+      item.GetComponent<Material>().PickedUp(gameObject);
+    }
+
+    public void Drop() {
+      holder = null;
+      transform.parent = null;
+    }
+
+    //Save State method for time blink. This method saves the object's state into an object
+    public virtual Memento CreateMemento() {
+      Memento newMemento = Instantiate(MementoType).GetComponent<Memento>();
+      newMemento.Initialize(this);
+      return newMemento;
+    }
+
+    //The second half of time blink. This method uses the object to reconstruct the object into its old form
+    public virtual void useMemento(Memento oldState) {
+      transform.position = oldState.position;
+      //Take the object picking you up and call its "PickUp" method. Player's pick up method will call inventory
+      //Monsters will just call the "pick up" method of the pick=up-ee
+      if(holder != oldState.holder)
+        oldState.holder.GetComponent<Material>().PickUp(gameObject);
+    }
+
+    public GameObject getHolder() {
+      return holder;
+    }
+
+    	// Interface so inventory can know this object has no "use"
+    	public virtual void Use () {}
 
 }

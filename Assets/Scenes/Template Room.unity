@@ -446,7 +446,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1603478371
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 96d3600ae6cd2fe43a8b6f466f97f6fd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -487,6 +487,7 @@ MonoBehaviour:
   myTransform: {fileID: 0}
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   rb2d: {fileID: 0}
+  MementoType: {fileID: 0}
   speed: 150
   maxVel: 300
   calcMovement: {x: 0, y: 0}

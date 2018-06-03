@@ -5,9 +5,12 @@ using UnityEngine;
 //This script is the parent script for all other mechanics scripts
 public class PlayerMechanics : MonoBehaviour { //<-To make game-mechanic-scripts inherit this script, replace "MonoBehaviour" with "Mechanics" in those scripts
 
+	protected GameObject powerUser;
+
 	// Use this for initialization
-	//Anything every mechanic script ever made in this game will need initialized at the beginning of the game will be here
-	void Start () {
+	//Mechanics will likely be used by multiple objects; not just by the player. The initialize function affects that
+	public virtual void Initialize (GameObject user) {
+		powerUser = user;
 	}
 
 	//Method to be overwritten in all Mechanics classes that holds the code run when each power is activated

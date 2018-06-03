@@ -9,7 +9,7 @@ public class EllipseVibrationCollision : MonoBehaviour {
   EdgeCollider2D edgeCollider;
 
 	//Object that made this vibration
-	private GameObject parent;
+	protected GameObject parent;
 
 	// Use this for initialization
 	void Awake () {
@@ -25,7 +25,7 @@ public class EllipseVibrationCollision : MonoBehaviour {
 		edgeCollider.points = ConvertArray(_vertices);
 	}
 
-	void OnTriggerEnter2D(Collider2D touched) {
+	public virtual void OnTriggerEnter2D(Collider2D touched) {
 		GameObject touchedObj = touched.gameObject;
 		if(touchedObj != parent) {
 			touchedObj.GetComponent<Material>().FeelVibration((Vector2) transform.position);

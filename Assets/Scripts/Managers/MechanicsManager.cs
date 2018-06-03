@@ -24,6 +24,7 @@ public class MechanicsManager : MonoBehaviour {
 		keyMechanics = new PlayerMechanics[MECHANIC_SLOTS];
 		for (int slot=0; slot<MECHANIC_SLOTS; slot++) {
 			keyMechanics[slot] = Instantiate(mechanicObjects[slot]);
+			keyMechanics[slot].GetComponent<PlayerMechanics>().Initialize (Player.getPlayer().gameObject);
 		}
 	}
 

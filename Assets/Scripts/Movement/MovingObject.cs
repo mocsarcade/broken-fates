@@ -55,13 +55,10 @@ public class MovingObject : Material {
 
   //Picks up this object and returns null, telling the program the Use()
   //function cannot be done on this item while in the players' hand
-  public override Item pickUp(GameObject holder) {
-    //Turn on functionality to attach this object to the player and move where the player does
-
+  public override void PickUp(GameObject holder) {
+    base.PickUp(holder);
     //Freeze the object's movements
     SetMobility(false);
-    //Return null so this object cannot be "Used" like an item
-    return null;
   }
 
 }
