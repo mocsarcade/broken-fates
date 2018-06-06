@@ -11,6 +11,10 @@ public class ItemMemento : Memento {
 		//It will be used at load-time to return the object ot the correct spot in the inventory
 		public int inventoryIndex;
 
+		public override void Initialize (Material _parent) {
+			base.Initialize(_parent);
+		}
+
 		public void InitializeInventory(bool flag) {
 			inInventory = flag;
 			curItemState = flag;
@@ -32,6 +36,9 @@ public class ItemMemento : Memento {
 				Inventory.instance.Remove(inventoryIndex);
 			} else if (inInventory == true && curItemState == false) {
 				//Destroy memento and place back in inventory
+				ConcreteItem itemParent = parent as ConcreteItem;
+				if(itemParent)
+					itemParent.EmptyMemento();
 				Inventory.instance.TransferIn(inventoryIndex, parent);
 			}
 		}

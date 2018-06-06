@@ -26,17 +26,29 @@ public class ConcreteItem : Material {
 		MementoType = (GameObject) Resources.Load("ItemMemento");
 	}
 
-	//Keep track of item's memento so that should the item be placed in the inventory, it can be retrieved
+	//Create method for when TimeVibration hits the object
 	public override Memento CreateMemento() {
+		//Keep track of item's memento so that should the item be placed in the inventory, it can be retrieved
 		if(curMemento == null) {
 			curMemento = (ItemMemento) base.CreateMemento();
+			return (Memento) curMemento;
+		} else {
+			curMemento.Initialize(this);
+      return (Memento) curMemento;
 		}
-		return (Memento) curMemento;
 	}
 
-	//If this item is held by the player, the memento will be overwritten as an InventoryMemento
-	public void SetMemento(ItemMemento newMemento) {
-		curMemento = newMemento;
+	//Create method for if this item is in the inventory when it was saved.
+	//CreateMemento and CreateInventoryMemento are built to combine for the heldItem
+	public ItemMemento CreateInventoryMemento() {
+		if(curMemento == null) {
+			curMemento = Instantiate(MementoType).GetComponent<ItemMemento>();
+			curMemento.InitializeInventory(true);
+			return curMemento;
+		} else {
+			curMemento.InitializeInventory(true);
+			return curMemento;
+		}
 	}
 
 	//Keep track of item's memento so that should the item be placed in the inventory, it can be retrieved

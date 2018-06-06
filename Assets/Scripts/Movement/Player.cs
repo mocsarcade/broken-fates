@@ -11,7 +11,6 @@ public class Player : MovingObject
 	//Singleton varaible
 	protected static Player instance;
 
-	private Animator animator;
 	public const int WALK_SPEED = 100;
 	public const int RUN_SPEED = 150;
 	public const int INVERSE_RING_SIZE = 4;
@@ -23,7 +22,6 @@ public class Player : MovingObject
     protected override void Awake()
     {
 				base.Awake();
-        animator = GetComponent<Animator>();
 				speed = WALK_SPEED;
 				//Make Player a Singleton
 				if (instance == null)

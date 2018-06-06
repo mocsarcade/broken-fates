@@ -14,9 +14,9 @@ public class Inventory : MonoBehaviour {
     public List<Item> items = new List<Item>();
     public List<ItemMemento> ItemMementos = new List<ItemMemento>();
     public int handIndex; //This variable should be protected. Only public for troubleshooting reasons. Turn protected later
-    protected GameObject handObject = null;
+    public GameObject handObject = null;
     protected Material handScript;
-    protected bool newlyHeldObject = false;
+    public bool newlyHeldObject = false;
     public GameObject MementoType;
 
     //Variables for entire program. Changes depending on equipment player is wearing
@@ -142,11 +142,12 @@ public class Inventory : MonoBehaviour {
         //If the removed item was in the players' hand and the last in the players' inventory
         if(index == handIndex && index >= items.Count) {
           //If the removed item was the last item
-          if(items.Count == 0) {
-            handObject = null;
-            handScript = null;
-          } else {
-            toggleHandRight();
+          handObject = null;
+          handScript = null;
+          if(items.Count != 0) {
+            do {
+              toggleHandLeft();
+            } while(handIndex > items.Count);
           }
         }
         else {
@@ -170,6 +171,10 @@ public class Inventory : MonoBehaviour {
       return items.Count;
     }
 
+    public int getInventoryIndex() {
+      return handIndex;
+    }
+
     public void makeHandObject() {
       handObject = (GameObject) Instantiate(items[handIndex].concreteObject);
       handScript = handObject.GetComponent<Material>();
@@ -178,7 +183,7 @@ public class Inventory : MonoBehaviour {
       if(itemInHand) {
         if(ItemMementos[handIndex] != null) {
           ItemMementos[handIndex].setParent(handScript);
-          itemInHand.SetMemento(ItemMementos[handIndex]);
+          //itemInHand.SetMemento(ItemMementos[handIndex]);
         }
       }
     }
@@ -186,23 +191,24 @@ public class Inventory : MonoBehaviour {
     //Switches out held item for the one to the right in the list and returns the object to be displayed on the GUI
     public Item toggleHandRight()
     {
-      //The 'as' function returns null if the operation is impossible. This checks if the item in your
-      //hand is a ConcreteItem that can be placed in the inventory
-      ConcreteItem itemInHand = handScript as ConcreteItem;
-      if(itemInHand) {
-        if(newlyHeldObject==true) {
-          AddAt(handIndex, itemInHand);
-          newlyHeldObject = false;
+      if(items.Count>0) {
+        //The 'as' function returns null if the operation is impossible. This checks if the item in your
+        //hand is a ConcreteItem that can be placed in the inventory
+        ConcreteItem itemInHand = handScript as ConcreteItem;
+        if(itemInHand) {
+          if(newlyHeldObject==true) {
+            AddAt(handIndex, itemInHand);
+            newlyHeldObject = false;
+          }
         }
-      if(handObject != null)
-        Destroy(handObject);
-      handIndex++;
-      if(handIndex>=items.Count)
-        handIndex=0;
-      makeHandObject();
-      return getObjectInHand();
-      }
-      else {
+        if(handObject != null)
+          Destroy(handObject);
+        handIndex++;
+        if(handIndex>=items.Count)
+          handIndex=0;
+        makeHandObject();
+        return getObjectInHand();
+      } else {
         return null;
       }
     }
@@ -210,23 +216,24 @@ public class Inventory : MonoBehaviour {
     //Switches out held item for the one to the left in the list and returns the object to be displayed on the GUI
     public Item toggleHandLeft()
     {
-      //The 'as' function returns null if the operation is impossible. This checks if the item in your
-      //hand is a ConcreteItem that can be placed in the inventory
-      ConcreteItem itemInHand = handScript as ConcreteItem;
-      if(itemInHand) {
-        if(newlyHeldObject==true) {
-          AddAt(handIndex, itemInHand);
-          newlyHeldObject = false;
+      if(items.Count>0) {
+        //The 'as' function returns null if the operation is impossible. This checks if the item in your
+        //hand is a ConcreteItem that can be placed in the inventory
+        ConcreteItem itemInHand = handScript as ConcreteItem;
+        if(itemInHand) {
+          if(newlyHeldObject==true) {
+            AddAt(handIndex, itemInHand);
+            newlyHeldObject = false;
+          }
         }
-      if(handObject != null)
-        Destroy(handObject);
-      handIndex--;
-      if(handIndex<0)
-        handIndex=items.Count-1;
-      makeHandObject();
-      return getObjectInHand();
-      }
-      else {
+        if(handObject != null)
+          Destroy(handObject);
+        handIndex--;
+        if(handIndex<0)
+          handIndex=items.Count-1;
+        makeHandObject();
+        return getObjectInHand();
+      } else {
         return null;
       }
     }
@@ -284,15 +291,18 @@ public class Inventory : MonoBehaviour {
 
     public void SaveInventory(QuickLife script) {
       for(int i=0; i<items.Count; i++) {
-        ItemMemento newMemento = Instantiate(MementoType).GetComponent<ItemMemento>();
-        newMemento.InitializeInventory(true);
-        script.SaveMemento(newMemento);
-        //Place memento into a list of Mementos
-        ItemMementos[i] = newMemento;
         if(i == handIndex) {
           ConcreteItem itemInHand = handScript as ConcreteItem;
-          if(itemInHand)
-            itemInHand.SetMemento(newMemento);
+          if(itemInHand) {
+              ItemMementos[i] = itemInHand.CreateInventoryMemento();
+              //The item in your hand will already be saved in the QuickLife script by the timeVibration
+            }
+          } else {
+            ItemMemento newMemento = Instantiate(MementoType).GetComponent<ItemMemento>();
+            newMemento.InitializeInventory(true);
+            script.SaveMemento(newMemento);
+            //Place memento into a list of Mementos
+            ItemMementos[i] = newMemento;
         }
       }
     }
@@ -302,8 +312,10 @@ public class Inventory : MonoBehaviour {
     public void TransferIn(int index, Material concreteObject) {
       ConcreteItem itemToRevert = concreteObject as ConcreteItem;
       if(itemToRevert) {
-        itemToRevert.SetMemento(null);
+        itemToRevert.EmptyMemento();
         AddAt(index, itemToRevert);
+        makeHandObject();
+        //Destroy the concreteObject version
         Destroy(concreteObject.gameObject);
       } else {
         Debug.LogException(new Exception("Inventory Revert method expected a ConcreteItem object"), this);

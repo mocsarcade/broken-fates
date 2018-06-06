@@ -53,6 +53,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f35eea8305396489aca689a84da31e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dataReference: {fileID: 11400000, guid: b7972eb57e1205c49a42a6caf40cb952, type: 2}
 --- !u!114 &114570222015350722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -87,5 +88,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 34335454f4f2f044c818d9765dc972f6, type: 2}
   ItemMementos: []
   handIndex: 0
+  handObject: {fileID: 0}
   MementoType: {fileID: 0}
   space: 5

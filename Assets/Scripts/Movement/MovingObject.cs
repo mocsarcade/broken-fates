@@ -5,10 +5,22 @@ using UnityEngine;
 public class MovingObject : Material {
 
   //Initialize important variables
+  protected Animator animator;
   public float speed;
   public float maxVel;
 	public Vector2 calcMovement;
 	protected bool frozen = false;
+
+  protected override void Awake() {
+    base.Awake();
+    animator = GetComponent<Animator>();
+  }
+
+  //Load the memento for moving objects
+  protected override void LoadMemento() {
+    MementoType = (GameObject) Resources.Load("MovingObjectMemento");
+    Debug.Log("Loading Memento!");
+  }
 
 	//Every update, the players' movement will be calculated using the ComputeVelo method of the inheriting objects
 	void Update() {
@@ -52,6 +64,9 @@ public class MovingObject : Material {
   {
     frozen = !mobility;
   }
+
+  //Simple method used by MovingObjectMemento to save the object's animator state
+	public Animator GetAnimator () {return animator;}
 
   //Picks up this object and returns null, telling the program the Use()
   //function cannot be done on this item while in the players' hand

@@ -62,7 +62,8 @@ public class QuickLife : PlayerMechanics
     		Vibration.Vibrator().MakeTimeVibration(ringSize, (Vector2) powerUser.transform.position, gameObject);
         //Save every object in your inventory
         Inventory.instance.SaveInventory(this);
-
+        //Save Game Statistics such as handIndex or HP
+        GameManager.instance.SaveGameStatistics(this);
 
         /*
         BinaryFormatter bf = new BinaryFormatter();
