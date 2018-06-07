@@ -54,6 +54,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataReference: {fileID: 11400000, guid: b7972eb57e1205c49a42a6caf40cb952, type: 2}
+  MementoType: {fileID: 0}
 --- !u!114 &114570222015350722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -67,6 +68,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mechanicObjects:
   - {fileID: 114090820670736574, guid: 9cf539161f9176740a9fcc7c44f81dbf, type: 2}
+  - {fileID: 114588114320772110, guid: 738e1996adc904648af0f72e0f262c00, type: 2}
   - {fileID: 114588114320772110, guid: 738e1996adc904648af0f72e0f262c00, type: 2}
   keyMechanics: []
 --- !u!114 &114629128478098464
@@ -89,5 +91,6 @@ MonoBehaviour:
   ItemMementos: []
   handIndex: 0
   handObject: {fileID: 0}
+  newlyHeldObject: 0
   MementoType: {fileID: 0}
   space: 5

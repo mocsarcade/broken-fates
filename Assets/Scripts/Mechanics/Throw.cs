@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Throw : PlayerMechanics {
 
-	    //This can be changed in the inspector to change how much stamina is taken by summoning a spell
-		public int STAMINA_COST = 100;
+	   //How much stamina is taken by summoning a spell
+		public const int STAMINA_COST = 15;
 
 		public Vector2 tarPos;
 		public GameObject playerObject;

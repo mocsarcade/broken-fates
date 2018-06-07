@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -9,10 +10,19 @@ public class GameManager : MonoBehaviour {
 	public AnimatorData dataReference;
 	public GameObject MementoType;
 
+	//Player's max stamina will increase as the player gets upgrades. This variable is the current max
+	private int CURRENT_MAX_STAMINA = 200;
+	private const float STAMINA_REGEN_RATE = 0.25f;
+	private const float STAMINA_CAP_DRAIN_RATE = 0.01f;
+	private int STAMINA_BOX_WIDTH = 125;
+
 	//Run-time variables
-	public const int MAX_STAMINA = 200000;
-	private int StaminaCap = MAX_STAMINA;
-	private int Stamina = MAX_STAMINA;
+	private float StaminaCap;
+	private int Stamina;
+
+	//Stamian Bar Slider (Holds a float from 0 to 1)
+ 	private Slider staminaBarSlider;  //reference for slider
+	private RectTransform staminaBarObject;  //reference for slider
 
 	// Use this for initialization
 	void Awake () {
@@ -22,29 +32,62 @@ public class GameManager : MonoBehaviour {
 		else if (instance != this)
 			Destroy(gameObject);
 
+		//Load staminaBarSlider object
+		GameObject sliderBarObject = GameObject.FindWithTag("StaminaBar");
+		staminaBarSlider = sliderBarObject.GetComponent<Slider>();
+		staminaBarObject = (RectTransform) sliderBarObject.GetComponent<RectTransform>().parent;
+		StaminaCap = CURRENT_MAX_STAMINA;
+		Stamina = CURRENT_MAX_STAMINA;
+
 		LoadMemento();
 		DontDestroyOnLoad (gameObject);
+	}
+
+	//Declare variables made for only keeping track of the FixedUpdate
+	private int regenCount; private int drainCount;
+	//FixedUpdate regenerates the players' stamina and very slowly drains the max stamina cap
+	void FixedUpdate() {
+		//Regenerate Stamina
+		if(Stamina < StaminaCap) {
+			regenCount++;
+			if(regenCount >= (1/STAMINA_REGEN_RATE)) {
+				RegenStamina(1);
+				regenCount = 0;
+			}
+		}
+		//Drain Stamina Cap
+		drainCount++;
+		if(drainCount >= (1/STAMINA_CAP_DRAIN_RATE)) {
+			DrainCap(1);
+			drainCount=0;
+		}
 	}
 
 	private void LoadMemento() {
 		MementoType = (GameObject) Resources.Load("GameMemento");
 	}
 
-	// Update is called once per frame. Will be used later.
-	//void FixedUpdate () {
-	//}
+	private void UpdateStamina() {
+		staminaBarSlider.value = (float) Stamina/StaminaCap;
+		Vector2 curSizeDelta = staminaBarObject.sizeDelta;
+		staminaBarObject.sizeDelta = new Vector2((float) STAMINA_BOX_WIDTH*StaminaCap/CURRENT_MAX_STAMINA, curSizeDelta.y);
+		Vector2 curPosition = staminaBarObject.anchoredPosition;
+		staminaBarObject.anchoredPosition = new Vector2(((float) STAMINA_BOX_WIDTH*StaminaCap/CURRENT_MAX_STAMINA)/2, curPosition.y);
+	}
 
   //Method to drain stamina for every mechanic the player uses. Running and other acrobatics also use DrainStamina
 	//@return Boolean value to show whether there was enough stamina available
 	public bool DrainStamina(int cost) {
 		//If a mechanic needs stamina, it won't run unless there is enough stamina available
-		if(Stamina > cost) {
+		if(Stamina >= cost) {
 			Stamina -= cost;
+			UpdateStamina();
 			return true;
 		}
 		else {
 			//If there isn't enough stamina available, swap worlds
 			swapWorld();
+			UpdateStamina();
 			return false;
 		}
 	}
@@ -54,8 +97,9 @@ public class GameManager : MonoBehaviour {
 	public void RegenStamina(int gainRate) {
 		Stamina += gainRate;
 		if(Stamina > StaminaCap) {
-			Stamina = StaminaCap;
+			Stamina = (int) StaminaCap;
 		}
+		UpdateStamina();
 	}
 
 	public int getStamina() {
@@ -64,8 +108,21 @@ public class GameManager : MonoBehaviour {
 
   //Over time, the Player's StaminaCap will deplete, forcing the player to switch worlds because the stamina bar's max will
 	//Shrink to a size too small to keep playing with
-	public void DrainCap(int drainRate) {
-		StaminaCap -= drainRate;
+	public bool DrainCap(int drainRate) {
+		if(StaminaCap >= drainRate) {
+			StaminaCap -= drainRate;
+			if(Stamina > StaminaCap) {
+				Stamina = (int) StaminaCap;
+			}
+			Debug.Log("Max Stamina=" + StaminaCap);
+			UpdateStamina();
+			return true;
+		} else {
+			//If there isn't enough stamina available, swap worlds
+			swapWorld();
+			UpdateStamina();
+			return false;
+		}
 	}
 
   //Method that swaps world whenever the player runs out of stamina
@@ -112,12 +169,9 @@ public class GameManager : MonoBehaviour {
 				Inventory.instance.toggleHandLeft();
 			}
 			curHandIndex = Inventory.instance.getInventoryIndex();
-			Debug.Log("Current index is " + curHandIndex + ". The goal is: " + handIndex);
 			if(handIndex != curHandIndex) {
-				Debug.Log("We're still going!");
 			}
 			yield return new WaitForFixedUpdate();
 		} while (handIndex != curHandIndex);
-		Debug.Log("It's over!");
 	}
 }

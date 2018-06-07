@@ -112,7 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FillColor: {r: 0, g: 0, b: 0, a: 0.37254903}
-  RING_SPEED: 0.1
+  RING_SPEED: 0.5
   time: 0
 --- !u!120 &120933381861759888
 LineRenderer:

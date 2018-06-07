@@ -19,7 +19,6 @@ public class MovingObject : Material {
   //Load the memento for moving objects
   protected override void LoadMemento() {
     MementoType = (GameObject) Resources.Load("MovingObjectMemento");
-    Debug.Log("Loading Memento!");
   }
 
 	//Every update, the players' movement will be calculated using the ComputeVelo method of the inheriting objects
@@ -31,21 +30,25 @@ public class MovingObject : Material {
 	}
 
 	//Every fixed update, the player will move. This will keep the players' movements uniform regardless of computer lag
-    void FixedUpdate () {
-		//We don't want our objects to go too fast, so first we must check that the objects' velocity hasn't grown too high
-		if (calcMovement.magnitude < maxVel && calcMovement.magnitude > 0.1 && frozen == false) {
-			//Move the rigidbody by applying force, and the object will move too
-			rb2d.AddForce (calcMovement * speed);//, ForceMode.VelocityChange);
-			//Check object's method to see if a vibration should be made - this has been replaced with animator events
-			//MakeVibration();
-		} else if (calcMovement.magnitude >= maxVel && frozen == false) {
-			//If speed is too high, just decrease it to fit the maxvel
-			rb2d.AddForce (calcMovement * maxVel / calcMovement.magnitude);//, ForceMode.VelocityChange);
-			//Check object's method to see if a vibration should be made - this has been replaced with animator events
-			//MakeVibration();
-		}
-		//Add force to move our character. VelocityChange ignores mass to remove stopping latency
-    }
+  void FixedUpdate () {
+    Move(calcMovement);
+  }
+
+  public void Move(Vector2 moveDirection) {
+	//We don't want our objects to go too fast, so first we must check that the objects' velocity hasn't grown too high
+	if (moveDirection.magnitude < maxVel && moveDirection.magnitude > 0.1 && frozen == false) {
+		//Move the rigidbody by applying force, and the object will move too
+		rb2d.AddForce (calcMovement * speed);//, ForceMode.VelocityChange);
+		//Check object's method to see if a vibration should be made - this has been replaced with animator events
+		//MakeVibration();
+	} else if (moveDirection.magnitude >= maxVel && frozen == false) {
+		//If speed is too high, just decrease it to fit the maxvel
+		rb2d.AddForce (moveDirection * maxVel / moveDirection.magnitude);//, ForceMode.VelocityChange);
+		//Check object's method to see if a vibration should be made - this has been replaced with animator events
+		//MakeVibration();
+	}
+	//Add force to move our character. VelocityChange ignores mass to remove stopping latency
+  }
 
 	//The "virtual" is important to show this method will be overriden
 	//This is the method that will be overriden in any method that inherits this class. This is how all moving objects decide their move patterns
@@ -67,6 +70,8 @@ public class MovingObject : Material {
 
   //Simple method used by MovingObjectMemento to save the object's animator state
 	public Animator GetAnimator () {return animator;}
+
+  public Vector2 GetMovement() {return calcMovement;}
 
   //Picks up this object and returns null, telling the program the Use()
   //function cannot be done on this item while in the players' hand

@@ -8,10 +8,9 @@ using System.IO;
 public class QuickLife : PlayerMechanics
 {
 
-    //Variables controlled by the eidtor to define the prefab's owner
-    public int ringSize=175;
+    public const int RING_SIZE=175;
+    public const int STAMINA_COST = 10;
 
-    public const int STAMINA_COST = 250;
     //In case we decide there will be more than one save
     public int saves_used;
     public List<Memento> savedObjects = new List<Memento>();
@@ -59,7 +58,7 @@ public class QuickLife : PlayerMechanics
             return;
         }
         //Make Vibration to add all the materials to the savedObjects list
-    		Vibration.Vibrator().MakeTimeVibration(ringSize, (Vector2) powerUser.transform.position, gameObject);
+    		Vibration.Vibrator().MakeTimeVibration(RING_SIZE, (Vector2) powerUser.transform.position, gameObject);
         //Save every object in your inventory
         Inventory.instance.SaveInventory(this);
         //Save Game Statistics such as handIndex or HP
@@ -102,6 +101,8 @@ public class QuickLife : PlayerMechanics
 
     public void Load()
     {
+      bool status = GameManager.instance.DrainCap(STAMINA_COST);
+      if(status == true) {
         //Go through savedObject list and apply to each object
         foreach(Memento toRevert in savedObjects) {
           toRevert.Revert();
@@ -111,6 +112,7 @@ public class QuickLife : PlayerMechanics
         savedObjects.Clear();
         //Decrease saves_used
         saves_used--;
+      }
 
         /*
         try
