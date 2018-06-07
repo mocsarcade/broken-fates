@@ -6,7 +6,7 @@ using UnityEngine;
 public class ItemPickup : MonoBehaviour {
 
     public Item item;
-    private float pickupRange = 2;
+    private const float PICKUP_RANGE = 2;
     // This is for writing to the screen whenever you pick up an item.
     public Dialogue dialogue;
 
@@ -23,7 +23,7 @@ public class ItemPickup : MonoBehaviour {
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(1) && (this.Distance() <= pickupRange))
+        if (Input.GetKeyDown(KeyCode.Space) && (this.Distance() <= PICKUP_RANGE))
         {
             PickUp();
         }
@@ -48,7 +48,7 @@ public class ItemPickup : MonoBehaviour {
 
     public void TriggerDialogue()
     {
-        FindObjectOfType<DialogueManager>().StartDialogue(dialogue);
+        FindObjectOfType<DialogueManager>().StartDialogue(dialogue, gameObject);
     }
 
 }
