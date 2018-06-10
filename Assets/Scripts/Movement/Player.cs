@@ -44,6 +44,7 @@ public class Player : MovingObject
 			calcMovement = (new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
    }
 
+	//Renders the player in all scenarios when the player has free movement and is moving
 	protected override void UpdateAnimator (Vector2 direction)
 	{
 		//Set Move and MoveX which tell animator what direction our player should be facing (unless player is idle, in which case direction will be unchanged for animator
@@ -64,6 +65,22 @@ public class Player : MovingObject
 			}
 		}
 	}
+
+ //Renders the player in all scenarios when the player has free movement and is moving
+ public override void AnimateDash (Vector2 direction)
+ {
+	 //Set Move and MoveX which tell animator what direction our player should be facing (unless player is idle, in which case direction will be unchanged for animator
+	 if(direction.magnitude > 0.1)
+	 {
+		 animator.SetTrigger("Dash");
+		 if(animator.GetBool("Moving") == false)
+		 {
+			 animator.SetBool("Moving", true);
+		 }
+		 animator.SetFloat("MoveY", direction.y);
+		 animator.SetFloat("MoveX", direction.x);
+	 }
+ }
 
 	protected override void MakeVibration () {
 		//Define Ring size so that walking causes a uniform speed, while running or crawling has double the effect
@@ -89,5 +106,10 @@ public class Player : MovingObject
 	public void walk()
 	{
 		speed = WALK_SPEED;
+	}
+
+	//Interface for throwing so all objects can throw an object if they are holding something.
+	public override void throwHeldObject(Vector2 tarPos) {
+		Inventory.instance.throwHeldItem((Vector2) transform.position, tarPos);
 	}
 }

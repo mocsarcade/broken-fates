@@ -114,7 +114,6 @@ public class GameManager : MonoBehaviour {
 			if(Stamina > StaminaCap) {
 				Stamina = (int) StaminaCap;
 			}
-			Debug.Log("Max Stamina=" + StaminaCap);
 			UpdateStamina();
 			return true;
 		} else {

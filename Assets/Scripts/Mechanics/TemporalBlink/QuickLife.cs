@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
+//using System;
+//using System.Runtime.Serialization.Formatters.Binary;
+//using System.IO;
 
 public class QuickLife : PlayerMechanics
 {
 
-    public const int RING_SIZE=175;
+    public const int RING_SIZE=75;
     public const int STAMINA_COST = 10;
 
     //In case we decide there will be more than one save
@@ -16,14 +16,23 @@ public class QuickLife : PlayerMechanics
     public List<Memento> savedObjects = new List<Memento>();
     public const int MAXSAVES = 1;
 
+  	 //This instance will be used so if both slots are over the same power, they will reference the same power
+  	 private static QuickLife instance;
+
     // Use this for initialization
     void Awake()
     {
         saves_used = 0;
     }
 
+   // Use this for initialization
+   public override void Initialize (GameObject user) {
+     base.Initialize(user);
+     if(instance == null)
+       instance = this;
+   }
+
     public override bool Activate() {
-      Debug.Log("ACTIVATED!");
         if(saves_used == 0) {
             Save();
             return true;
@@ -134,6 +143,23 @@ public class QuickLife : PlayerMechanics
             Console.WriteLine("file does not exist: " + e);
         }*/
     }
+
+    //When this object is destroyed (by player moving to a different mechanic as a choice)
+    //Destroy all current mementos
+    void OnDestroy() {
+        //Go through savedObject list and apply to each object
+        foreach(Memento toRevert in savedObjects) {
+          //Destroy mementos
+          Destroy(toRevert.gameObject);
+        }
+        savedObjects.Clear();
+        //Decrease saves_used
+        saves_used--;
+    }
+
+  	public override PlayerMechanics getInstance() {
+  		return instance;
+  	}
 }
 
 /*

@@ -15,12 +15,14 @@ public class AnimatorSaveScript : StateMachineBehaviour {
 		AnimatorData currentStateData = Object.Instantiate(GameManager.instance.getDataReference());
 		currentStateData.X = myAnimator.GetFloat("MoveX");
 		currentStateData.Y = myAnimator.GetFloat("MoveY");
+		currentStateData.Moving = false;
 		return currentStateData;
 	}
 
 	public virtual void RevertData(AnimatorData currentStateData) {
 		myAnimator.SetFloat("MoveX", currentStateData.X);
 		myAnimator.SetFloat("MoveY", currentStateData.Y);
+		myAnimator.SetBool("Moving", currentStateData.Moving);
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

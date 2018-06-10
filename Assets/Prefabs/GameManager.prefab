@@ -69,8 +69,9 @@ MonoBehaviour:
   mechanicObjects:
   - {fileID: 114090820670736574, guid: 9cf539161f9176740a9fcc7c44f81dbf, type: 2}
   - {fileID: 114588114320772110, guid: 738e1996adc904648af0f72e0f262c00, type: 2}
-  - {fileID: 114588114320772110, guid: 738e1996adc904648af0f72e0f262c00, type: 2}
+  - {fileID: 114006241664140114, guid: 6d3032eff54844a44a313031d5e2272a, type: 2}
   keyMechanics: []
+  UISlots: []
 --- !u!114 &114629128478098464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,3 +95,4 @@ MonoBehaviour:
   newlyHeldObject: 0
   MementoType: {fileID: 0}
   space: 5
+  InventoryBoxes: []

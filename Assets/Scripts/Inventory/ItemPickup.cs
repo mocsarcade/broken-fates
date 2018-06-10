@@ -36,7 +36,6 @@ public class ItemPickup : MonoBehaviour {
         TriggerDialogue();
         if (wasPickedUp)
         {
-            Debug.Log("Deleting object.");
             Destroy(gameObject, 0);
         }
     }

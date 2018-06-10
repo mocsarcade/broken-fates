@@ -8,28 +8,35 @@ public class Throw : PlayerMechanics {
 		public const int STAMINA_COST = 15;
 
 		public Vector2 tarPos;
-		public GameObject playerObject;
+		private MovingObject userScript;
 
 		public GameObject target;
 		private GameObject magicTar;
 
+		 //This instance will be used so if both slots are over the same power, they will reference the same power
+		 private static Throw instance;
+
 		// Use this for initialization
-		void Start () {
+		public override void Initialize (GameObject user) {
+			base.Initialize(user);
+			userScript = user.GetComponent<MovingObject>();
 			tarPos = transform.position;
-			playerObject = GameObject.FindGameObjectWithTag("Player");
+			
+			if(instance == null)
+				instance = this;
 		}
 
 		public override bool Activate() {
 			if(Inventory.instance.itemsInInventory() > 0) {
-				tarPos = playerObject.transform.position;
+				tarPos = powerUser.transform.position;
 				//Variable magicTar is used for when magicTar has to be destroyed when the activation key (ex: F) is released
 				magicTar = Instantiate(target, tarPos, Quaternion.identity);
 				int weight = Inventory.instance.getWeight();
 				if(weight>0) {
 					magicTar.GetComponent<TargetMovement>().Initialize(tarPos, Inventory.instance.getStrength(), weight);
 				}
-				//Freeze player so he won't move while target is moving
-				Player.getPlayer().SetMobility(false);
+				//Freeze user so he/she won't move while target is moving
+				userScript.SetMobility(false);
 				return true;
 			} else {
 				return false;
@@ -44,12 +51,16 @@ public class Throw : PlayerMechanics {
 					if(status == true) {
 						//Find target's position so rock can be created there
 						tarPos = magicTar.transform.position;
-						Inventory.instance.throwHeldItem((Vector2) playerObject.transform.position, tarPos);
-						}
+						userScript.throwHeldObject(tarPos);
+					}
 				}
 				//Spell cleanup
 				Destroy(magicTar);
-				Player.getPlayer().SetMobility(true);
+				userScript.SetMobility(true);
 		}
+	}
+
+	public override PlayerMechanics getInstance() {
+		return instance;
 	}
 }

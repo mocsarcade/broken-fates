@@ -6,6 +6,8 @@ TagManager:
   tags:
   - DialogueManager
   - StaminaBar
+  - MechanicsBox
+  - ItemBox
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open('Stamina Bar - Open.png')
+img = Image.open('InventoryBox.png')
 img = img.convert("RGBA")
 datas = img.getdata()
 

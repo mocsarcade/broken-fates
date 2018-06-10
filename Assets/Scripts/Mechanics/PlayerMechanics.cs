@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerMechanics : MonoBehaviour { //<-To make game-mechanic-scripts inherit this script, replace "MonoBehaviour" with "Mechanics" in those scripts
 
 	protected GameObject powerUser;
+	public Sprite powerIcon;
 
 	// Use this for initialization
 	//Mechanics will likely be used by multiple objects; not just by the player. The initialize function affects that
@@ -23,6 +24,14 @@ public class PlayerMechanics : MonoBehaviour { //<-To make game-mechanic-scripts
 	//Optional Method to be overwritten in all Mechanics classes that holds the code run when each power's key is released'
 	public virtual void Release()
 	{
+	}
+
+	public Sprite getIcon() {
+		return powerIcon;
+	}
+
+	public virtual PlayerMechanics getInstance() {
+		return null;
 	}
 
 }

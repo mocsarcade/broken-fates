@@ -31,23 +31,23 @@ public class MovingObject : Material {
 
 	//Every fixed update, the player will move. This will keep the players' movements uniform regardless of computer lag
   void FixedUpdate () {
+    if(frozen == false) {
     Move(calcMovement);
+    }
   }
 
   public void Move(Vector2 moveDirection) {
 	//We don't want our objects to go too fast, so first we must check that the objects' velocity hasn't grown too high
-	if (moveDirection.magnitude < maxVel && moveDirection.magnitude > 0.1 && frozen == false) {
-		//Move the rigidbody by applying force, and the object will move too
-		rb2d.AddForce (calcMovement * speed);//, ForceMode.VelocityChange);
-		//Check object's method to see if a vibration should be made - this has been replaced with animator events
-		//MakeVibration();
-	} else if (moveDirection.magnitude >= maxVel && frozen == false) {
-		//If speed is too high, just decrease it to fit the maxvel
-		rb2d.AddForce (moveDirection * maxVel / moveDirection.magnitude);//, ForceMode.VelocityChange);
-		//Check object's method to see if a vibration should be made - this has been replaced with animator events
-		//MakeVibration();
-	}
-	//Add force to move our character. VelocityChange ignores mass to remove stopping latency
+  	if (moveDirection.magnitude < maxVel && moveDirection.magnitude > 0.1) {
+  		//Move the rigidbody by applying force, and the object will move too
+  		rb2d.AddForce (moveDirection * speed);//, ForceMode.VelocityChange);
+  		//Check object's method to see if a vibration should be made - this has been replaced with animator events
+  	} else if (moveDirection.magnitude >= maxVel) {
+  		//If speed is too high, just decrease it to fit the maxvel
+  		rb2d.AddForce (moveDirection * maxVel / moveDirection.magnitude);//, ForceMode.VelocityChange);
+  		//Check object's method to see if a vibration should be made - this has been replaced with animator events
+  	}
+	   //Add force to move our character. VelocityChange ignores mass to remove stopping latency
   }
 
 	//The "virtual" is important to show this method will be overriden
@@ -57,6 +57,9 @@ public class MovingObject : Material {
 	//The "virtual" is important to show this method will be overriden
 	//This is how all moving objects decide their move animations
 	protected virtual void UpdateAnimator (Vector2 direction) {}
+
+	//This is how dashing objects render dashing, as it interfaces with the dash mechanic that the object may use
+	public virtual void AnimateDash (Vector2 direction) {}
 
 	//The "virtual" is important to show this method will be overriden
 	//This is how all moving objects decide when vibrations are made
@@ -80,5 +83,8 @@ public class MovingObject : Material {
     //Freeze the object's movements
     SetMobility(false);
   }
+
+  //Interface for throwing so all objects can throw an object if they are holding something.
+  public virtual void throwHeldObject(Vector2 tarPos) {}
 
 }

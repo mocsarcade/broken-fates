@@ -51,7 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c67e113044053f64dbee6dcc9a8455a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  STAMINA_COST: 100
+  powerIcon: {fileID: 21300002, guid: a0d77d3e64feedd4ab8ca3d82542fa0b, type: 3}
   tarPos: {x: 0, y: 0}
-  playerObject: {fileID: 0}
   target: {fileID: 1739209338190122, guid: eab8874d7aa74a744bd03b25f04eb855, type: 2}

@@ -23,6 +23,10 @@ public class Inventory : MonoBehaviour {
     public static float strength = 1f;
     public int space = 5;
 
+    //UI Images for all six of the Inventory objects
+    public List<UIItemBox> InventoryBoxes = new List<UIItemBox>();
+    public const int CYCLE_SIZE = 270;
+
     void Awake()
     {
   		//Make GameManager a Singleton
@@ -31,12 +35,20 @@ public class Inventory : MonoBehaviour {
   		else if (instance != this)
   			Destroy(gameObject);
 
-      player = GameObject.FindGameObjectWithTag("Player");
+      player = Player.getPlayer().gameObject;
 
+      //Initialize Mementos list
       foreach(Item inventoryItem in items) {
         if(items.Count > ItemMementos.Count) {
           ItemMementos.Add(null);
         }
+      }
+
+      //Initialize UI Boxes
+  		RectTransform ItemsBox = GameObject.FindWithTag("ItemBox").GetComponent<RectTransform>();
+      for(int box=0; box<items.Count; box++) {
+			     InventoryBoxes.Add(ItemsBox.Find("Container " + (box+1)).GetComponent<UIItemBox>());
+           InventoryBoxes[box].Initialize(45+((CYCLE_SIZE/items.Count)*box), box);
       }
 
       LoadMemento();
@@ -78,11 +90,12 @@ public class Inventory : MonoBehaviour {
         // Otherwise we can pick up the item, return true.
         items.Add(item);
         ItemMementos.Add(null);
+        //Update UI
+        UpdateUI();
         return true;
     }
 
-    //This is the formal addition to the inventory, used in shops and dialogue-triggering items
-    public bool Add(ConcreteItem itemObj)
+    protected bool Add(ConcreteItem itemObj)
     {
         Item item  = itemObj.GetItem();
         if (items.Count >= space)
@@ -152,6 +165,8 @@ public class Inventory : MonoBehaviour {
         }
         else {
           makeHandObject();
+          //Since the players' hand isn't moving, the UI has to be updated manually
+          UpdateUI();
         }
       }
     }
@@ -201,12 +216,19 @@ public class Inventory : MonoBehaviour {
             newlyHeldObject = false;
           }
         }
+        //Destroy old handObject
         if(handObject != null)
           Destroy(handObject);
+        //Move handObject
         handIndex++;
-        if(handIndex>=items.Count)
+        if(handIndex>=items.Count) {
           handIndex=0;
+        }
         makeHandObject();
+        //Move UI Boxes
+        moveUI(handIndex);
+        UpdateUI();
+        //Return object in hand for methods that require it
         return getObjectInHand();
       } else {
         return null;
@@ -226,12 +248,19 @@ public class Inventory : MonoBehaviour {
             newlyHeldObject = false;
           }
         }
+        //Destroy old handObject
         if(handObject != null)
           Destroy(handObject);
+        //Move handObject
         handIndex--;
-        if(handIndex<0)
+        if(handIndex<0) {
           handIndex=items.Count-1;
+        }
         makeHandObject();
+        //Move UI Boxes
+        moveUI(handIndex);
+        UpdateUI();
+        //Return object in hand for methods that require it
         return getObjectInHand();
       } else {
         return null;
@@ -245,6 +274,8 @@ public class Inventory : MonoBehaviour {
       //If one-use item, set newlyHeldObject=0
         //--- to write later---
           //If the item has a memento, update it
+      //Update UI
+      UpdateUI();
     }
 
     //Calls object in hand to use it
@@ -264,6 +295,8 @@ public class Inventory : MonoBehaviour {
         }
         StartCoroutine(handObject.GetComponent<Material>().Throw(start, target, strength));
         Remove(handIndex);
+        //Update UI
+        UpdateUI();
       }
     }
 
@@ -280,7 +313,10 @@ public class Inventory : MonoBehaviour {
     }
 
     public Item GetItem(int index) {
-      return items[index];
+      if(index<items.Count && index>=0) {
+        return items[index];
+      }
+      return null;
     }
 
     //Is this needed? Decide later
@@ -317,9 +353,52 @@ public class Inventory : MonoBehaviour {
         makeHandObject();
         //Destroy the concreteObject version
         Destroy(concreteObject.gameObject);
+        //Update UI
+        UpdateUI();
       } else {
         Debug.LogException(new Exception("Inventory Revert method expected a ConcreteItem object"), this);
       }
     }
+
+  private void UpdateUI() {
+    for(int box=0; box<InventoryBoxes.Count; box++) {
+      InventoryBoxes[box].UpdateImage();
+    }
+  }
+
+  //Move all boxes so handIndex box is at the front
+  private void moveUI(int handIndex) {
+    int curPlace = InventoryBoxes[handIndex].getDegrees();
+    int degrees = 0;
+    //Calculate direction and distance to that position
+    if(Mathf.Abs(curPlace-45) <= Mathf.Abs(CYCLE_SIZE+45-curPlace)) {
+      degrees = -(curPlace - 45);
+    } else {
+      degrees = CYCLE_SIZE+45-curPlace;
+    }
+    //Move UI Boxes
+    foreach(UIItemBox UIBox in InventoryBoxes) {
+      UIBox.addDegrees(degrees);
+    }
+  }
+
+  private void resetUI(int numItems) {
+    int targetDegrees = 0; int curPlace = 0; int degrees = 0;
+    //Move UI Boxes
+    for(int box=0; box<numItems; box++) {
+      //Calculate desired position
+      targetDegrees = 45+box*(CYCLE_SIZE/numItems);
+      //Calculate distance to that position from the current position
+      curPlace = InventoryBoxes[box].getDegrees();
+      //Calculate direction and distance to that position
+      if(Mathf.Abs(curPlace-45) <= Mathf.Abs(CYCLE_SIZE+45-curPlace)) {
+        degrees = -(curPlace - 45);
+      } else {
+        degrees = CYCLE_SIZE+45-curPlace;
+      }
+      //Move it there
+      InventoryBoxes[box].addDegrees(degrees);
+    }
+  }
 
 }
