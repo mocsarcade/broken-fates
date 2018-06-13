@@ -20,6 +20,4 @@ public class Item : ScriptableObject {
 			Key
 	};
 
-	//Use() method will go here and will call Use() method on effect
-
 }

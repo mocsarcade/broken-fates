@@ -10,9 +10,10 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		player = Player.getPlayer().gameObject;
 		offset = transform.position - player.transform.position;
 	}
-	
+
 	// Update is called once per frame
 	void LateUpdate () {
 		transform.position = player.transform.position + offset;

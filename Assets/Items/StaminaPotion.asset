@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4111907a5e7efb645866fa6fcb28a996, type: 3}
-  m_Name: Rock
+  m_Name: StaminaPotion
   m_EditorClassIdentifier: 
   description: 
   name: 
-  icon: {fileID: 21300000, guid: aec048e1dbc550a44884b027dad3092b, type: 3}
+  icon: {fileID: 21300002, guid: aec048e1dbc550a44884b027dad3092b, type: 3}
   Type: 0
-  concreteObject: {fileID: 1404619413185182, guid: 9fdf0a133483ee1489ee21406a2c8e0f,
+  concreteObject: {fileID: 1876489529557522, guid: 33e91d99d59fd6f4eb4c21721fc400a4,
     type: 2}

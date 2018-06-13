@@ -15,11 +15,12 @@ public class Material : MonoBehaviour {
 
     //Display variables
     public Transform myTransform;
+    public Collider2D myCollider;
     protected float z;
     //public SpriteRenderer renderer;
     public GameObject shadowObj;
     public Rigidbody2D rb2d;
-    protected Shadow shadow;
+    public Shadow shadow;
     //PickedUp object holds the object holding this object. Otherwise, it is null
   	protected GameObject holder;
 
@@ -30,6 +31,7 @@ public class Material : MonoBehaviour {
     protected virtual void Awake() {
       myTransform = GetComponent<Transform>();
       rb2d = GetComponent<Rigidbody2D>();
+      myCollider = GetComponent<Collider2D>();
 
       //This is the amount shadow has to be down by in order to be at the BOTTOM of the Material
       float y_offset = GetComponent<SpriteRenderer>().bounds.size.y/2;
@@ -120,6 +122,8 @@ public class Material : MonoBehaviour {
       } else {
         transform.parent = null;
       }
+      //Disable collider
+      myCollider.enabled = false;
       //NOTE FOR LATER: Create functionality to attach this object to the player and move where the player does,
       //so it looks like "holding" the object. Current code just makes it follow player awkwardly
 
@@ -134,6 +138,7 @@ public class Material : MonoBehaviour {
     public void Drop() {
       holder = null;
       transform.parent = null;
+      myCollider.enabled = true;
     }
 
     //Save State method for time blink. This method saves the object's state into an object

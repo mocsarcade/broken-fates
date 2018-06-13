@@ -26,23 +26,28 @@ public class DialogueTrigger : MonoBehaviour {
         return Vector3.Distance(theSpeakerPosition.position, thePlayerPosition.position);
     }
 
+    /*
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space) && (this.Distance() <= SPEAKING_DISTANCE))
         {
             Speak();
         }
-    }
+    }*/
 
-    public void Speak()
+    public bool Speak()
     {
-      if(speaking==false || dialogueWriter.getSpeaker() != gameObject) {
-        dialogueWriter.StartDialogue(dialogue, gameObject);
-        speaking = true;
-      } else {
-        //If a sentence has already been started,
-        bool status = dialogueWriter.DisplayNextSentence();
-        speaking = status;
-      }
+        if(speaking==false && dialogueWriter.getSpeaker() == null) {
+          dialogueWriter.StartDialogue(dialogue, gameObject);
+          speaking = true;
+          return true;
+        } else if(dialogueWriter.getSpeaker() == gameObject) {
+          //If a sentence has already been started,
+          bool status = dialogueWriter.DisplayNextSentence();
+          speaking = status;
+          return true;
+        } else {
+          return false;
+        }
     }
 }

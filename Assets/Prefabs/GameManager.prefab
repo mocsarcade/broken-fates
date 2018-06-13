@@ -94,5 +94,7 @@ MonoBehaviour:
   handObject: {fileID: 0}
   newlyHeldObject: 0
   MementoType: {fileID: 0}
+  UIBoxPrefab: {fileID: 114514948541345596, guid: eb87f8a559e481b4c8b066d1f50c7b20,
+    type: 2}
   space: 5
   InventoryBoxes: []

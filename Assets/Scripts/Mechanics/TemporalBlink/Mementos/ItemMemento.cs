@@ -29,7 +29,19 @@ public class ItemMemento : Memento {
 
 		public override void Revert() {
 			if(inInventory == false && curItemState == false) {
-				parent.useMemento(this);
+				//If the item was put in inventory and destroyed, recreate it and place it
+				if(parent == null) {
+
+					//Put code to instantiate and move object
+
+
+
+
+
+				} else {
+					//Otherwise, it was picked up and thrown somewhere else, so just place it back
+					parent.useMemento(this);
+				}
 			}	else if (inInventory == false && curItemState == true) {
 				//Get item out of inventory and create at position/in hand of pickedUp
 		    Instantiate(Inventory.instance.GetItem(inventoryIndex).concreteObject, position, Quaternion.identity).GetComponent<Material>().PickedUp(parent.gameObject);

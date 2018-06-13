@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open('InventoryBox.png')
+img = Image.open('MediumItems.png')
 img = img.convert("RGBA")
 datas = img.getdata()
 
@@ -12,4 +12,4 @@ for item in datas:
         newData.append(item)
 
 img.putdata(newData)
-img.save("img2.png", "PNG")
+img.save("MediumItems.png", "PNG")

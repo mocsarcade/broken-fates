@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class GameManager : MonoBehaviour {
 
@@ -109,18 +110,37 @@ public class GameManager : MonoBehaviour {
   //Over time, the Player's StaminaCap will deplete, forcing the player to switch worlds because the stamina bar's max will
 	//Shrink to a size too small to keep playing with
 	public bool DrainCap(int drainRate) {
-		if(StaminaCap >= drainRate) {
-			StaminaCap -= drainRate;
-			if(Stamina > StaminaCap) {
-				Stamina = (int) StaminaCap;
+		if(drainRate > 0) {
+			if(StaminaCap >= drainRate) {
+				StaminaCap -= drainRate;
+				if(Stamina > StaminaCap) {
+					Stamina = (int) StaminaCap;
+				}
+				UpdateStamina();
+				return true;
+			} else {
+				//If there isn't enough stamina available, swap worlds
+				swapWorld();
+				UpdateStamina();
+				return false;
 			}
-			UpdateStamina();
-			return true;
 		} else {
-			//If there isn't enough stamina available, swap worlds
-			swapWorld();
-			UpdateStamina();
+			Debug.LogException(new Exception("Program is trying to drain a negative number!"), this);
 			return false;
+		}
+	}
+
+  //Over time, the Player's StaminaCap will deplete, forcing the player to switch worlds because the stamina bar's max will
+	//Shrink to a size too small to keep playing with
+	public void RegenCap(int amount) {
+		if(amount > 0) {
+			if(StaminaCap+amount <= CURRENT_MAX_STAMINA) {
+				StaminaCap += amount;
+			} else {
+				StaminaCap = CURRENT_MAX_STAMINA;
+			}
+			Stamina += amount;
+			UpdateStamina();
 		}
 	}
 
@@ -163,9 +183,9 @@ public class GameManager : MonoBehaviour {
 				direction = !direction;
 			}
 			if(direction == true) {
-				Inventory.instance.toggleHandRight();
+				Inventory.instance.toggleHand(1);
 			} else {
-				Inventory.instance.toggleHandLeft();
+				Inventory.instance.toggleHand(-1);
 			}
 			curHandIndex = Inventory.instance.getInventoryIndex();
 			if(handIndex != curHandIndex) {

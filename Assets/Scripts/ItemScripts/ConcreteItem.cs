@@ -10,6 +10,7 @@ public class ConcreteItem : Material {
 	//At all times, a ConcreteItem object is a child of the player as an invisible version of the item
 	//in the player's hand. This object is referenced for throwing
 	public Item inventoryCounterpart;
+	public ItemScript useScript;
 
 	//public SpriteRenderer myRenderer;
 	//public SpriteRenderer shadowRenderer;
@@ -18,6 +19,7 @@ public class ConcreteItem : Material {
 	protected override void Awake()
 	{
 		base.Awake();
+		useScript = GetComponent<ItemScript>();
 	  //myRenderer = gameObject.GetComponent<SpriteRenderer>();
 	  //shadowRenderer = shadow.GetComponent<SpriteRenderer>();
 	}
@@ -87,13 +89,16 @@ public class ConcreteItem : Material {
 
 	// Use this item
 	public override void Use () {
-		//Do its effect
-
-		//If this item is destroyed upon use:
-
-			//Send back a message to the Inventory to refill the players' hand
-
-			//Destroy the item
-
+		if(useScript != null) {
+			//Do its effect
+			bool destructionFlag = useScript.Use();
+			//If this item is destroyed upon use:
+			if(destructionFlag == true) {
+				//Remove this object from the player's inventory
+				Inventory.instance.destroyHandObject();
+			}
+		} else {
+			Debug.Log("This object has no useScript! Why are you trying to use it?");
+		}
 	}
 }

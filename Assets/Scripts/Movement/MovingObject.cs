@@ -9,7 +9,7 @@ public class MovingObject : Material {
   public float speed;
   public float maxVel;
 	public Vector2 calcMovement;
-	protected bool frozen = false;
+	public bool frozen = false;
 
   protected override void Awake() {
     base.Awake();
@@ -78,10 +78,11 @@ public class MovingObject : Material {
 
   //Picks up this object and returns null, telling the program the Use()
   //function cannot be done on this item while in the players' hand
-  public override void PickUp(GameObject holder) {
-    base.PickUp(holder);
+  public override Item PickedUp(GameObject holder) {
+    base.PickedUp(holder);
     //Freeze the object's movements
     SetMobility(false);
+    return null;
   }
 
   //Interface for throwing so all objects can throw an object if they are holding something.

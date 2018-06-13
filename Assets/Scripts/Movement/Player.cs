@@ -90,26 +90,18 @@ public class Player : MovingObject
 	}
 
 	//When Vibration is felt from other objects
-	public override void FeelVibration (Vector2 sourcePosition) {
-		Debug.Log("Touched by a Vibration!!");
-	}
+	public override void FeelVibration (Vector2 sourcePosition) {}
 
-	public override void PickUp(GameObject item) {
-		Inventory.instance.PickUp(item);
-	}
-
-	public void run()
-	{
-		speed = RUN_SPEED;
-	}
-
-	public void walk()
-	{
-		speed = WALK_SPEED;
+	public override void PickUp(GameObject obj) {
+		Inventory.instance.PickUp(obj);
 	}
 
 	//Interface for throwing so all objects can throw an object if they are holding something.
 	public override void throwHeldObject(Vector2 tarPos) {
 		Inventory.instance.throwHeldItem((Vector2) transform.position, tarPos);
+	}
+
+	public Vector2 GetDirection() {
+		return new Vector2(animator.GetFloat("MoveX"), animator.GetFloat("MoveY"));
 	}
 }

@@ -54,26 +54,6 @@ public class MechanicsManager : MonoBehaviour {
 	void Update () {
 		//Check the STATIC OBJECT ARRAY, which is an array of PowerSlot Objects, and if either 0, 1 or 2 has a keycode that is being
 		//pressed, get its power attached and do it.
-			if(Input.GetButtonDown("Sneak"))
-			{
-				//Sneak
-			}
-			if(Input.GetButtonUp("Sneak"))
-			{
-				//Stop Sneaking
-			}
-
-			if(Input.GetButtonDown("Run"))
-			{
-				//Run
-				Player.getPlayer().run();
-			}
-			if(Input.GetButtonUp("Run"))
-			{
-				//Stop Running
-				Player.getPlayer().walk();
-			}
-
 			for (int i=0; i < MECHANIC_SLOTS; i++) {
 				//Open a Power-choosing menu
 				if(Input.GetButtonDown ("PowerMenu" + i)) {
@@ -144,7 +124,7 @@ public class MechanicsManager : MonoBehaviour {
 		}
 	}
 
-	// The purpose of TypeSentence is so that we can display the dialogue slowly (character by character)
+	// Enlarge the mechanics icon when the menu button is held, so it is clear which menu is being shifted
 	private IEnumerator resizeUIImage(Image mechanicIcon, int newSize) {
 		RectTransform iconTransform = mechanicIcon.gameObject.GetComponent<RectTransform>();
 		while(Mathf.Abs(iconTransform.sizeDelta.x-newSize) > 1) {
