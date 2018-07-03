@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class ConcreteItem : Material {
 
-	protected ItemMemento curMemento;
-
 	//NOTE: ConcreteItem is meant to be found in the dungeon and then turn invisible once picked up.
 	//At all times, a ConcreteItem object is a child of the player as an invisible version of the item
 	//in the player's hand. This object is referenced for throwing
@@ -14,6 +12,12 @@ public class ConcreteItem : Material {
 
 	//public SpriteRenderer myRenderer;
 	//public SpriteRenderer shadowRenderer;
+
+	//Memento Variables
+	public bool curItemState;
+	//This variable is set at the item's creation if the item was in the players' inventory at save-time
+	//It will be used at load-time to return the object ot the correct spot in the inventory
+	public int inventoryIndex;
 
 	// animator gets its component every time this script is "enabled". Basically when the script begins.
 	protected override void Awake()
@@ -32,42 +36,43 @@ public class ConcreteItem : Material {
 	public override Memento CreateMemento() {
 		//Keep track of item's memento so that should the item be placed in the inventory, it can be retrieved
 		if(curMemento == null) {
-			curMemento = (ItemMemento) base.CreateMemento();
-			return (Memento) curMemento;
+			curMemento = base.CreateMemento();
+			return curMemento;
 		} else {
 			curMemento.Initialize(this);
-      return (Memento) curMemento;
+      return curMemento;
 		}
 	}
 
 	//Create method for if this item is in the inventory when it was saved.
+	//This method is used to add mementos to the inventory, which needs ItemMementos
 	//CreateMemento and CreateInventoryMemento are built to combine for the heldItem
 	public ItemMemento CreateInventoryMemento() {
 		if(curMemento == null) {
-			curMemento = Instantiate(MementoType).GetComponent<ItemMemento>();
-			curMemento.InitializeInventory(true);
-			return curMemento;
+			mementoData = Object.Instantiate((MementoData) GameManager.instance.getDataReference(GameManager.DataType.t_MementoData));
+			curMemento = Instantiate(MementoType).GetComponent<Memento>();
+			mementoData.curItemState = true;
+			curMemento.Initialize(this);
+			return curMemento as ItemMemento;
 		} else {
-			curMemento.InitializeInventory(true);
-			return curMemento;
+			mementoData = Object.Instantiate((MementoData) GameManager.instance.getDataReference(GameManager.DataType.t_MementoData));
+			mementoData.curItemState = true;
+			curMemento.Initialize(this);
+			return curMemento as ItemMemento;
 		}
 	}
 
-	//Keep track of item's memento so that should the item be placed in the inventory, it can be retrieved
-	public override void useMemento(Memento oldState) {
-		base.useMemento(oldState);
-		//Empty ConcreteItem's curMemento variable
-		EmptyMemento();
+	public void setInInventory(bool flag, int index) {
+		mementoData.curItemState = flag;
+		if(flag == true) {
+			mementoData.inventoryIndex = index;
+		}
 	}
 
-	public void EmptyMemento() {
-		curMemento = null;
-	}
-
+	/*
 	public ItemMemento GetMemento() {
-		return curMemento;
-	}
-
+		return curMemento as ItemMemento;
+	}*/
 	/*
 	private void setVisibility(bool state) {
 		myRenderer.enabled = state;

@@ -4,25 +4,21 @@ using UnityEngine;
 
 public class AnimatorSaveScript : StateMachineBehaviour {
 
-	protected Animator myAnimator;
+	//protected Animator myAnimator;
 
-	 // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-		myAnimator = animator;
-	}
+	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
+	//override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+	//	myAnimator = animator;
+	//}
 
-	public virtual AnimatorData GetData() {
-		AnimatorData currentStateData = Object.Instantiate(GameManager.instance.getDataReference());
-		currentStateData.X = myAnimator.GetFloat("MoveX");
-		currentStateData.Y = myAnimator.GetFloat("MoveY");
+	public virtual AnimatorData GetData(Animator myAnimator) {
+		AnimatorData currentStateData = Instantiate((AnimatorData) GameManager.instance.getDataReference(GameManager.DataType.t_AnimatorData));
 		currentStateData.Moving = false;
 		return currentStateData;
 	}
 
-	public virtual void RevertData(AnimatorData currentStateData) {
-		myAnimator.SetFloat("MoveX", currentStateData.X);
-		myAnimator.SetFloat("MoveY", currentStateData.Y);
-		myAnimator.SetBool("Moving", currentStateData.Moving);
+	public virtual void RevertData(AnimatorData currentStateData, Animator myAnimator) {
+		myAnimator.SetBool("Moving",currentStateData.Moving);
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

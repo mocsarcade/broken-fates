@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using System;
+using System;
 //using System.Runtime.Serialization.Formatters.Binary;
 //using System.IO;
 
@@ -34,18 +34,12 @@ public class QuickLife : PlayerMechanics
 
     public override bool Activate() {
         if(saves_used == 0) {
-            Save();
-            return true;
+          Save();
+          return true;
         }
         else {
-            bool status = GameManager.instance.DrainStamina(STAMINA_COST);
-            if(status) {
-              Load();
-              return true;
-            }
-            else {
-              return false;
-            }
+          bool status = Load();
+          return status;
         }
     }
 
@@ -95,20 +89,39 @@ public class QuickLife : PlayerMechanics
     }
 
     public void SaveObject(GameObject touchedObj) {
-      savedObjects.Add(touchedObj.GetComponent<Material>().CreateMemento());
+      //Debug.Log("Saved Object: " + touchedObj);
+      Memento tempMemento = touchedObj.GetComponent<Material>().CreateMemento();
+      //Check that this object hasn't already been saved
+      foreach(Memento includedMem in savedObjects) {
+        if(includedMem.getParent() == tempMemento.getParent() && includedMem.getParent() != null) {
+          Debug.LogException(new Exception("Trying to save an object that's already been saved!"), this);
+          return;
+        }
+      }
+      //If this object hasn't been saved yet, it can be added to the list
+      savedObjects.Add(tempMemento);
       //NOTE: There is no option to check if the touched object is already in the list. If the same object is saved twice,
       //The Load method will revert both and the second entry will be the final action. The extra computation does not
       //seem to warrant checking every previous of an entry of the list for each new object.
     }
 
     public void SaveMemento(Memento savedMemento) {
+      //Debug.Log("Saved Memento: " + savedMemento);
+      //Check that this object hasn't already been saved
+      foreach(Memento includedMem in savedObjects) {
+        if(includedMem.getParent() == savedMemento.getParent() && includedMem.getParent() != null) {
+          Debug.LogException(new Exception("Trying to save an object that's already been saved!"), this);
+          return;
+        }
+      }
+      //If this object hasn't been saved yet, it can be added to the list
       savedObjects.Add(savedMemento);
       //NOTE: There is no option to check if the touched object is already in the list. If the same object is saved twice,
       //The Load method will revert both and the second entry will be the final action. The extra computation does not
       //seem to warrant checking every previous of an entry of the list for each new object.
     }
 
-    public void Load()
+    public bool Load()
     {
       bool status = GameManager.instance.DrainCap(STAMINA_COST);
       if(status == true) {
@@ -116,12 +129,16 @@ public class QuickLife : PlayerMechanics
         foreach(Memento toRevert in savedObjects) {
           toRevert.Revert();
           //Destroy mementos
-          Destroy(toRevert.gameObject);
+          if(toRevert) {
+            Destroy(toRevert.gameObject);
+          }
         }
         savedObjects.Clear();
         //Decrease saves_used
         saves_used--;
       }
+
+      return status;
 
         /*
         try
@@ -150,7 +167,9 @@ public class QuickLife : PlayerMechanics
         //Go through savedObject list and apply to each object
         foreach(Memento toRevert in savedObjects) {
           //Destroy mementos
-          Destroy(toRevert.gameObject);
+          if(toRevert) {
+            Destroy(toRevert.gameObject);
+          }
         }
         savedObjects.Clear();
         //Decrease saves_used

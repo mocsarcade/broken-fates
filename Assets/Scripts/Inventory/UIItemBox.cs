@@ -12,11 +12,14 @@ public class UIItemBox : MonoBehaviour {
 	public float positionDegrees;
 	public float degreesToMove;
 	public int myItemIndex;
+	public int targetSize;
+	public bool toDestroy;
 
 	// Use this for initialization
 	void Awake () {
 		myPosition = GetComponent<RectTransform>();
-			itemIcon = myPosition.Find("Item").GetComponent<Image>();
+		itemIcon = myPosition.Find("Item").GetComponent<Image>();
+		targetSize = 50;
 	}
 
 	public void Initialize(float _degrees, int _itemIndex) {
@@ -25,8 +28,20 @@ public class UIItemBox : MonoBehaviour {
 		UpdateImage();
 	}
 
-	// Update is called once per frame
 	void FixedUpdate () {
+		//Resize Box
+		if(Mathf.Abs(myPosition.sizeDelta.x-targetSize) > 1) {
+  		if(myPosition.sizeDelta.x > targetSize) {
+	  		myPosition.sizeDelta = new Vector2(myPosition.sizeDelta.x-1, myPosition.sizeDelta.y-1);
+	  	} else {
+	  		myPosition.sizeDelta = new Vector2(myPosition.sizeDelta.x+1, myPosition.sizeDelta.y+1);
+	  	}
+			if(myPosition.sizeDelta.x <= 0 && toDestroy == true) {
+		    Destroy(gameObject);
+			}
+		}
+
+		//Move Box
 		if(Mathf.Abs(degreesToMove)>0) {
 		//Change the current position of the box according to degreesToMove variable multiple times (for speed)
 		for(int i=0; i<INVENTORY_SCROLL_SPEED; i++)
@@ -51,6 +66,14 @@ public class UIItemBox : MonoBehaviour {
 		//Calculate new position
 		myPosition.anchoredPosition = new Vector3(-55-100*Mathf.Cos(Mathf.Deg2Rad*positionDegrees),-55-100*Mathf.Sin(Mathf.Deg2Rad*positionDegrees), 0);
 		}
+	}
+
+	public void setToDestroy() {
+		toDestroy = true;
+	}
+
+	public void resizeUIImage(int newSize) {
+		targetSize = newSize;
 	}
 
 	public void addDegrees(float degrees) {

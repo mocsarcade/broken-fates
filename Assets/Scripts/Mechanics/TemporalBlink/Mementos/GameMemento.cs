@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class GameMemento : Memento {
 
-		public int handIndex;
+		private int handIndex;
+		private int StaminaCap;
 
 		// Use this for initialization
 		public void InitializeGame (GameManager _parent) {
 			handIndex = Inventory.instance.getInventoryIndex();
+			StaminaCap = GameManager.instance.getCap();
 		}
 
 		public override void Revert() {
 			//Start a coroutine to set players' handIndex to what it's supposed to be
 			GameManager.instance.RevertHand(handIndex);
+			GameManager.instance.setCap(StaminaCap);
 		}
 }

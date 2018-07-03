@@ -21,8 +21,8 @@ public class TargetMovement : SimpleMovingObject {
 		calcMovement = (new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")));
 	}
 
-  public override void FixedUpdate() {
-    base.FixedUpdate();
+  public override void Move(Vector2 moveDirection) {
+    base.Move(moveDirection);
     if(Vector2.Distance(transform.position, origin) > (strength/weight) * DISTANCE_LIMIT_RATIO) {
       rb2d.AddForce( ((origin - (Vector2) transform.position) * calcMovement.magnitude * speed) * (Vector2.Distance(transform.position, origin) - ((strength/weight) * DISTANCE_LIMIT_RATIO)) );// * (Vector2.Distance(transform.position, origin) - (strength/weight)*DISTANCE_LIMIT_RATIO));
     }

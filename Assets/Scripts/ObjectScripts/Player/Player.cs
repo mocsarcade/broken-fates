@@ -1,4 +1,4 @@
-﻿//NOTE FROM AN EDITOR: When the time comes to add dashing, just change the "speed" varaible from MovingObject. The default speed is 100, and changing that will change the players' speed
+//NOTE FROM AN EDITOR: When the time comes to add dashing, just change the "speed" varaible from MovingObject. The default speed is 100, and changing that will change the players' speed
 
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ public class Player : MovingObject
 
 	public const int WALK_SPEED = 100;
 	public const int RUN_SPEED = 150;
-	public const int INVERSE_RING_SIZE = 4;
+	public const int INVERSE_RING_SIZE = 2;
 
 	//offset Vibrations are placed at
 	private readonly Vector2 FEET_POSITION = new Vector2(0,-0.6f);
@@ -98,10 +98,17 @@ public class Player : MovingObject
 
 	//Interface for throwing so all objects can throw an object if they are holding something.
 	public override void throwHeldObject(Vector2 tarPos) {
-		Inventory.instance.throwHeldItem((Vector2) transform.position, tarPos);
+		Inventory.instance.throwHeldItem(tarPos);
 	}
 
 	public Vector2 GetDirection() {
 		return new Vector2(animator.GetFloat("MoveX"), animator.GetFloat("MoveY"));
+	}
+
+	public override void Damage(float damage) {
+		if(damage >= 1f) {
+			GameManager.instance.DamageEffect();
+			GameManager.instance.DrainCap((int) damage*2);
+		}
 	}
 }

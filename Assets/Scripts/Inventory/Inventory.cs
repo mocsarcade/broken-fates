@@ -135,7 +135,7 @@ public class Inventory : MonoBehaviour {
         }
         // Otherwise we can pick up the item, return true.
         items.Add(item);
-        ItemMementos.Add(itemObj.GetMemento());
+        ItemMementos.Add(itemObj.getMemento() as ItemMemento);
         //Create a new ItemBox at index Count (end of list)-1 to parallel this item added at the end
         CreateItemBox(items.Count-1);
         return true;
@@ -153,19 +153,24 @@ public class Inventory : MonoBehaviour {
         // Otherwise we can pick up the item, return true.
         items.Insert(index, item);
         //If item has a memento, update it to know the object is now in the players' inventory
-        ItemMemento tempMemento = itemObj.GetMemento();
+        ItemMemento tempMemento = itemObj.getMemento() as ItemMemento;
         if(tempMemento != null) {
+          itemObj.setInInventory(true, handIndex);
           tempMemento.setParent(null);
-          tempMemento.setInInventory(true, handIndex);
           ItemMementos.Insert(index, tempMemento);
-        } else  {
+        } else {
           ItemMementos.Insert(index, null);
         }
         //Create a new ItemBox at index
         CreateItemBox(index);
+        //Destroy old handObject to make new one
+        if(handObject != null)
+          Destroy(handObject);
+        makeHandObject();
         return true;
     }
 
+    //Remove this object from the inventory. This only removes it; it doesn't destroy the concreteItem object
     public void Remove(int index)
     {
       //If the item has a memento, update it. Setting the memento's parent will require each operation to change it
@@ -178,7 +183,7 @@ public class Inventory : MonoBehaviour {
         }
         items.RemoveAt(index);
         RemoveItemBox(index);
-        //If the removed item was in the players' hand and the last in the players' inventory
+        //If there is no longer any handObject, remake it
         if(index == handIndex && index >= items.Count) {
           //If the removed item was the last item
           handObject = null;
@@ -205,19 +210,24 @@ public class Inventory : MonoBehaviour {
 
     public void makeHandObject() {
       makeObject(items[handIndex]);
+      ConcreteItem itemInHand = handScript as ConcreteItem;
+      if(itemInHand && ItemMementos.Count > handIndex) {
+        //Update the item's memento, to tell it there is now a concrete version of it in existence
+        if(ItemMementos[handIndex] != null) {
+          ItemMementos[handIndex].setParent(handScript);
+          //itemInHand.SetMemento(ItemMementos[handIndex]);
+        }
+        //Set curMemento
+        handScript.setMemento(ItemMementos[handIndex]);
+      }
     }
 
     public void makeObject(Item item) {
       handObject = (GameObject) Instantiate(item.concreteObject);
       handScript = handObject.GetComponent<Material>();
       handScript.PickedUp(player);
-      ConcreteItem itemInHand = handScript as ConcreteItem;
-      if(itemInHand && ItemMementos.Count > handIndex) {
-        if(ItemMementos[handIndex] != null) {
-          ItemMementos[handIndex].setParent(handScript);
-          //itemInHand.SetMemento(ItemMementos[handIndex]);
-        }
-      }
+      //Update object's position to be in the player's hand
+      handScript.UpdatePositionAtHand();
     }
 
     //Switches out held item for the one to the right in the list and returns the object to be displayed on the GUI
@@ -263,23 +273,25 @@ public class Inventory : MonoBehaviour {
 
     //If the object is a one-use, the concreteItem method will call this method to destroy it
     public void destroyHandObject() {
-      handObject.GetMemento().setInInventory(false, 0);
+      ItemMemento handMemento = handScript.getMemento() as ItemMemento;
+      if(handMemento) {
+        handMemento.setInInventory(false, 0);
+      }
       if(newlyHeldObject == true) {
-        Destroy(handObject);
-        handObject = null;
-        handScript = null;
+        handScript.Destroy();
         makeHandObject();
         newlyHeldObject = false;
       } else {
+        handScript.Destroy();
         Remove(handIndex);
       }
     }
 
     //Calls object in hand to use it
-    public void throwHeldItem(Vector2 start, Vector2 target)
+    public void throwHeldItem(Vector2 target)
     {
       if(handObject != null) {
-        StartCoroutine(handObject.GetComponent<Material>().Throw(start, target, strength));
+        StartCoroutine(handObject.GetComponent<Material>().Throw(target, strength));
         if(newlyHeldObject == true) {
           handObject = null;
           handScript = null;
@@ -288,8 +300,7 @@ public class Inventory : MonoBehaviour {
         }
         else {
           //If this was an object in your inventory, update Memento
-          ConcreteItem itemInHand = handScript as ConcreteItem;
-          ItemMemento tempMemento = itemInHand.GetMemento();
+          ItemMemento tempMemento = handScript.getMemento() as ItemMemento;
           if(tempMemento != null) {
             tempMemento.setParent(handScript);
             tempMemento.setInInventory(false, handIndex);
@@ -334,10 +345,11 @@ public class Inventory : MonoBehaviour {
           if(itemInHand) {
               ItemMementos[i] = itemInHand.CreateInventoryMemento();
               //The item in your hand will already be saved in the QuickLife script by the timeVibration
+              script.SaveMemento(ItemMementos[i]);
             }
           } else {
             ItemMemento newMemento = Instantiate(MementoType).GetComponent<ItemMemento>();
-            newMemento.InitializeInventory(true);
+            newMemento.InitializeInventory(i);
             script.SaveMemento(newMemento);
             //Place memento into a list of Mementos
             ItemMementos[i] = newMemento;
@@ -348,14 +360,13 @@ public class Inventory : MonoBehaviour {
     //Takes the object and places it in the inventory, destroying the concrete object
     //@error: Method raises an error if the concreteObject parameter is not compatible with the inventory
     public void TransferIn(int index, Material concreteObject) {
+      Debug.Log("Transferring object back in!");
       ConcreteItem itemToRevert = concreteObject as ConcreteItem;
       if(itemToRevert) {
         itemToRevert.EmptyMemento();
         AddAt(index, itemToRevert);
-        CreateItemBox(index);
-        makeHandObject();
         //Destroy the concreteObject version
-        Destroy(concreteObject.gameObject);
+        concreteObject.Destroy();
         //Update UI
         UpdateUI();
       } else {
@@ -373,8 +384,8 @@ public class Inventory : MonoBehaviour {
     newBox.GetComponent<RectTransform>().SetParent(ItemsBox, false);
     InventoryBoxes.Insert(index, newBox.GetComponent<UIItemBox>());
     InventoryBoxes[index].Initialize(45+((CYCLE_SIZE/items.Count)*(index-handIndex)), index);
-    //Start Coroutine to incrase its size to the regular amount
-    StartCoroutine(resizeUIImage(boxTransform, 50));
+    //Start to increase its size to the regular amount
+    InventoryBoxes[index].resizeUIImage(50);
     //Update all future boxes after index so the handIndex variable goes up
     for(int box=index+1; box<InventoryBoxes.Count; box++) {
       //Increase handIndex by 1
@@ -383,28 +394,11 @@ public class Inventory : MonoBehaviour {
     resetUI(InventoryBoxes.Count);
   }
 
-  	// Enlarge the mechanics icon when the menu button is held, so it is clear which menu is being shifted
-	private IEnumerator resizeUIImage(RectTransform boxTransform, int newSize) {
-  	while(Mathf.Abs(boxTransform.sizeDelta.x-newSize) > 1) {
-  		if(boxTransform.sizeDelta.x > newSize) {
-  			boxTransform.sizeDelta = new Vector2(boxTransform.sizeDelta.x-1, boxTransform.sizeDelta.y-1);
-  		} else {
-  			boxTransform.sizeDelta = new Vector2(boxTransform.sizeDelta.x+1, boxTransform.sizeDelta.y+1);
-  		}
-  		yield return null;
-  	}
-  }
-
   // Enlarge the mechanics icon when the menu button is held, so it is clear which menu is being shifted
-	private IEnumerator DestroyItemBox(GameObject trashedObject) {
-    RectTransform boxTransform = trashedObject.GetComponent<RectTransform>();
+	private void DestroyItemBox(int boxIndex) {
     //Shrink the object into oblivion!
-  	while(Mathf.Abs(boxTransform.sizeDelta.x) > 1) {
-  		boxTransform.sizeDelta = new Vector2(boxTransform.sizeDelta.x-1, boxTransform.sizeDelta.y-1);
-  		yield return null;
-  	}
-    //Then destroy it!
-    Destroy(trashedObject);
+    InventoryBoxes[boxIndex].resizeUIImage(0);
+    InventoryBoxes[boxIndex].setToDestroy();
   }
 
 private void RemoveItemBox(int index) {
@@ -414,7 +408,7 @@ private void RemoveItemBox(int index) {
     InventoryBoxes[box].UpdateHandIndex(-1);
   }
   //Destroy item box
-  StartCoroutine(DestroyItemBox(InventoryBoxes[index].gameObject));
+  DestroyItemBox(index);
   InventoryBoxes.RemoveAt(index);
   resetUI(InventoryBoxes.Count);
 }

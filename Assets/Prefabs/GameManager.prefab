@@ -53,7 +53,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02f35eea8305396489aca689a84da31e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dataReference: {fileID: 11400000, guid: b7972eb57e1205c49a42a6caf40cb952, type: 2}
+  dataReference:
+  - {fileID: 11400000, guid: b7972eb57e1205c49a42a6caf40cb952, type: 2}
+  - {fileID: 11400000, guid: f8785e971c3e5a14da6475c040f2ed2f, type: 2}
   MementoType: {fileID: 0}
 --- !u!114 &114570222015350722
 MonoBehaviour:

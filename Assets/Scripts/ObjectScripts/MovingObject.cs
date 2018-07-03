@@ -10,10 +10,13 @@ public class MovingObject : Material {
   public float maxVel;
 	public Vector2 calcMovement;
 	public bool frozen = false;
+  public Vector2 handOffset;
+  public int handSortOrder;
 
   protected override void Awake() {
     base.Awake();
     animator = GetComponent<Animator>();
+    handOffset = new Vector2(0,0);
   }
 
   //Load the memento for moving objects
@@ -22,7 +25,9 @@ public class MovingObject : Material {
   }
 
 	//Every update, the players' movement will be calculated using the ComputeVelo method of the inheriting objects
-	void Update() {
+	protected override void Update() {
+    //Debug.Log(animator.GetBehaviour<AnimatorSaveScript>());
+
 		calcMovement = Vector2.zero;
 		//Get movement direction and set animator vars
 		ComputeVelo();
@@ -87,5 +92,36 @@ public class MovingObject : Material {
 
   //Interface for throwing so all objects can throw an object if they are holding something.
   public virtual void throwHeldObject(Vector2 tarPos) {}
+
+  //Any object in the player's hand will be visible actually appearing in the player's hand.
+  //This is achieved by animator events for every animation clip that tell the script to
+  //update where the player's hand is.
+  //@param x_percent is the x amount of pixels in PERCENT OF THE OBJECT SIZE that is traversed to reach the hand
+  //@param y_percent is the x amount of pixels in PERCENT OF THE OBJECT SIZE that is traversed to reach the hand
+  //public void SetHandPosition(float x_percent, int y_percent) {
+  public void SetHandPosition(AnimationEvent animEvent) {
+    Bounds rt = myRenderer.sprite.bounds;
+    float x_percent = animEvent.floatParameter;
+    float y_percent = animEvent.intParameter;
+    Vector3 spriteSize = rt.extents;
+    //Set offset
+    handOffset = new Vector2(((spriteSize.x*x_percent)/100), -((spriteSize.y*y_percent)/100));
+    //Set Sorting Order if string for method calls for it
+    if(animEvent.stringParameter == "pushBack") {
+      handSortOrder = myRenderer.sortingOrder-1;
+    } else {
+      handSortOrder = myRenderer.sortingOrder+1;
+    }
+  }
+
+  //This method uses the handOffset variable from the object's animator to calcluate and place
+  //objects this object is holding
+	public override Vector3 GetHeldPosition(Vector3 oldPosition) {
+		return transform.position + (Vector3) handOffset;
+	}
+
+	public override int GetHeldSortingOrder() {
+		return handSortOrder;
+	}
 
 }

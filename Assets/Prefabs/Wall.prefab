@@ -20,8 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4046630214034592}
   - component: {fileID: 212191107935862360}
+  - component: {fileID: 50424662470501304}
   - component: {fileID: 61228091751748470}
-  - component: {fileID: 50699274601130246}
   m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
@@ -42,26 +42,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!50 &50699274601130246
+--- !u!50 &50424662470501304
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1648481495846886}
-  m_BodyType: 0
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_Mass: 100
+  m_LinearDrag: 100
+  m_AngularDrag: 0
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 7
+  m_Constraints: 3
 --- !u!61 &61228091751748470
 BoxCollider2D:
   m_ObjectHideFlags: 1

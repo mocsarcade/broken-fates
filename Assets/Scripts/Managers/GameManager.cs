@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 
 	//Important asset references used by the entire program:
 	public static GameManager instance = null;
-	public AnimatorData dataReference;
+	public Data[] dataReference;
 	public GameObject MementoType;
 
 	//Player's max stamina will increase as the player gets upgrades. This variable is the current max
@@ -17,13 +17,20 @@ public class GameManager : MonoBehaviour {
 	private const float STAMINA_CAP_DRAIN_RATE = 0.01f;
 	private int STAMINA_BOX_WIDTH = 125;
 
+	//Player-damage variables
+	private const float SHAKE_DELAY = 0.05f;
+	private const int DAMAGE_OPAQUE_LEVEL = 100;
+	private const float DAMAGE_RED = 173f/255;
+	private const float RED_VIEW_DELAY = 0.005f;
+
 	//Run-time variables
-	private float StaminaCap;
+	private int StaminaCap;
 	private int Stamina;
 
 	//Stamian Bar Slider (Holds a float from 0 to 1)
  	private Slider staminaBarSlider;  //reference for slider
 	private RectTransform staminaBarObject;  //reference for slider
+	public Image ScreenOverlay; //Reference for screen Image effect
 
 	// Use this for initialization
 	void Awake () {
@@ -35,10 +42,18 @@ public class GameManager : MonoBehaviour {
 
 		//Load staminaBarSlider object
 		GameObject sliderBarObject = GameObject.FindWithTag("StaminaBar");
-		staminaBarSlider = sliderBarObject.GetComponent<Slider>();
-		staminaBarObject = (RectTransform) sliderBarObject.GetComponent<RectTransform>().parent;
-		StaminaCap = CURRENT_MAX_STAMINA;
-		Stamina = CURRENT_MAX_STAMINA;
+		if(sliderBarObject) {
+			staminaBarSlider = sliderBarObject.GetComponent<Slider>();
+			staminaBarObject = (RectTransform) sliderBarObject.GetComponent<RectTransform>().parent;
+			StaminaCap = CURRENT_MAX_STAMINA;
+			Stamina = CURRENT_MAX_STAMINA;
+		}
+
+		//Load ScreenTexture Image
+		GameObject ScreenTexture = GameObject.FindWithTag("ScreenTexture");
+		if(ScreenTexture) {
+			ScreenOverlay = ScreenTexture.GetComponent<Image>();
+		}
 
 		LoadMemento();
 		DontDestroyOnLoad (gameObject);
@@ -79,6 +94,7 @@ public class GameManager : MonoBehaviour {
   //Method to drain stamina for every mechanic the player uses. Running and other acrobatics also use DrainStamina
 	//@return Boolean value to show whether there was enough stamina available
 	public bool DrainStamina(int cost) {
+		Debug.Log("Draining Stamina!");
 		//If a mechanic needs stamina, it won't run unless there is enough stamina available
 		if(Stamina >= cost) {
 			Stamina -= cost;
@@ -98,7 +114,7 @@ public class GameManager : MonoBehaviour {
 	public void RegenStamina(int gainRate) {
 		Stamina += gainRate;
 		if(Stamina > StaminaCap) {
-			Stamina = (int) StaminaCap;
+			Stamina = StaminaCap;
 		}
 		UpdateStamina();
 	}
@@ -107,21 +123,25 @@ public class GameManager : MonoBehaviour {
 		return Stamina;
 	}
 
-  //Over time, the Player's StaminaCap will deplete, forcing the player to switch worlds because the stamina bar's max will
-	//Shrink to a size too small to keep playing with
+	public int getCap() {
+		return StaminaCap;
+	}
+
+	public void setCap(int newCap) {
+		Stamina += (newCap - StaminaCap);
+		StaminaCap = newCap;
+		UpdateStamina();
+	}
+
+  //A large shrink (such as for QuickLife) will require the stamina to drop slowly. This provides that effect
 	public bool DrainCap(int drainRate) {
 		if(drainRate > 0) {
 			if(StaminaCap >= drainRate) {
-				StaminaCap -= drainRate;
-				if(Stamina > StaminaCap) {
-					Stamina = (int) StaminaCap;
-				}
-				UpdateStamina();
+				StartCoroutine(SlowDrain(drainRate));
 				return true;
 			} else {
 				//If there isn't enough stamina available, swap worlds
 				swapWorld();
-				UpdateStamina();
 				return false;
 			}
 		} else {
@@ -130,8 +150,25 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-  //Over time, the Player's StaminaCap will deplete, forcing the player to switch worlds because the stamina bar's max will
-	//Shrink to a size too small to keep playing with
+  //A large shrink (such as for QuickLife) will require the stamina to drop slowly. This provides that effect
+	private IEnumerator SlowDrain(int drainAmo) {
+		int drainLeft = drainAmo;
+		while(drainLeft > 0) {
+		if(StaminaCap >= 1) {
+			StaminaCap -= 1;
+		if(Stamina > StaminaCap)
+			Stamina = StaminaCap;
+		UpdateStamina();
+		} else {
+			//If there isn't enough stamina available, swap worlds
+			swapWorld();
+		}
+		drainLeft--;
+		yield return null;
+		}
+	}
+
+  //If the Player loads a save or uses a potion, his stamina cap will increase
 	public void RegenCap(int amount) {
 		if(amount > 0) {
 			if(StaminaCap+amount <= CURRENT_MAX_STAMINA) {
@@ -139,8 +176,33 @@ public class GameManager : MonoBehaviour {
 			} else {
 				StaminaCap = CURRENT_MAX_STAMINA;
 			}
+			//Increase the player's stamina to match
 			Stamina += amount;
 			UpdateStamina();
+		}
+	}
+
+	public void DamageEffect() {
+		StartCoroutine(CameraShake());
+		StartCoroutine(RedView(100));
+	}
+
+	private IEnumerator CameraShake() {
+		CameraController currentCamera = Camera.current.gameObject.GetComponent<CameraController>();
+		for(int amount=5; amount>0; amount--) {
+			for(int direc=1; direc>=-1; direc=direc-2) {
+				currentCamera.Shake(amount*direc);
+				yield return new WaitForSeconds(SHAKE_DELAY);
+			}
+		}
+	}
+
+	private IEnumerator RedView(int startingOpacity) {
+		int opacity = startingOpacity;
+		while(opacity>0) {
+			ScreenOverlay.color = new Color(DAMAGE_RED,0,0,opacity/255f);
+			opacity--;
+			yield return new WaitForSeconds(RED_VIEW_DELAY);
 		}
 	}
 
@@ -150,8 +212,16 @@ public class GameManager : MonoBehaviour {
 		//Code to be written later
 	}
 
-	public AnimatorData getDataReference() {
-		return dataReference;
+	public Data getDataReference(GameManager.DataType returnType) {
+		switch(returnType) {
+			case GameManager.DataType.t_AnimatorData:
+				return dataReference[0];
+			case GameManager.DataType.t_MementoData:
+				return dataReference[1];
+		}
+		//If none of the cases were fulfilled, raise an error and return null
+		Debug.LogException(new Exception("Trying to get Data Reference of a returnType that isn't registered: " + returnType));
+		return null;
 	}
 
 	public void SaveGameStatistics(QuickLife script) {
@@ -192,5 +262,10 @@ public class GameManager : MonoBehaviour {
 			}
 			yield return new WaitForFixedUpdate();
 		} while (handIndex != curHandIndex);
+	}
+
+	public enum DataType {
+		t_AnimatorData,
+		t_MementoData
 	}
 }

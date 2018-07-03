@@ -13,7 +13,7 @@ public class MovingObjectMemento : Memento {
 			MovingObject _parentObj = _parent as MovingObject;
 			if(_parentObj != null) {
 				animator = _parentObj.GetAnimator();
-				animatorStateData = animator.GetBehaviour<AnimatorSaveScript>().GetData();
+				animatorStateData = animator.GetBehaviour<AnimatorSaveScript>().GetData(animator);
 				base.Initialize(_parentObj);
 			} else {
 				Debug.LogException(new Exception("MovingObject Memento expected parent to be a MovingObject!"), this);
@@ -23,6 +23,6 @@ public class MovingObjectMemento : Memento {
 		public override void Revert() {
 			base.Revert();
 			//Revert animator
-			animator.GetBehaviour<AnimatorSaveScript>().RevertData(animatorStateData);
+			animator.GetBehaviour<AnimatorSaveScript>().RevertData(animatorStateData, animator);
 		}
 }
