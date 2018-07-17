@@ -83,7 +83,7 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: -20
-    intParameter: 73
+    intParameter: 63
     messageOptions: 0
   - time: 0.083333336
     functionName: MakeVibration
@@ -97,14 +97,14 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: -10
-    intParameter: 66
+    intParameter: 56
     messageOptions: 0
   - time: 0.33333334
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: -20
-    intParameter: 73
+    intParameter: 63
     messageOptions: 0
   - time: 0.41666666
     functionName: MakeVibration
@@ -118,12 +118,12 @@ AnimationClip:
     data: pushBack
     objectReferenceParameter: {fileID: 0}
     floatParameter: -20
-    intParameter: 70
+    intParameter: 60
     messageOptions: 0
   - time: 0.6666667
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: -20
-    intParameter: 73
+    intParameter: 63
     messageOptions: 0

@@ -45,12 +45,12 @@ public class MovingObject : Material {
 	//We don't want our objects to go too fast, so first we must check that the objects' velocity hasn't grown too high
   	if (moveDirection.magnitude < maxVel && moveDirection.magnitude > 0.1) {
   		//Move the rigidbody by applying force, and the object will move too
-  		rb2d.AddForce (moveDirection * speed);//, ForceMode.VelocityChange);
+      //rb2d.AddForce (moveDirection * speed);//, ForceMode.VelocityChange);
+      shadow.Push (moveDirection * speed, ForceMode2D.Force);
   		//Check object's method to see if a vibration should be made - this has been replaced with animator events
   	} else if (moveDirection.magnitude >= maxVel) {
   		//If speed is too high, just decrease it to fit the maxvel
-  		rb2d.AddForce (moveDirection * maxVel / moveDirection.magnitude);//, ForceMode.VelocityChange);
-  		//Check object's method to see if a vibration should be made - this has been replaced with animator events
+      shadow.Push (moveDirection * speed, ForceMode2D.Force);
   	}
 	   //Add force to move our character. VelocityChange ignores mass to remove stopping latency
   }
@@ -117,6 +117,7 @@ public class MovingObject : Material {
   //This method uses the handOffset variable from the object's animator to calcluate and place
   //objects this object is holding
 	public override Vector3 GetHeldPosition(Vector3 oldPosition) {
+    //The hand object is placed according to the object's actual transform; not the shadow
 		return transform.position + (Vector3) handOffset;
 	}
 

@@ -19,7 +19,7 @@ public class ConcreteItem : Material {
 	//It will be used at load-time to return the object ot the correct spot in the inventory
 	public int inventoryIndex;
 
-	// animator gets its component every time this script is "enabled". Basically when the script begins.
+	// animator Gets its component every time this script is "enabled". Basically when the script begins.
 	protected override void Awake()
 	{
 		base.Awake();
@@ -49,13 +49,13 @@ public class ConcreteItem : Material {
 	//CreateMemento and CreateInventoryMemento are built to combine for the heldItem
 	public ItemMemento CreateInventoryMemento() {
 		if(curMemento == null) {
-			mementoData = Object.Instantiate((MementoData) GameManager.instance.getDataReference(GameManager.DataType.t_MementoData));
+			mementoData = Object.Instantiate((MementoData) GameManager.instance.GetDataReference(GameManager.DataType.t_MementoData));
 			curMemento = Instantiate(MementoType).GetComponent<Memento>();
 			mementoData.curItemState = true;
 			curMemento.Initialize(this);
 			return curMemento as ItemMemento;
 		} else {
-			mementoData = Object.Instantiate((MementoData) GameManager.instance.getDataReference(GameManager.DataType.t_MementoData));
+			mementoData = Object.Instantiate((MementoData) GameManager.instance.GetDataReference(GameManager.DataType.t_MementoData));
 			mementoData.curItemState = true;
 			curMemento.Initialize(this);
 			return curMemento as ItemMemento;

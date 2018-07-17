@@ -19,21 +19,22 @@ public class Throw : PlayerMechanics {
 		// Use this for initialization
 		public override void Initialize (GameObject user) {
 			base.Initialize(user);
-			userScript = user.GetComponent<MovingObject>();
+			userScript = powerUser.GetComponent<MovingObject>();
 			tarPos = transform.position;
-			
+
 			if(instance == null)
 				instance = this;
 		}
 
 		public override bool Activate() {
+			base.Activate();
 			if(Inventory.instance.itemsInInventory() > 0) {
 				tarPos = powerUser.transform.position;
 				//Variable magicTar is used for when magicTar has to be destroyed when the activation key (ex: F) is released
 				magicTar = Instantiate(target, tarPos, Quaternion.identity);
-				int weight = Inventory.instance.getWeight();
+				int weight = Inventory.instance.GetWeight();
 				if(weight>0) {
-					magicTar.GetComponent<TargetMovement>().Initialize(tarPos, Inventory.instance.getStrength(), weight);
+					magicTar.GetComponent<TargetMovement>().Initialize(tarPos, Inventory.instance.GetStrength(), weight);
 				}
 				//Freeze user so he/she won't move while target is moving
 				userScript.SetMobility(false);
@@ -44,6 +45,7 @@ public class Throw : PlayerMechanics {
 		}
 
 		public override void Release () {
+			base.Release();
 			if(Inventory.instance.itemsInInventory() > 0) {
 				if((Vector2) magicTar.transform.position != tarPos) {
 					//Drain stamina for using spell. Status is the status variable for whether player had enough stamina for activation
@@ -60,7 +62,15 @@ public class Throw : PlayerMechanics {
 		}
 	}
 
-	public override PlayerMechanics getInstance() {
+	//When power is swapped prematurely before power ends, this method is called to clean up the power
+	public override void Deactivate(bool setMobility)
+	{
+		base.Deactivate(setMobility);
+		//Spell cleanup
+		Destroy(magicTar);
+	}
+
+	public override PlayerMechanics GetInstance() {
 		return instance;
 	}
 }

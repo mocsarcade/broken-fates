@@ -63,7 +63,7 @@ public class MechanicsManager : MonoBehaviour {
 	          StopCoroutine(runningRoutine[i]);
 	        }
 					runningRoutine[i] = StartCoroutine(resizeUIImage(UISlots[i], 75));
-					Player.getPlayer().SetMobility(false);
+					Player.GetPlayer().SetMobility(false);
 				}
 				if(Input.GetButtonUp ("PowerMenu" + i)) {
 					mechanicMenu[i] = false;
@@ -74,11 +74,11 @@ public class MechanicsManager : MonoBehaviour {
 					runningRoutine[i] = StartCoroutine(resizeUIImage(UISlots[i], 50));
 					//If all other mechanicMenu variables are false as well, reactivate mobility
 					//Start by reactivating mobility...
-					Player.getPlayer().SetMobility(true);
+					Player.GetPlayer().SetMobility(true);
 					for (int j=0; j < MECHANIC_SLOTS; j++) {
-						//...And if any other mechanicMenu variables ARE true, reset it to false!
+						//...But if any other mechanicMenu variables ARE true, reset it to false!
 						if(mechanicMenu[j] == true) {
-							Player.getPlayer().SetMobility(false);
+							Player.GetPlayer().SetMobility(false);
 						}
 					}
 				}
@@ -97,6 +97,10 @@ public class MechanicsManager : MonoBehaviour {
 		//Get whether the player is pressing left or right (in integer form)
 		int pushedDirection = (int) Input.GetAxisRaw("Horizontal");
 		if(pushedDirection !=0 && axisPushed[index]==false) {
+			//Deactivate the old mechanic if it is active
+			if(keyMechanics[index].isActive() == true) {
+				keyMechanics[index].Deactivate(false);
+			}
 			//Toggle power left or right depending on whether pushedDirection is 1 or -1
 			int newPower = currentPower[index] + pushedDirection;
 			//Make sure the toggle of the power isn't out of bounds
@@ -143,14 +147,14 @@ public class MechanicsManager : MonoBehaviour {
 			Destroy(keyMechanics[keyID]);
 		}*/
 		currentPower[keyID] = newPowerSlot;
-		if(mechanicObjects[newPowerSlot].getInstance() == null) {
+		if(mechanicObjects[newPowerSlot].GetInstance() == null) {
 			keyMechanics[keyID] = Instantiate(mechanicObjects[newPowerSlot]);
-			keyMechanics[keyID].GetComponent<PlayerMechanics>().Initialize (Player.getPlayer().gameObject);
+			keyMechanics[keyID].GetComponent<PlayerMechanics>().Initialize (Player.GetPlayer().gameObject);
 		} else {
-			keyMechanics[keyID] = mechanicObjects[newPowerSlot].getInstance();
+			keyMechanics[keyID] = mechanicObjects[newPowerSlot].GetInstance();
 		}
 		//Update UI
-		UISlots[keyID].sprite = mechanicObjects[newPowerSlot].getIcon();
+		UISlots[keyID].sprite = mechanicObjects[newPowerSlot].GetIcon();
 	}
 
 }

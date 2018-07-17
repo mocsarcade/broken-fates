@@ -11,14 +11,9 @@ public class Player : MovingObject
 	//Singleton varaible
 	protected static Player instance;
 
-	public const int WALK_SPEED = 100;
-	public const int RUN_SPEED = 150;
-	public const int INVERSE_RING_SIZE = 2;
+	public const int WALK_SPEED = 200;
 
-	//offset Vibrations are placed at
-	private readonly Vector2 FEET_POSITION = new Vector2(0,-0.6f);
-
-    // animator gets its component every time this script is "enabled". Basically when the script begins.
+    // animator Gets its component every time this script is "enabled". Basically when the script begins.
     protected override void Awake()
     {
 				base.Awake();
@@ -30,9 +25,9 @@ public class Player : MovingObject
 					Destroy(gameObject);
     }
 
-	//In order to get the player's script, every script must call this Method
+	//In order to Get the player's script, every script must call this Method
 	//This gatekeeper can allow additions to how many players/instances we can have
-	public static Player getPlayer() {
+	public static Player GetPlayer() {
 		return instance;
 	}
 
@@ -84,9 +79,9 @@ public class Player : MovingObject
 
 	protected override void MakeVibration () {
 		//Define Ring size so that walking causes a uniform speed, while running or crawling has double the effect
-		int ringSize = (int) (speed*2 - WALK_SPEED)/INVERSE_RING_SIZE;
+		int ringSize = (int) ((speed*2 - WALK_SPEED)/3)*weight;
 		//Create Vibration Ring
-		Vibration.Vibrator().MakeVibration(ringSize, (Vector2) transform.position + FEET_POSITION + calcMovement/2, gameObject);
+		Vibration.Vibrator().MakeVibration(ringSize, GetPosition(), gameObject);
 	}
 
 	//When Vibration is felt from other objects
@@ -106,9 +101,7 @@ public class Player : MovingObject
 	}
 
 	public override void Damage(float damage) {
-		if(damage >= 1f) {
-			GameManager.instance.DamageEffect();
-			GameManager.instance.DrainCap((int) damage*2);
-		}
+		GameManager.instance.DamageEffect();
+		GameManager.instance.DrainCap((int) damage*2);
 	}
 }

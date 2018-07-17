@@ -50,10 +50,10 @@ public class ItemPickup : MonoBehaviour {
 
     public void TriggerDialogue()
     {
-        if(speaking==false && dialogueWriter.getSpeaker() == null) {
+        if(speaking==false && dialogueWriter.GetSpeaker() == null) {
           dialogueWriter.StartDialogue(dialogue, gameObject);
           speaking = true;
-        } else if(dialogueWriter.getSpeaker() == gameObject) {
+        } else if(dialogueWriter.GetSpeaker() == gameObject) {
           //If a sentence has already been started,
           bool status = dialogueWriter.DisplayNextSentence();
           speaking = status;

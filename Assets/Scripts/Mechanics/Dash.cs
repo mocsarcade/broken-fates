@@ -25,7 +25,7 @@ public class Dash : PlayerMechanics {
 	public override void Initialize (GameObject user) {
 		base.Initialize(user);
 		userScript = user.GetComponent<MovingObject>();
-		
+
 		if(instance == null)
 			instance = this;
 	}
@@ -44,6 +44,7 @@ public class Dash : PlayerMechanics {
 	//Start Dash
 	//@return Boolean value telling program whether mechanic worked or if Stamina cost or barrier on the map stopped it
 	public override bool Activate() {
+		base.Activate();
 		velocity = userScript.GetMovement();
 		if(velocity != Vector2.zero) {
 			bool status = GameManager.instance.DrainStamina(STAMINA_COST);
@@ -59,12 +60,20 @@ public class Dash : PlayerMechanics {
 		return false;
 	}
 
+	//When power is swapped prematurely before power ends, this method is called to clean up the power
+	public override void Deactivate(bool setMobility)
+	{
+		base.Deactivate(setMobility);
+		//The dash will end by itself. Don't let players prematurely end dashes at their command
+	}
+
 	private void EndDash() {
+		active = false;
 		userScript.SetMobility(true);
 		dashing = false;
 	}
 
-	public override PlayerMechanics getInstance() {
+	public override PlayerMechanics GetInstance() {
 		return instance;
 	}
 

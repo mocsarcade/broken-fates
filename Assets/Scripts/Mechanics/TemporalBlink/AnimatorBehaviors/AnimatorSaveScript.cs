@@ -12,7 +12,7 @@ public class AnimatorSaveScript : StateMachineBehaviour {
 	//}
 
 	public virtual AnimatorData GetData(Animator myAnimator) {
-		AnimatorData currentStateData = Instantiate((AnimatorData) GameManager.instance.getDataReference(GameManager.DataType.t_AnimatorData));
+		AnimatorData currentStateData = Instantiate((AnimatorData) GameManager.instance.GetDataReference(GameManager.DataType.t_AnimatorData));
 		currentStateData.Moving = false;
 		return currentStateData;
 	}

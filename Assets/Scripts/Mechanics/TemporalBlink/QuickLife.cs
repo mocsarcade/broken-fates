@@ -33,6 +33,8 @@ public class QuickLife : PlayerMechanics
    }
 
     public override bool Activate() {
+        base.Activate();
+        active = false;
         if(saves_used == 0) {
           Save();
           return true;
@@ -42,6 +44,13 @@ public class QuickLife : PlayerMechanics
           return status;
         }
     }
+
+  	//When power is swapped prematurely before power ends, this method is called to clean up the power
+  	public override void Deactivate(bool setMobility)
+  	{
+      base.Deactivate(setMobility);
+      //No clean-up required... for now.
+  	}
 
     /*
     private void OnGUI()
@@ -61,7 +70,7 @@ public class QuickLife : PlayerMechanics
             return;
         }
         //Make Vibration to add all the materials to the savedObjects list
-    		Vibration.Vibrator().MakeTimeVibration(RING_SIZE, (Vector2) powerUser.transform.position, gameObject);
+    		Vibration.Vibrator().MakeTimeVibration(RING_SIZE, (Vector2) powerScript.GetPosition(), gameObject);
         //Save every object in your inventory
         Inventory.instance.SaveInventory(this);
         //Save Game Statistics such as handIndex or HP
@@ -93,7 +102,7 @@ public class QuickLife : PlayerMechanics
       Memento tempMemento = touchedObj.GetComponent<Material>().CreateMemento();
       //Check that this object hasn't already been saved
       foreach(Memento includedMem in savedObjects) {
-        if(includedMem.getParent() == tempMemento.getParent() && includedMem.getParent() != null) {
+        if(includedMem.GetParent() == tempMemento.GetParent() && includedMem.GetParent() != null) {
           Debug.LogException(new Exception("Trying to save an object that's already been saved!"), this);
           return;
         }
@@ -109,7 +118,7 @@ public class QuickLife : PlayerMechanics
       //Debug.Log("Saved Memento: " + savedMemento);
       //Check that this object hasn't already been saved
       foreach(Memento includedMem in savedObjects) {
-        if(includedMem.getParent() == savedMemento.getParent() && includedMem.getParent() != null) {
+        if(includedMem.GetParent() == savedMemento.GetParent() && includedMem.GetParent() != null) {
           Debug.LogException(new Exception("Trying to save an object that's already been saved!"), this);
           return;
         }
@@ -176,7 +185,7 @@ public class QuickLife : PlayerMechanics
         saves_used--;
     }
 
-  	public override PlayerMechanics getInstance() {
+  	public override PlayerMechanics GetInstance() {
   		return instance;
   	}
 }

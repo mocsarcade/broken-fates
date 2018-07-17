@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAnimScript : AnimatorSaveScript {
 
 	public override AnimatorData GetData(Animator myAnimator) {
-		AnimatorData currentStateData = Object.Instantiate((AnimatorData) GameManager.instance.getDataReference(GameManager.DataType.t_AnimatorData));
+		AnimatorData currentStateData = Object.Instantiate((AnimatorData) GameManager.instance.GetDataReference(GameManager.DataType.t_AnimatorData));
 		currentStateData.X = myAnimator.GetFloat("MoveX");
 		currentStateData.Y = myAnimator.GetFloat("MoveY");
 		currentStateData.Moving = false;

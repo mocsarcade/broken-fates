@@ -13,13 +13,15 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		player = Player.getPlayer().gameObject;
+		player = Player.GetPlayer().gameObject;
 		offset = transform.position - player.transform.position;
 	}
 
 	// Update is called once per frame
 	void LateUpdate () {
-		transform.position = player.transform.position + offset + new Vector3(shakeOffset,0,0);
+		if(player) {
+			transform.position = player.transform.position + offset + new Vector3(shakeOffset,0,0);
+		}
 	}
 
 	//Sets offset of camera

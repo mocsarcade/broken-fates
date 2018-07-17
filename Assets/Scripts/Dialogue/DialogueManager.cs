@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using MEC;
 
 public class DialogueManager : MonoBehaviour {
 
@@ -14,8 +15,6 @@ public class DialogueManager : MonoBehaviour {
 
     // A Queue type works things in a first-in, first-out order.
     private Queue<string> sentences;
-    //This variable keeps track of the DisplayNextSentence method and stops it if the user is impatient
-    private Coroutine runningRoutine;
 
   	public static DialogueManager instance = null;
 
@@ -33,7 +32,7 @@ public class DialogueManager : MonoBehaviour {
     public void StartDialogue(Dialogue dialogue, GameObject _speaker)
     {
         // Make the player still (be nice and pay attention)
-        Player.getPlayer().SetMobility(false);
+        Player.GetPlayer().SetMobility(false);
         // Whenever IsOpen is set to true, the dialogue animation will move the dialoguebox to the screen.
         OpenDialogue (true);
         // The UI's nameText will be the name of the speaker, as designated in the inspector.
@@ -63,34 +62,32 @@ public class DialogueManager : MonoBehaviour {
         }
         string sentence = sentences.Dequeue();
         // If text is being displayed, it will stop!
-        if(runningRoutine != null) {
-          StopCoroutine(runningRoutine);
-        }
-        runningRoutine = StartCoroutine(TypeSentence(sentence));
+        Timing.KillCoroutines("typingText");
+        Timing.RunCoroutine(TypeSentence(sentence), "typingText");
         return true;
     }
 
     // The purpose of TypeSentence is so that we can display the dialogue slowly (character by character)
-    private IEnumerator TypeSentence(string sentence)
+    private IEnumerator<float> TypeSentence(string sentence)
     {
         dialogueText.text = "";
         foreach (char letter in sentence.ToCharArray())
         {
             dialogueText.text += letter;
             // This makes it wait
-            yield return null;
+            yield return Timing.WaitForOneFrame;
         }
     }
 
     private void EndDialogue()
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
-        Player.getPlayer().SetMobility(true);
+        Player.GetPlayer().SetMobility(true);
         OpenDialogue (false);
         speaker = null;
     }
 
-  public GameObject getSpeaker() {
+  public GameObject GetSpeaker() {
     return speaker;
   }
 

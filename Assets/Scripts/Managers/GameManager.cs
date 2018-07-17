@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using MEC;
 
 public class GameManager : MonoBehaviour {
 
@@ -11,7 +12,7 @@ public class GameManager : MonoBehaviour {
 	public Data[] dataReference;
 	public GameObject MementoType;
 
-	//Player's max stamina will increase as the player gets upgrades. This variable is the current max
+	//Player's max stamina will increase as the player Gets upgrades. This variable is the current max
 	private int CURRENT_MAX_STAMINA = 200;
 	private const float STAMINA_REGEN_RATE = 0.25f;
 	private const float STAMINA_CAP_DRAIN_RATE = 0.01f;
@@ -94,7 +95,6 @@ public class GameManager : MonoBehaviour {
   //Method to drain stamina for every mechanic the player uses. Running and other acrobatics also use DrainStamina
 	//@return Boolean value to show whether there was enough stamina available
 	public bool DrainStamina(int cost) {
-		Debug.Log("Draining Stamina!");
 		//If a mechanic needs stamina, it won't run unless there is enough stamina available
 		if(Stamina >= cost) {
 			Stamina -= cost;
@@ -119,11 +119,11 @@ public class GameManager : MonoBehaviour {
 		UpdateStamina();
 	}
 
-	public int getStamina() {
+	public int GetStamina() {
 		return Stamina;
 	}
 
-	public int getCap() {
+	public int GetCap() {
 		return StaminaCap;
 	}
 
@@ -137,7 +137,7 @@ public class GameManager : MonoBehaviour {
 	public bool DrainCap(int drainRate) {
 		if(drainRate > 0) {
 			if(StaminaCap >= drainRate) {
-				StartCoroutine(SlowDrain(drainRate));
+				Timing.RunCoroutine(SlowDrain(drainRate));
 				return true;
 			} else {
 				//If there isn't enough stamina available, swap worlds
@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviour {
 	}
 
   //A large shrink (such as for QuickLife) will require the stamina to drop slowly. This provides that effect
-	private IEnumerator SlowDrain(int drainAmo) {
+	private IEnumerator<float> SlowDrain(int drainAmo) {
 		int drainLeft = drainAmo;
 		while(drainLeft > 0) {
 		if(StaminaCap >= 1) {
@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour {
 			swapWorld();
 		}
 		drainLeft--;
-		yield return null;
+		yield return Timing.WaitForOneFrame;
 		}
 	}
 
@@ -183,36 +183,36 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void DamageEffect() {
-		StartCoroutine(CameraShake());
-		StartCoroutine(RedView(100));
+		Timing.RunCoroutine(CameraShake().CancelWith(Camera.main.gameObject));
+		Timing.RunCoroutine(RedView(100).CancelWith(ScreenOverlay.gameObject));
 	}
 
-	private IEnumerator CameraShake() {
-		CameraController currentCamera = Camera.current.gameObject.GetComponent<CameraController>();
+	private IEnumerator<float> CameraShake() {
+		CameraController currentCamera = Camera.main.gameObject.GetComponent<CameraController>();
 		for(int amount=5; amount>0; amount--) {
 			for(int direc=1; direc>=-1; direc=direc-2) {
 				currentCamera.Shake(amount*direc);
-				yield return new WaitForSeconds(SHAKE_DELAY);
+				yield return Timing.WaitForSeconds(SHAKE_DELAY);
 			}
 		}
 	}
 
-	private IEnumerator RedView(int startingOpacity) {
+	private IEnumerator<float> RedView(int startingOpacity) {
 		int opacity = startingOpacity;
 		while(opacity>0) {
 			ScreenOverlay.color = new Color(DAMAGE_RED,0,0,opacity/255f);
 			opacity--;
-			yield return new WaitForSeconds(RED_VIEW_DELAY);
+			yield return Timing.WaitForSeconds(RED_VIEW_DELAY);
 		}
 	}
 
   //Method that swaps world whenever the player runs out of stamina
-	//This method may be moved to its own class as the internals of this method might get too complicated
+	//This method may be moved to its own class as the internals of this method might Get too complicated
 	private void swapWorld() {
 		//Code to be written later
 	}
 
-	public Data getDataReference(GameManager.DataType returnType) {
+	public Data GetDataReference(GameManager.DataType returnType) {
 		switch(returnType) {
 			case GameManager.DataType.t_AnimatorData:
 				return dataReference[0];
@@ -220,7 +220,7 @@ public class GameManager : MonoBehaviour {
 				return dataReference[1];
 		}
 		//If none of the cases were fulfilled, raise an error and return null
-		Debug.LogException(new Exception("Trying to get Data Reference of a returnType that isn't registered: " + returnType));
+		Debug.LogException(new Exception("Trying to Get Data Reference of a returnType that isn't registered: " + returnType));
 		return null;
 	}
 
@@ -232,13 +232,13 @@ public class GameManager : MonoBehaviour {
 
 	//This method is used as the base for reverting the hand_index coroutine.
 	public void RevertHand(int handIndex) {
-		StartCoroutine(Revert_handindex(handIndex));
+		Timing.RunCoroutine(Revert_handindex(handIndex));
 	}
 	//coroutine to set the players' hand to the initial value at the time of saving
 	//This method is called by the GameManager, because the GameMemento is destroyed a few frames after
-	public IEnumerator Revert_handindex(int handIndex) {
+	public IEnumerator<float> Revert_handindex(int handIndex) {
 		int inventoryCount = Inventory.instance.itemsInInventory();
-		int curHandIndex = Inventory.instance.getInventoryIndex();
+		int curHandIndex = Inventory.instance.GetInventoryIndex();
 		//False equates to left, while true equates to right
 		bool direction = true;
 		do {
@@ -257,10 +257,10 @@ public class GameManager : MonoBehaviour {
 			} else {
 				Inventory.instance.toggleHand(-1);
 			}
-			curHandIndex = Inventory.instance.getInventoryIndex();
+			curHandIndex = Inventory.instance.GetInventoryIndex();
 			if(handIndex != curHandIndex) {
 			}
-			yield return new WaitForFixedUpdate();
+			yield return Timing.WaitForOneFrame;
 		} while (handIndex != curHandIndex);
 	}
 

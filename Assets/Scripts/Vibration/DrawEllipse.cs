@@ -8,6 +8,8 @@ public class DrawEllipse : DrawShape {
 	//Vibration display settings
 	private EllipseVibrationCollision colliderScript;
 
+	public const int INVERSE_RING_SIZE = 4;
+
 	public override void Awake()
 	{
 		base.Awake();
@@ -19,7 +21,7 @@ public class DrawEllipse : DrawShape {
 	}
 
 		public override void Initialize(int timer, GameObject _parent) {
-			base.Initialize(timer, _parent);
+			base.Initialize(timer/INVERSE_RING_SIZE, _parent);
 			colliderScript.Initialize(_parent);
 		}
 

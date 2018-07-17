@@ -6,7 +6,7 @@ public class Ghost : SimpleMovingObject {
 
 	public float strength;
 
-	public float getStrength() {
+	public float GetStrength() {
 		return strength;
 	}
 

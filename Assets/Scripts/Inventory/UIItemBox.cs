@@ -80,7 +80,7 @@ public class UIItemBox : MonoBehaviour {
 		degreesToMove += degrees;
 	}
 
-	public float getDegrees() {
+	public float GetDegrees() {
 		return positionDegrees+degreesToMove;
 	}
 

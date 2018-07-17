@@ -16,7 +16,7 @@ public class ItemMemento : Memento {
 
 		public void InitializeInventory (int index) {
 			inInventory = true;
-			myData = Object.Instantiate((MementoData) GameManager.instance.getDataReference(GameManager.DataType.t_MementoData));
+			myData = Object.Instantiate((MementoData) GameManager.instance.GetDataReference(GameManager.DataType.t_MementoData));
 			myData.curItemState = inInventory;
 			myData.inventoryIndex = index;
 		}

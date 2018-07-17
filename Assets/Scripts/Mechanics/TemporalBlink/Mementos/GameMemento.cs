@@ -9,8 +9,8 @@ public class GameMemento : Memento {
 
 		// Use this for initialization
 		public void InitializeGame (GameManager _parent) {
-			handIndex = Inventory.instance.getInventoryIndex();
-			StaminaCap = GameManager.instance.getCap();
+			handIndex = Inventory.instance.GetInventoryIndex();
+			StaminaCap = GameManager.instance.GetCap();
 		}
 
 		public override void Revert() {

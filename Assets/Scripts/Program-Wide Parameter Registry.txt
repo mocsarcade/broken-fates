@@ -1,6 +1,12 @@
-weight: float from 1 to 3 specifying how heavy the object is (especially heavy objects could be higher, but those are likely bosses or giant suits of some solid metal object)
+Sorting Order: The layer for all objects that inherit from the Material class is the "Object" layer. The sorting order is:
+   0 for items
+   1 for monsters
+   2 for players and NPCs
+   + An amount when the object is in the air
 
-strength: float from 1 to 3. Power of player to pick up objects. Higher strength means heavier objects can be picked up, but also can be thrown further, faster and higher, meaning the vibrations made from throwing the object will also be greater
+weight: float from 1 to 5 specifying how heavy the object is (especially heavy objects could be higher, but those are likely bosses or giant suits of some solid metal object)
+
+strength: float from 1 to 5. Power of player to pick up objects. Higher strength means heavier objects can be picked up, but also can be thrown further, faster and higher, meaning the vibrations made from throwing the object will also be greater
 
 Size: size of object to denote size of shadow beneath it. Number from 1 to 14 for the 14 different shadow images
 Size is also used to denote player pick-up and throw animations

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using MEC;
 
 public class Inventory : MonoBehaviour {
 
@@ -38,7 +39,7 @@ public class Inventory : MonoBehaviour {
   		else if (instance != this)
   			Destroy(gameObject);
 
-      player = Player.getPlayer().gameObject;
+      player = Player.GetPlayer().gameObject;
 
       //Initialize Mementos list
       foreach(Item inventoryItem in items) {
@@ -78,31 +79,41 @@ public class Inventory : MonoBehaviour {
 
     //This is the dungeon-crawl item addition, used when picking up objects to throw
     public bool PickUp(GameObject obj) {
-      //If there is no "new" object in players' hand:
-      if(newlyHeldObject == false) {
-        if(handObject != null)
-          Destroy(handObject);
-        handObject = obj;
-        handScript = obj.GetComponent<Material>();
-        //Tell item it has been picked up
-        handScript.PickedUp(Player.getPlayer().gameObject);
-        newlyHeldObject = true;
-        return true;
+      if (items.Count < space)
+      {
+        //If there is no "new" object in players' hand:
+        if(newlyHeldObject == false) {
+          if(handObject != null)
+            Destroy(handObject);
+          handObject = obj;
+          handScript = obj.GetComponent<Material>();
+          //Tell item it has been picked up
+          handScript.PickedUp(Player.GetPlayer().gameObject);
+          newlyHeldObject = true;
+          return true;
+        } else {
+          //NOTE: Later make this try to move object in hand into the players' hand, and return false only if that fails.
+          return false;
+        }
       } else {
-        //NOTE: Later make this try to move object in hand into the players' hand, and return false only if that fails.
         return false;
       }
     }
 
-    //This is the dungeon-crawl item addition, used when picking up items from chests
+    //This is the dungeon-crawl item addition, used when picking up items from chests. It automatically adds that object to your hand
     public bool PickUp(Item item) {
-      //If there is no "new" object in players' hand:
-      if(newlyHeldObject == false) {
-        makeObject(item);
-        newlyHeldObject = true;
-        return true;
+      if (items.Count < space)
+      {
+        //If there is no "new" object in players' hand:
+        if(newlyHeldObject == false) {
+          makeObject(item);
+          newlyHeldObject = true;
+          return true;
+        } else {
+          //NOTE: Later make this try to move object in hand into the players' inventory, and automatically add item to inventory otherwise.
+          return false;
+        }
       } else {
-        //NOTE: Later make this try to move object in hand into the players' hand, and return false only if that fails.
         return false;
       }
     }
@@ -135,7 +146,7 @@ public class Inventory : MonoBehaviour {
         }
         // Otherwise we can pick up the item, return true.
         items.Add(item);
-        ItemMementos.Add(itemObj.getMemento() as ItemMemento);
+        ItemMementos.Add(itemObj.GetMemento() as ItemMemento);
         //Create a new ItemBox at index Count (end of list)-1 to parallel this item added at the end
         CreateItemBox(items.Count-1);
         return true;
@@ -153,7 +164,7 @@ public class Inventory : MonoBehaviour {
         // Otherwise we can pick up the item, return true.
         items.Insert(index, item);
         //If item has a memento, update it to know the object is now in the players' inventory
-        ItemMemento tempMemento = itemObj.getMemento() as ItemMemento;
+        ItemMemento tempMemento = itemObj.GetMemento() as ItemMemento;
         if(tempMemento != null) {
           itemObj.setInInventory(true, handIndex);
           tempMemento.setParent(null);
@@ -173,7 +184,7 @@ public class Inventory : MonoBehaviour {
     //Remove this object from the inventory. This only removes it; it doesn't destroy the concreteItem object
     public void Remove(int index)
     {
-      //If the item has a memento, update it. Setting the memento's parent will require each operation to change it
+      //If the item has a memento, update it. Setting the memento's parent will require each operation to change it during the operation call
       if(items[index] != null) {
         if(ItemMementos[index] != null) {
           ItemMementos[index].setInInventory(false, index);
@@ -184,12 +195,14 @@ public class Inventory : MonoBehaviour {
         items.RemoveAt(index);
         RemoveItemBox(index);
         //If there is no longer any handObject, remake it
-        if(index == handIndex && index >= items.Count) {
-          //If the removed item was the last item
+        if(handIndex >= items.Count) {
           handObject = null;
           handScript = null;
+          Debug.Log("We are decreasing handIndex!");
+          //If the removed item was the last item
           if(items.Count != 0) {
             do {
+              Debug.Log("Looping!");
               toggleHand(-1);
             } while(handIndex > items.Count);
           }
@@ -203,10 +216,10 @@ public class Inventory : MonoBehaviour {
     }
 
     //Get Methods
-    public Item getObjectInHand() {return items[handIndex];}
-    public List<Item> getList() {return items;}
+    public Item GetObjectInHand() {return items[handIndex];}
+    public List<Item> GetList() {return items;}
     public int itemsInInventory() {return items.Count;}
-    public int getInventoryIndex() {return handIndex;}
+    public int GetInventoryIndex() {return handIndex;}
 
     public void makeHandObject() {
       makeObject(items[handIndex]);
@@ -233,23 +246,44 @@ public class Inventory : MonoBehaviour {
     //Switches out held item for the one to the right in the list and returns the object to be displayed on the GUI
     public Item toggleHand(int directionAmount)
     {
-      //The 'as' function returns null if the operation is impossible. This checks if the item in your
-      //hand is a ConcreteItem that can be placed in the inventory
-      ConcreteItem itemInHand = handScript as ConcreteItem;
-      if(itemInHand && newlyHeldObject==true) {
-        AddAt(handIndex, itemInHand);
-        newlyHeldObject = false;
-      } else if(items.Count>0) {
-        //Move handObject
-        handIndex += directionAmount;
-        if(handIndex>=items.Count)
-          handIndex=0;
-        if(handIndex<0)
-          handIndex=items.Count-1;
-      } else {
-        //If neither the object in hand is added to the inventory, nor are there any items left,
-        //Return null
+      if(directionAmount == 0) {
         return null;
+      }
+      //Check to see if this toggle function is moving from a null area
+      if(handIndex >= items.Count && items.Count > 0) {
+        //Change directionAmount to either 1 or -1
+        directionAmount = directionAmount/Mathf.Abs(directionAmount);
+        do {
+          handIndex += directionAmount;
+          if(handIndex>=items.Count)
+            handIndex=0;
+          if(handIndex<0)
+            handIndex=items.Count-1;
+        } while(handIndex >= items.Count);
+      } else {
+        //The 'as' function returns null if the operation is impossible. This checks if the item in your
+        //hand is a ConcreteItem that can be placed in the inventory
+        ConcreteItem itemInHand = handScript as ConcreteItem;
+        if(itemInHand) {
+          if(newlyHeldObject==true) {
+            AddAt(handIndex, itemInHand);
+            newlyHeldObject = false;
+          } else if(items.Count>0) {
+            //Move handObject
+            handIndex += directionAmount;
+            if(handIndex>=items.Count)
+              handIndex=0;
+            if(handIndex<0)
+              handIndex=items.Count-1;
+          } else {
+            //If neither the object in hand is added to the inventory, nor are there any items left,
+            //Return null
+            return null;
+          }
+        } else {
+          //If the hand object isn't an item, return null
+          return null;
+        }
       }
       //If either of the above options was activated, reset the handObject and update the UI
       //Destroy old handObject
@@ -260,7 +294,7 @@ public class Inventory : MonoBehaviour {
       moveUI(handIndex);
       UpdateUI();
       //Return object in hand for methods that require it
-      return getObjectInHand();
+      return GetObjectInHand();
     }
 
     //Calls object in hand to use it
@@ -273,7 +307,7 @@ public class Inventory : MonoBehaviour {
 
     //If the object is a one-use, the concreteItem method will call this method to destroy it
     public void destroyHandObject() {
-      ItemMemento handMemento = handScript.getMemento() as ItemMemento;
+      ItemMemento handMemento = handScript.GetMemento() as ItemMemento;
       if(handMemento) {
         handMemento.setInInventory(false, 0);
       }
@@ -288,10 +322,10 @@ public class Inventory : MonoBehaviour {
     }
 
     //Calls object in hand to use it
-    public void throwHeldItem(Vector2 target)
+    public void throwHeldItem(Vector2 tarGet)
     {
       if(handObject != null) {
-        StartCoroutine(handObject.GetComponent<Material>().Throw(target, strength));
+        Timing.RunCoroutine(handObject.GetComponent<Material>().Throw(tarGet, 75).CancelWith(handObject), Segment.FixedUpdate);
         if(newlyHeldObject == true) {
           handObject = null;
           handScript = null;
@@ -300,7 +334,7 @@ public class Inventory : MonoBehaviour {
         }
         else {
           //If this was an object in your inventory, update Memento
-          ItemMemento tempMemento = handScript.getMemento() as ItemMemento;
+          ItemMemento tempMemento = handScript.GetMemento() as ItemMemento;
           if(tempMemento != null) {
             tempMemento.setParent(handScript);
             tempMemento.setInInventory(false, handIndex);
@@ -313,11 +347,11 @@ public class Inventory : MonoBehaviour {
       }
     }
 
-    public float getStrength() {
+    public float GetStrength() {
       return strength;
     }
 
-    public int getWeight() {
+    public int GetWeight() {
       //If inventory isn't empty
       if(handObject != null) {
         return handObject.GetComponent<Material>().weight;
@@ -421,7 +455,7 @@ private void RemoveItemBox(int index) {
 
   //Move all boxes so handIndex box is at the front
   private void moveUI(int handIndex) {
-    float curPlace = InventoryBoxes[handIndex].getDegrees();
+    float curPlace = InventoryBoxes[handIndex].GetDegrees();
     float degrees = 0;
     //Calculate direction and distance to that position
     if(Mathf.Abs(curPlace-45) <= Mathf.Abs(CYCLE_SIZE+45-curPlace)) {
@@ -436,27 +470,27 @@ private void RemoveItemBox(int index) {
   }
 
   private void resetUI(int numItems) {
-    float targetDegrees = 0; float curPlace = 0; float degrees = 0;
+    float tarGetDegrees = 0; float curPlace = 0; float degrees = 0;
     //Move UI Boxes
     for(int box=0; box<numItems; box++) {
       //Calculate desired position
-      targetDegrees = 45+(box-handIndex)*(CYCLE_SIZE/numItems);
-  		//If the target is over the limit, it loops around to enter on the other side
-  		if(targetDegrees>=180) {
-  			targetDegrees -= 270;
-  		} else if(targetDegrees<-90) {
-  			targetDegrees += 270;
+      tarGetDegrees = 45+(box-handIndex)*(CYCLE_SIZE/numItems);
+  		//If the tarGet is over the limit, it loops around to enter on the other side
+  		if(tarGetDegrees>=180) {
+  			tarGetDegrees -= 270;
+  		} else if(tarGetDegrees<-90) {
+  			tarGetDegrees += 270;
   		}
       //Calculate distance to that position from the current position
-      curPlace = InventoryBoxes[box].getDegrees();
+      curPlace = InventoryBoxes[box].GetDegrees();
       //Calculate direction and distance to that position
-      if((Mathf.Max(curPlace, targetDegrees)-Mathf.Min(curPlace, targetDegrees)) <= (CYCLE_SIZE-(Mathf.Max(curPlace, targetDegrees)-Mathf.Min(curPlace, targetDegrees)))) {
-        degrees = -(CYCLE_SIZE-(Mathf.Max(curPlace, targetDegrees)-Mathf.Min(curPlace, targetDegrees)));
+      if((Mathf.Max(curPlace, tarGetDegrees)-Mathf.Min(curPlace, tarGetDegrees)) <= (CYCLE_SIZE-(Mathf.Max(curPlace, tarGetDegrees)-Mathf.Min(curPlace, tarGetDegrees)))) {
+        degrees = -(CYCLE_SIZE-(Mathf.Max(curPlace, tarGetDegrees)-Mathf.Min(curPlace, tarGetDegrees)));
       } else {
-        degrees = (Mathf.Max(curPlace, targetDegrees)-Mathf.Min(curPlace, targetDegrees));
+        degrees = (Mathf.Max(curPlace, tarGetDegrees)-Mathf.Min(curPlace, tarGetDegrees));
       }
 
-  		//If the target is over the limit, it loops around to enter on the other side
+  		//If the tarGet is over the limit, it loops around to enter on the other side
   		if(degrees>=180) {
         while(degrees>=180)
   			   degrees -= 270;
@@ -464,7 +498,7 @@ private void RemoveItemBox(int index) {
         while(degrees<-90)
   			   degrees += 270;
   		}
-      if(curPlace >= targetDegrees) {
+      if(curPlace >= tarGetDegrees) {
         degrees = -degrees;
       }
       //Move it there

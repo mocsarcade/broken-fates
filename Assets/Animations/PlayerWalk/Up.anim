@@ -70,6 +70,6 @@ AnimationClip:
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: -20
-    intParameter: 73
+    floatParameter: -19
+    intParameter: 63
     messageOptions: 0

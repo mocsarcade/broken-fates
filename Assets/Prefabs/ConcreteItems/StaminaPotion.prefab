@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114136190476529918}
   - component: {fileID: 50995151238227430}
   - component: {fileID: 61741171433815348}
-  m_Layer: 13
+  m_Layer: 11
   m_Name: StaminaPotion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,8 +38,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1876489529557522}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.576428, y: -0.9833612, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalPosition: {x: -3.467, y: -0.238, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -80,14 +80,14 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.18, y: 0.18}
+    oldSize: {x: 0.5, y: 0.5}
     newSize: {x: 0.18, y: 0.18}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.15, y: 0.15}
+  m_Size: {x: 0.4, y: 0.4}
   m_EdgeRadius: 0
 --- !u!114 &114136190476529918
 MonoBehaviour:
@@ -114,10 +114,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curMemento: {fileID: 0}
   weight: 1
-  size: 1
-  destroyed: 0
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   shadow: {fileID: 0}
+  beingThrown: 0
+  damagedObjects: []
   inventoryCounterpart: {fileID: 11400000, guid: dbe9e26a5845c944c9ecad22b145fc55,
     type: 2}
   useScript: {fileID: 0}
@@ -155,8 +155,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1879765641
-  m_SortingLayer: 4
+  m_SortingLayerID: 1603478371
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300002, guid: aec048e1dbc550a44884b027dad3092b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

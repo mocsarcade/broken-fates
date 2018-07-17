@@ -235,8 +235,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 81110826}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.957, y: 1.198, z: -0.034340963}
-  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_LocalPosition: {x: -2.121, y: 1.382, z: -0.034340963}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 53
@@ -253,17 +253,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curMemento: {fileID: 0}
-  defSortingLayer: 
-  defSortingOrder: 0
-  weight: 2
-  size: 14
-  destroyed: 0
+  weight: 4
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   shadow: {fileID: 0}
   beingThrown: 0
+  damagedObjects: []
   possessed: {fileID: 834335199}
-  broken: 0
-  brokenImage: {fileID: 21300002, guid: eff960898850f5a44a640f738267cb5c, type: 3}
+  imageSet:
+  - {fileID: 21300000, guid: eff960898850f5a44a640f738267cb5c, type: 3}
+  - {fileID: 21300002, guid: eff960898850f5a44a640f738267cb5c, type: 3}
+  strategy: {fileID: 0}
 --- !u!212 &81110829
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -296,8 +295,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1031746619
-  m_SortingLayer: 2
+  m_SortingLayerID: 1603478371
+  m_SortingLayer: 3
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: eff960898850f5a44a640f738267cb5c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -318,21 +317,21 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.034}
+  m_Offset: {x: 0, y: 0.15}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.4, y: 0.4}
+    oldSize: {x: 2, y: 2}
     newSize: {x: 0.4, y: 0.4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.35, y: 0.275}
+  m_Size: {x: 1.75, y: 1.35}
   m_EdgeRadius: 0
 --- !u!50 &81110831
 Rigidbody2D:
@@ -341,7 +340,7 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 81110826}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -501,11 +500,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4640949227586312, guid: 33e91d99d59fd6f4eb4c21721fc400a4, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -3.88
+      value: -3.467
       objectReference: {fileID: 0}
     - target: {fileID: 4640949227586312, guid: 33e91d99d59fd6f4eb4c21721fc400a4, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.39
+      value: -0.238
       objectReference: {fileID: 0}
     - target: {fileID: 4640949227586312, guid: 33e91d99d59fd6f4eb4c21721fc400a4, type: 2}
       propertyPath: m_LocalPosition.z
@@ -529,6 +528,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4640949227586312, guid: 33e91d99d59fd6f4eb4c21721fc400a4, type: 2}
       propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 61741171433815348, guid: 33e91d99d59fd6f4eb4c21721fc400a4,
+        type: 2}
+      propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -634,8 +638,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1603478371
-  m_SortingLayer: 4
-  m_SortingOrder: 3
+  m_SortingLayer: 3
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 96d3600ae6cd2fe43a8b6f466f97f6fd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -671,14 +675,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curMemento: {fileID: 0}
-  defSortingLayer: 
-  defSortingOrder: 0
-  weight: 2
-  size: 14
-  destroyed: 0
+  weight: 6
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   shadow: {fileID: 0}
   beingThrown: 0
+  damagedObjects: []
   speed: 150
   maxVel: 300
   calcMovement: {x: 0, y: 0}
@@ -692,7 +693,7 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 329745721}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -732,7 +733,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0, y: -0.25}
@@ -1254,6 +1255,16 @@ Prefab:
     - target: {fileID: 4947521921692450, guid: 9fdf0a133483ee1489ee21406a2c8e0f, type: 2}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 61468163236491058, guid: 9fdf0a133483ee1489ee21406a2c8e0f,
+        type: 2}
+      propertyPath: m_UsedByEffector
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 61468163236491058, guid: 9fdf0a133483ee1489ee21406a2c8e0f,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9fdf0a133483ee1489ee21406a2c8e0f, type: 2}
@@ -1860,6 +1871,11 @@ Prefab:
     - target: {fileID: 1648481495846886, guid: 0f5e3de13114095489bc46061a937804, type: 2}
       propertyPath: m_Name
       value: Wall (44)
+      objectReference: {fileID: 0}
+    - target: {fileID: 61228091751748470, guid: 0f5e3de13114095489bc46061a937804,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0f5e3de13114095489bc46061a937804, type: 2}
