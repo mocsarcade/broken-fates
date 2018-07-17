@@ -12,7 +12,6 @@ public class Material : MonoBehaviour {
     public const float FALL_VIBRATION_SIZE = 17f;
 
 		protected string defSortingLayer;
-		protected int defSortingOrder;
     //Weight is important. An object's weight can be from 1 to 3, with different levels
     //Of max throw height depending on how heavy the object is. An object of weight 3
     //Can only be thrown a third of the distance as an object of weight 1. vibrations
@@ -37,7 +36,8 @@ public class Material : MonoBehaviour {
     protected MementoData mementoData;
 		public bool beingThrown;
 		protected bool toReverse;
-		protected Collider2D throwerCollider;
+		//protected Collider2D throwerCollider;
+		protected Material throwerScript;
 		public List<GameObject> damagedObjects = new List<GameObject>();
 
 
@@ -47,7 +47,6 @@ public class Material : MonoBehaviour {
 
 			//Initailize Sorting Layer, so when this object is dropped, it will return to its regular Layer
 			defSortingLayer = myRenderer.sortingLayerName;
-			defSortingOrder = myRenderer.sortingOrder;
       //Initialize shadow to be a bigger blob depending on size of object and
       //give reference to transform so shadow will follow
       shadow = Instantiate(shadowObj, transform.position, Quaternion.identity).GetComponent<Shadow>();
@@ -87,29 +86,37 @@ public class Material : MonoBehaviour {
 			beingThrown = true;
 			//Ignore collisions between this object and the thrower for a short amount of time
 			if(holder) {
-				throwerCollider = holder.GetCollider();
-				Physics2D.IgnoreCollision(myCollider, throwerCollider, true);
+				//throwerCollider = holder.GetCollider();
+				throwerScript = holder;
+				SetCollisionFlag(throwerScript, true);
 			}
-			//shadow.setPosition(transform.position);
-      Drop();
 
 			//Run-time variables
-			Vector2 distance = target - (Vector2) GetPosition();
-
 			float zRate = Mathf.Sqrt(9.8f*Vector2.Distance(GetPosition(), target));
 
 			float arcRadians = arcDegrees*Mathf.PI/180;
 			float factor = Mathf.Sin(arcRadians)/Mathf.Sin(Mathf.PI/4);
 
+			//Set object to be in front or behind player depending on direction thrown
+			Vector2 distance = target - (Vector2) GetPosition();
+			//Possessed Objects have no "holder", and so the throw object could be called without holder being defined
+			if(holder) {
+				myRenderer.sortingOrder = holder.gameObject.GetComponent<SpriteRenderer>().sortingOrder + (int) (-distance.y/Mathf.Abs(distance.y));
+			}
+			Drop();
+
 			shadow.addVelocity((zRate+(4.9f*Time.deltaTime))*Time.deltaTime*factor); //Arc is increased by a factor of 1/factor, multiplying distance by 1/factor
 			distance = distance*(1f/factor); //By increasing distance by a multiple of inverse factor, the speed (and so distance) will be multiplied by factor
 			//These two together cause distance to be the same; the distance to target, but it makes the speed and arc different
-
 			shadow.PushDist(distance.normalized*distance.magnitude/(shadow.GetRigidbody().drag * (26f/15)), ForceMode2D.Impulse);
+
 			//Wait for the object to come to a complete stop
 			while(shadow.GetSpeed() > 0.1f) {
 				UpdatePosition(shadow.GetHeight());
-
+				//When object has come to half its distance and started falling back down, continuously change sortingOrder
+				if(shadow.GetHeightVelocity() < 0 ) {
+					myRenderer.sortingOrder = (int) (-GetPosition().y*3);
+				}
 				yield return Timing.WaitForOneFrame;
 			}
 			//Object has reached target, so make vibration
@@ -118,49 +125,53 @@ public class Material : MonoBehaviour {
 			//Object may have crashed into other objects and hurt them, so empty the damagedList as well
 			EmptyDamagedList();
 
-			//Object is no longer attached to thrower, so let it be able to collider with thrower again
-			if(throwerCollider) {
-				Physics2D.IgnoreCollision(myCollider, throwerCollider, false);
-				throwerCollider = null;
+			//Object is no longer attached to thrower, so let it be able to collide with thrower again
+			//if(throwerCollider) {
+			if(throwerScript) {
+				//Use EnableCollider method for shadow's two colliders and the object colliders that takes only the touched GameObject as a param
+				SetCollisionFlag(throwerScript, false);
+				throwerScript = null;
+				//throwerCollider = null;
 			}
 			beingThrown = false;
     }
 
+		/* //IF NO ERRORS AROSE FROM THIS BEING REMOVED, GET RID OF THIS SLICE OF CODE; IT WAS NEVER USED
 		public void UpdateZ(float z) {
 			//Update Order in Layer
 			myRenderer.sortingOrder = (int)(-GetPosition().y + z);
 			//Update shadow depending on height from object to shadow
 			shadow.UpdateSize();
-		}
+		}*/
 
 		/*
 		public void reverseThrow() {
 			toReverse = true;
 
 			//NOTE: IF WE DECIDE THAT THE PLAYER WILL BE HIT BY THROWN OBJECTS THAT BOUNCE OFF WALLS AND HIT THEM,
-			//TURN THIS NEXT SECTION INTO ITS OWN METHOD AND HAVE THE SHADOW's REVERSE METHOD CALL IT
+			//ADD ENABLECOLLISION TO SHADOW'S REVERSETHROW METHOD
 
-			if(throwerCollider) {
-				Physics2D.IgnoreCollision(myCollider, throwerCollider, false);
-				throwerCollider = null;
-			}
 		}*/
 
 		//Collision Variable for subclasses
 		//protected virtual void OnCollisionEnter2D(Collision2D collision)
 		protected virtual void OnTriggerEnter2D(Collider2D collision)
 		{
-			Debug.Log("Objects touching!");
 			//Check if the object's concreteForm (parent) is also colliding with our object (on same z)
 			Material touchedObj = collision.gameObject.GetComponent<Material>();
 			//If the object has a shadow component, damage the touched object
 			if(touchedObj) {
+				//Set the objects to be able to touch concretely in case the shadow's OnTriggerEnter disabled collision
+				touchedObj.GetShadow().SetCollisionFlag(shadow.GetSolidCollider(), false);
 				if(GetShadow().GetCollider().IsTouching(touchedObj.GetShadow().GetCollider())) {
 					//If it is, damage it by a certain amount. That shadow object will do the same to this object
 					Attack(touchedObj, GetDamageAmount());
 					//touchedObj.Damage(GetDamageAmount(), gameObject);
 					//Disable collision between these two objects until collision exits
 					//Physics2D.IgnoreCollision(myCollider, touchedObj.GetCollider(), true);
+				} else {
+					//If the objects' shadows are touching, but not the objects, they are offset by flying-height, and so should not collide
+					touchedObj.GetShadow().SetCollisionFlag(shadow.GetSolidCollider(), true);
 				}
 			}
 		}
@@ -171,6 +182,7 @@ public class Material : MonoBehaviour {
 			Material touchedObj = collision.gameObject.GetComponent<Material>();
 			if(touchedObj) {
 				//Physics2D.IgnoreCollision(myCollider, touchedObj.GetCollider(), false);
+				touchedObj.GetShadow().SetCollisionFlag(shadow.GetSolidCollider(), false);
 			}
 		}
 
@@ -218,14 +230,21 @@ public class Material : MonoBehaviour {
 			myCollider.enabled = true;
 		}
 
+		//Collision of Shadow is disabled
+		public virtual void SetCollisionFlag(Material toDisable, bool flag) {
+			//Object's Collider
+			Physics2D.IgnoreCollision(GetCollider(), toDisable.GetCollider(), flag);
+			//Shadow Regular Collider
+			Physics2D.IgnoreCollision(shadow.GetCollider(), toDisable.GetShadow().GetCollider(), flag);
+			//Shadow Solid Collider
+			toDisable.GetShadow().SetCollisionFlag(shadow.GetSolidCollider(), flag);
+		}
+
     public void Drop() {
       holder = null;
       shadow.setFollow(null);
 			//Reactivate rigidbody and collision
 			EnableRigidbody();
-			//Reset Sorting Layer
-			myRenderer.sortingLayerName = defSortingLayer;
-			myRenderer.sortingOrder = defSortingOrder;
     }
 
     public virtual void PickUp(GameObject item) {
@@ -306,13 +325,16 @@ public class Material : MonoBehaviour {
 			if(damageAmo > 0) {
 				bool canDamage = CheckDamagedList(damaged.gameObject);
 				if(canDamage) {
-					damaged.Damage(damageAmo);
+					damaged.Damage(damageAmo*shadow.GetSize().x);
 				}
 			}
 		}
 
 		//Function that allows this object to take damage. Can take many forms. Only ever called by Attack(...)
-		public virtual void Damage(float damageAmo) {}
+		public virtual void Damage(float damageAmo) {
+			//This is the command at the beginning of every damage method to make the damage less depending on object size
+			damageAmo = damageAmo/(shadow.GetSize().x);
+		}
 
 		protected void EmptyDamagedList() {
 			damagedObjects.Clear();

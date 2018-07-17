@@ -100,8 +100,9 @@ public class Player : MovingObject
 		return new Vector2(animator.GetFloat("MoveX"), animator.GetFloat("MoveY"));
 	}
 
-	public override void Damage(float damage) {
+	public override void Damage(float damageAmo) {
+		damageAmo = damageAmo/(shadow.GetSize().x*GlobalRegistry.INVERSE_DAMAGE_MULTIPLIER() );
 		GameManager.instance.DamageEffect();
-		GameManager.instance.DrainCap((int) damage*2);
+		GameManager.instance.DrainCap((int) damageAmo*2);
 	}
 }

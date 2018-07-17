@@ -256,13 +256,15 @@ MonoBehaviour:
   weight: 4
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   shadow: {fileID: 0}
+  holder: {fileID: 0}
   beingThrown: 0
   damagedObjects: []
   possessed: {fileID: 834335199}
   imageSet:
   - {fileID: 21300000, guid: eff960898850f5a44a640f738267cb5c, type: 3}
+  - {fileID: 21300000, guid: a3e5b018edfaf9e4caafe29c445b7981, type: 3}
   - {fileID: 21300002, guid: eff960898850f5a44a640f738267cb5c, type: 3}
-  strategy: {fileID: 0}
+  durability: 2
 --- !u!212 &81110829
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -678,6 +680,7 @@ MonoBehaviour:
   weight: 6
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   shadow: {fileID: 0}
+  holder: {fileID: 0}
   beingThrown: 0
   damagedObjects: []
   speed: 150
@@ -736,7 +739,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0, y: -0.25}
+  m_Offset: {x: 0.03, y: -0.25}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -747,7 +750,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9, y: 1}
+  m_Size: {x: 0.65, y: 0.9}
   m_EdgeRadius: 0
 --- !u!114 &329745728
 MonoBehaviour:

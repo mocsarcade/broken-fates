@@ -8,6 +8,7 @@ public class Shadow : MonoBehaviour {
 	public const float NUM_SHADOW_IMAGES = 14f;
 
 	protected Transform parentTransform;
+	protected SpriteRenderer parentRenderer;
 	protected Rigidbody2D rb2d;
 	protected CapsuleCollider2D myCollider;
 	protected BoxCollider2D solidCollider;
@@ -43,6 +44,12 @@ public class Shadow : MonoBehaviour {
 		}
 	}*/
 
+	void Update() {
+		if(z_offset < 0.1f) {
+			parentRenderer.sortingOrder = (int) (-GetPosition().y*3);
+		}
+	}
+
 	protected IEnumerator<float> Gravity() {
 		float drag = rb2d.drag;
 		while(1==1) {
@@ -69,6 +76,7 @@ public class Shadow : MonoBehaviour {
 	public void Initialize(Transform _parent, int weight, Collider2D parentSize) {
 		parentTransform = _parent;
 		parentScript = _parent.gameObject.GetComponent<Material>();
+		parentRenderer = _parent.gameObject.GetComponent<SpriteRenderer>();
 
 		//Set shadow and Colliders' size
 		size = parentSize.bounds.size.x*6;
@@ -163,6 +171,7 @@ public class Shadow : MonoBehaviour {
 
 	public Material GetParent () {return parentScript;}
 	public Rigidbody2D GetRigidbody () {return rb2d;}
+	public Collider2D GetSolidCollider () {return solidCollider;}
 	public Vector2 GetMomentum () {return rb2d.velocity;}
 	public void setMomentum (Vector2 momentum) {
 		rb2d.velocity = momentum;
@@ -190,13 +199,16 @@ public class Shadow : MonoBehaviour {
 		Shadow touchedShadow = collision.gameObject.GetComponent<Shadow>();
 		//If the object has a shadow component, it could be damaged!
 		if(touchedShadow) {
+			//Set the objects to be able to touch concretely in case the object's OnTriggerEnter disabled collision
+			touchedShadow.SetCollisionFlag(solidCollider, false);
 			//Check if the object's concreteForm (parent) is also colliding with our object (on same z)
 			if(GetParentCollider().IsTouching(touchedShadow.GetParentCollider())) {
 				Debug.Log("The objects are touching");
 				//If it is, damage it by a certain amount. That shadow object will do the same to this object
 				parentScript.Attack(touchedShadow.GetParent(), parentScript.GetDamageAmount());
-				//Disable collision between these two objects until collision exits
-				Physics2D.IgnoreCollision(GetParentCollider(), touchedShadow.GetParentCollider(), true);
+			} else {
+				//If the objects' shadows are touching, but not the objects, they are offset by flying-height, and so should not collide
+				touchedShadow.SetCollisionFlag(solidCollider, true);
 			}
 		}
 		else if(parentScript.GetThrowState()) {
@@ -214,8 +226,12 @@ public class Shadow : MonoBehaviour {
 	{
 		Shadow touchedShadow = collision.gameObject.GetComponent<Shadow>();
 		if(touchedShadow) {
-			Physics2D.IgnoreCollision(GetParentCollider(), touchedShadow.GetParentCollider(), false);
+			touchedShadow.SetCollisionFlag(solidCollider, false);
 		}
+	}
+
+	public void SetCollisionFlag(Collider2D toDisable, bool flag) {
+		Physics2D.IgnoreCollision(solidCollider, toDisable, flag);
 	}
 
 }

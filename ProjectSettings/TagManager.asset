@@ -19,11 +19,11 @@ TagManager:
   - 
   - 
   - Blocking Layer
-  - Simple Objects
+  - All Shadows
   - Vibration
   - Vibration-Feeling-Objects
   - Non-Discrete
-  - Non-solid Feeling Objects
+  - 
   - 
   - 
   - 
@@ -49,16 +49,13 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Floor Effects
-    uniqueID: 3878874161
-    locked: 0
   - name: Level Design and Walls
     uniqueID: 1031746619
     locked: 0
-  - name: Items
-    uniqueID: 1879765641
+  - name: Floor Effects
+    uniqueID: 3878874161
     locked: 0
-  - name: Players and Monsters
+  - name: Objects
     uniqueID: 1603478371
     locked: 0
   - name: Shimers and magic

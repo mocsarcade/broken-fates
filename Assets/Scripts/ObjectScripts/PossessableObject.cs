@@ -10,7 +10,10 @@ public class PossessableObject : Material {
 	public Ghost possessed;
 	protected bool broken;
 	public Sprite[] imageSet;
-	public DamageStrategy strategy;
+
+	//Runtime variables
+	public int durability;
+	protected int imageNum;
 
 	public override void FeelVibration(Vector2 sourcePosition) {
 		if(possessed && beingThrown == false && broken == false) {
@@ -44,25 +47,28 @@ public class PossessableObject : Material {
 	public override void Attack(Material damaged, float damageAmo) {
 		base.Attack(damaged, damageAmo);
 		if(damageAmo > 0) {
+			float mySize = shadow.GetSize().x*(3f/2);
 			//Take recoil damage
-			Damage(damageAmo/2);
+			Damage(damageAmo/mySize);
 		}
 	}
 
-	//This superclass possessed object is the simplest: It is broken instantly upon use
-	//NOTE: THE METHOD THAT AFFECTS DURABILITY MAY BE ENCAPSULATED INTO A STRATEGY CLASS WITH
-	//A DIFFERENT OBJECT FOR EACH DAMAGE TYPE. THIS WILL MINIMIZE SUBCLASSING. CONSIDER LATER
+	//Object's images become more broken as they go through the imageSet array until being officially broken at the last frame
 	public override void Damage(float damageAmo) {
-		/*
-		if(broken == false && imageSet.Length > 0) {
-			//Strategy object takes damage and uses it to change object's sprite
-			strategy.Damage(damageAmo, myRenderer.sprite)
-			if(myRenderer.sprite == imageSet[imageSet.Length-1]) {
-				//If Sprite is last possible sprite, it is now the broken image and should be broken
-				broken = true;
+		damageAmo = damageAmo/(shadow.GetSize().x*GlobalRegistry.INVERSE_DAMAGE_MULTIPLIER() );
+		//Objects with zero or only one image are considered unbreakable and will stay the same forever
+		if(imageSet.Length > 1) {
+			if(broken == false && imageNum < imageSet.Length) {
+				if(damageAmo >= durability) {
+					imageNum++;
+					myRenderer.sprite = imageSet[imageNum];
+					if(imageNum >= imageSet.Length-1) {
+						//If Sprite is last possible sprite, it is now the broken image and should be broken
+						broken = true;
+					}
+				}
 			}
 		}
-		*/
 	}
 
 	//The second half of time blink. This method uses the object to reconstruct the object into its old form
