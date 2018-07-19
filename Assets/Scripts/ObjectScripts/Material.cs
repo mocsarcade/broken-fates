@@ -205,8 +205,6 @@ public class Material : MonoBehaviour {
 	      //Place object on Object's layer so it looks like "holding" the object
 				myRenderer.sortingLayerName = _holder.GetComponent<SpriteRenderer>().sortingLayerName;
 				myRenderer.sortingOrder = _holder.GetComponent<SpriteRenderer>().sortingOrder+1;
-
-				Debug.Log(_holder + " picked UP " + gameObject);
       } else {
 				shadow.setFollow(null);
       }
@@ -216,7 +214,6 @@ public class Material : MonoBehaviour {
 
 		//Collision of Shadow is disabled
 		public virtual void DisableRigidbody() {
-			Debug.Log(gameObject.name + "Disabling Rigidbody!");
 			shadow.GetRigidbody().bodyType = RigidbodyType2D.Kinematic;
 			shadow.DisableCollider();
 			myCollider.enabled = false;
@@ -224,7 +221,6 @@ public class Material : MonoBehaviour {
 
 		//Collision of Shadow is enabled
 		public virtual void EnableRigidbody() {
-			Debug.Log(gameObject.name + "Enabling Rigidbody!");
 			shadow.GetRigidbody().bodyType = RigidbodyType2D.Dynamic;
 			shadow.EnableCollider();
 			myCollider.enabled = true;

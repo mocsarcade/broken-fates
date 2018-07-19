@@ -195,7 +195,6 @@ public class Shadow : MonoBehaviour {
 	//protected void OnCollisionEnter2D(Collision2D collision)
 	protected void OnTriggerEnter2D(Collider2D collision)
 	{
-		Debug.Log(gameObject.name + " touching " + collision.gameObject.name);
 		Shadow touchedShadow = collision.gameObject.GetComponent<Shadow>();
 		//If the object has a shadow component, it could be damaged!
 		if(touchedShadow) {
@@ -203,7 +202,6 @@ public class Shadow : MonoBehaviour {
 			touchedShadow.SetCollisionFlag(solidCollider, false);
 			//Check if the object's concreteForm (parent) is also colliding with our object (on same z)
 			if(GetParentCollider().IsTouching(touchedShadow.GetParentCollider())) {
-				Debug.Log("The objects are touching");
 				//If it is, damage it by a certain amount. That shadow object will do the same to this object
 				parentScript.Attack(touchedShadow.GetParent(), parentScript.GetDamageAmount());
 			} else {

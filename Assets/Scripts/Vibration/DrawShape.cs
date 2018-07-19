@@ -7,8 +7,9 @@ public class DrawShape : MonoBehaviour {
 
 		//Vibration display settings
 		public Color FillColor = Color.white;
-		public float RING_SPEED = 0.12f;
-		public const float BEGINNING_THICKNESS = 0.015f;
+		protected float RING_SPEED = 0.04f;//0.12f;
+		protected int INVERSE_RING_LIFE = 1;//3;
+		protected const float BEGINNING_THICKNESS = 0.04f;
 		protected LineRenderer _lineRenderer;
 
 		//Position
@@ -44,7 +45,7 @@ public class DrawShape : MonoBehaviour {
 			}
 
 			public virtual void Initialize(int timer, GameObject _parent) {
-				time = timer;
+				time = timer/INVERSE_RING_LIFE;
 				beginningTime = time;
 				parent = _parent;
 			}
@@ -71,6 +72,10 @@ public static class Util
 	public static Vector3[] ToVector3(this Vector2[] vectors)
 	{
 		return System.Array.ConvertAll<Vector2, Vector3>(vectors, v => v);
+	}
+	public static Vector2[] ToVector2(this Vector3[] vectors)
+	{
+		return System.Array.ConvertAll<Vector3, Vector2>(vectors, v => v);
 	}
 
 	/// <summary>
