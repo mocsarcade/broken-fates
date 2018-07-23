@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class DrawEllipse : DrawShape {
+public class _DrawEllipse : _DrawShape {
 
 	//Vibration display settings
-	private EllipseVibrationCollision colliderScript;
+	private VibrationCollision colliderScript;
 
 	public const int INVERSE_RING_SIZE = 4;
 	public const float Y_MULTIPLIER = 1.5f;
@@ -16,7 +16,7 @@ public class DrawEllipse : DrawShape {
 	{
 		base.Awake();
 		_lineRenderer = GetComponent<LineRenderer>();
-		colliderScript = GetComponent<EllipseVibrationCollision>();
+		colliderScript = GetComponent<VibrationCollision>();
 		edge = transform.position;
 		time = 250;
 		beginningTime = time;
@@ -61,13 +61,13 @@ public class DrawEllipse : DrawShape {
 				// We use an offset and multiplier to create a tunable linear function.
 				// Decrease segmentMultiplier or segmentOffset to make vibration take less CPU time
 				const float segmentOffset = 40f;
-				const float segmentMultiplier = 4f;
-				var numSegments = (int) (radius * segmentMultiplier + segmentOffset);
+				const float segmentMultiplier = 1f;
+				int numSegments = (int) (radius * segmentMultiplier + segmentOffset);
 
 				// Create an array of points around the ellipse of size radiusx by radiusy
 				var ellipseVertices = Enumerable.Range(0, numSegments)
 					.Select(i => {
-						var theta = 2 * Mathf.PI * i / numSegments;
+						float theta = 2 * Mathf.PI * i / numSegments;
 						return new Vector2(Mathf.Cos(theta) * radiusx, Mathf.Sin(theta) * radiusy);
 					})
 					.ToArray();
@@ -90,7 +90,7 @@ public class DrawEllipse : DrawShape {
 				var mesh = new Mesh {
 					name = "Ellipse",
 					vertices = ellipseVertices.ToVector3(),
-					//triangles = triangles,
+					triangles = triangles,
 					colors = colors
 				};
 

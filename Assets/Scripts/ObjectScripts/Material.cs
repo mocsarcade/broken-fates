@@ -110,8 +110,8 @@ public class Material : MonoBehaviour {
 			//These two together cause distance to be the same; the distance to target, but it makes the speed and arc different
 			shadow.PushDist(distance.normalized*distance.magnitude/(shadow.GetRigidbody().drag * (26f/15)), ForceMode2D.Impulse);
 
-			//Wait for the object to come to a complete stop
-			while(shadow.GetSpeed() > 0.1f) {
+			//Wait for the object to hit the ground again
+			while(shadow.GetHeight() != 0 || shadow.GetHeightVelocity() > 0) {
 				UpdatePosition(shadow.GetHeight());
 				//When object has come to half its distance and started falling back down, continuously change sortingOrder
 				if(shadow.GetHeightVelocity() < 0 ) {
@@ -120,7 +120,7 @@ public class Material : MonoBehaviour {
 				yield return Timing.WaitForOneFrame;
 			}
 			//Object has reached target, so make vibration
-			Vibration.Vibrator().MakeVibration((int) ((zRate)*FALL_VIBRATION_SIZE), (Vector2) GetPosition(), gameObject);
+			Vibration.Vibrator().MakeVibration((int) ((zRate)*FALL_VIBRATION_SIZE), (Vector2) GetPosition(), this);
 
 			//Object may have crashed into other objects and hurt them, so empty the damagedList as well
 			EmptyDamagedList();

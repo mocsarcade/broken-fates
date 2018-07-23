@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deac79fdc67400d4d80681472475eba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VibrationPrefab: {fileID: 1251824922016766, guid: 12287df184a784243808e33b7c474522,
+  VibrationPrefab: {fileID: 1631823350979362, guid: e1ad3e2eeab968c4ea86e5b85d39245d,
     type: 2}
-  TimeVibrationPrefab: {fileID: 1118815723372852, guid: 7dd7e21ab9bad394e8d2aac463238cf7,
+  TimeVibrationPrefab: {fileID: 1272744845910254, guid: fedb69d66ec9902438dfe4eb742de85f,
     type: 2}

@@ -52,6 +52,7 @@ public class Shadow : MonoBehaviour {
 
 	protected IEnumerator<float> Gravity() {
 		float drag = rb2d.drag;
+		Debug.Log("Object " + parentTransform.gameObject + " is starting its gravity! Drag is: " + drag);
 		while(1==1) {
 			//Bring object towards floor unless being held in the air
 			if(parentScript.GetHolder() == null) {
@@ -61,7 +62,7 @@ public class Shadow : MonoBehaviour {
 					addHeight(z_velocity);
 					addVelocity(-9.8f * Time.deltaTime * Time.deltaTime * (11f/15));
 
-					if(z_offset < 0) {
+					if(z_offset <= 0) {
 						z_offset = 0;
 						z_velocity = 0;
 						rb2d.drag = drag;
@@ -195,28 +196,43 @@ public class Shadow : MonoBehaviour {
 	//protected void OnCollisionEnter2D(Collision2D collision)
 	protected void OnTriggerEnter2D(Collider2D collision)
 	{
-		Shadow touchedShadow = collision.gameObject.GetComponent<Shadow>();
 		//If the object has a shadow component, it could be damaged!
-		if(touchedShadow) {
-			//Set the objects to be able to touch concretely in case the object's OnTriggerEnter disabled collision
-			touchedShadow.SetCollisionFlag(solidCollider, false);
-			//Check if the object's concreteForm (parent) is also colliding with our object (on same z)
-			if(GetParentCollider().IsTouching(touchedShadow.GetParentCollider())) {
-				//If it is, damage it by a certain amount. That shadow object will do the same to this object
-				parentScript.Attack(touchedShadow.GetParent(), parentScript.GetDamageAmount());
-			} else {
-				//If the objects' shadows are touching, but not the objects, they are offset by flying-height, and so should not collide
-				touchedShadow.SetCollisionFlag(solidCollider, true);
+		if(collision.gameObject.layer == LayerMask.NameToLayer("All Shadows"))
+		{
+			Shadow touchedShadow = collision.gameObject.GetComponent<Shadow>();
+			if(touchedShadow) {
+				//Set the objects to be able to touch concretely in case the object's OnTriggerEnter disabled collision
+				touchedShadow.SetCollisionFlag(solidCollider, false);
+				//Check if the object's concreteForm (parent) is also colliding with our object (on same z)
+				if(GetParentCollider().IsTouching(touchedShadow.GetParentCollider())) {
+					//If it is, damage it by a certain amount. That shadow object will do the same to this object
+					parentScript.Attack(touchedShadow.GetParent(), parentScript.GetDamageAmount());
+				} else {
+					//If the objects' shadows are touching, but not the objects, they are offset by flying-height, and so should not collide
+					touchedShadow.SetCollisionFlag(solidCollider, true);
+				}
 			}
 		}
-		else if(parentScript.GetThrowState()) {
-			//If it's not a shadow object, you've hit a wall, and you should bounce off of it
-			reverseThrow();
+		//If the object is a Vibration, do nothing!
+		else if(collision.gameObject.layer == LayerMask.NameToLayer("Vibration"))
+		{
+			//Nothing!
+		}
+		//If it's neither a shadow object nor a vibration, you've hit a wall
+		else {
+			//Check if you should bounce off of it
+			if(parentScript.GetThrowState()) {
+				ReverseThrow();
+			}
 		}
 	}
 
-	protected void reverseThrow() {
+	protected void ReverseThrow() {
 		rb2d.velocity = -rb2d.velocity;
+	}
+
+	public void FeelVibration (Vector2 sourcePosition) {
+		parentScript.FeelVibration(sourcePosition);
 	}
 
 	//protected void OnCollisionExit2D(Collision2D collision)

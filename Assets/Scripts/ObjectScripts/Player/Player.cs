@@ -81,7 +81,7 @@ public class Player : MovingObject
 		//Define Ring size so that walking causes a uniform speed, while running or crawling has double the effect
 		int ringSize = (int) ((speed*2 - WALK_SPEED)/3)*weight;
 		//Create Vibration Ring
-		Vibration.Vibrator().MakeVibration(ringSize, GetPosition(), gameObject);
+		Vibration.Vibrator().MakeVibration(ringSize, GetPosition(), this);
 	}
 
 	//When Vibration is felt from other objects

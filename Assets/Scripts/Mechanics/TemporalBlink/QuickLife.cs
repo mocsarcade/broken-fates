@@ -8,7 +8,7 @@ using System;
 public class QuickLife : PlayerMechanics
 {
 
-    public const int RING_SIZE=75;
+    public const int RING_SIZE=1000;
     public const int STAMINA_COST = 10;
 
     //In case we decide there will be more than one save
@@ -100,13 +100,6 @@ public class QuickLife : PlayerMechanics
     public void SaveObject(GameObject touchedObj) {
       //Debug.Log("Saved Object: " + touchedObj);
       Memento tempMemento = touchedObj.GetComponent<Material>().CreateMemento();
-      //Check that this object hasn't already been saved
-      foreach(Memento includedMem in savedObjects) {
-        if(includedMem.GetParent() == tempMemento.GetParent() && includedMem.GetParent() != null) {
-          Debug.LogException(new Exception("Trying to save an object that's already been saved!"), this);
-          return;
-        }
-      }
       //If this object hasn't been saved yet, it can be added to the list
       savedObjects.Add(tempMemento);
       //NOTE: There is no option to check if the touched object is already in the list. If the same object is saved twice,
@@ -115,14 +108,6 @@ public class QuickLife : PlayerMechanics
     }
 
     public void SaveMemento(Memento savedMemento) {
-      //Debug.Log("Saved Memento: " + savedMemento);
-      //Check that this object hasn't already been saved
-      foreach(Memento includedMem in savedObjects) {
-        if(includedMem.GetParent() == savedMemento.GetParent() && includedMem.GetParent() != null) {
-          Debug.LogException(new Exception("Trying to save an object that's already been saved!"), this);
-          return;
-        }
-      }
       //If this object hasn't been saved yet, it can be added to the list
       savedObjects.Add(savedMemento);
       //NOTE: There is no option to check if the touched object is already in the list. If the same object is saved twice,
@@ -142,9 +127,11 @@ public class QuickLife : PlayerMechanics
             Destroy(toRevert.gameObject);
           }
         }
-        savedObjects.Clear();
+        //Get rid of all Vibrations
+        Vibration.Vibrator().EraseVibrations();
         //Decrease saves_used
         saves_used--;
+        savedObjects.Clear();
       }
 
       return status;

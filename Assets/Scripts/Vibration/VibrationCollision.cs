@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class EllipseVibrationCollision : MonoBehaviour {
+public class VibrationCollision : MonoBehaviour {
 
 	//private EllipseCollider2D _ellipseCollider2D;
   EdgeCollider2D edgeCollider;
@@ -28,7 +28,7 @@ public class EllipseVibrationCollision : MonoBehaviour {
 	public virtual void OnTriggerEnter2D(Collider2D touched) {
 		GameObject touchedObj = touched.gameObject;
 		if(touchedObj != parent) {
-			touchedObj.GetComponent<Material>().FeelVibration((Vector2) transform.position);
+			touchedObj.GetComponent<Shadow>().FeelVibration((Vector2) transform.position);
 		}
 	}
 

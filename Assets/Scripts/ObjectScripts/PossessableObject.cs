@@ -58,15 +58,15 @@ public class PossessableObject : Material {
 		damageAmo = damageAmo/(shadow.GetSize().x*GlobalRegistry.INVERSE_DAMAGE_MULTIPLIER() );
 		//Objects with zero or only one image are considered unbreakable and will stay the same forever
 		if(imageSet.Length > 1) {
-			if(broken == false && imageNum < imageSet.Length) {
+			if(broken == false && imageNum < imageSet.Length-1) {
 				if(damageAmo >= durability) {
 					imageNum++;
 					myRenderer.sprite = imageSet[imageNum];
-					if(imageNum >= imageSet.Length-1) {
-						//If Sprite is last possible sprite, it is now the broken image and should be broken
-						broken = true;
-					}
 				}
+			}
+			if(imageNum >= imageSet.Length-1) {
+				//If Sprite is last possible sprite, it is now the broken image and should be broken
+				broken = true;
 			}
 		}
 	}
@@ -75,7 +75,12 @@ public class PossessableObject : Material {
 	public override void useMemento(Memento oldState) {
 		//If Image is being updated to former image, update the broken tag
 		if(myRenderer.sprite != oldState.sprite) {
-			if(oldState.sprite == imageSet[imageSet.Length-1]) {
+			for(int i=0; i<imageSet.Length; i++) {
+				if(oldState.sprite == imageSet[i]) {
+					imageNum = i;
+				}
+			}
+			if(imageNum >= imageSet.Length-1) {
 				broken = true;
 			} else {
 				broken = false;

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class DrawShape : MonoBehaviour {
+public class _DrawShape : MonoBehaviour {
 
 		//Vibration display settings
 		public Color FillColor = Color.white;
 		protected float RING_SPEED = 0.04f;//0.12f;
-		protected int INVERSE_RING_LIFE = 1;//3;
 		protected const float BEGINNING_THICKNESS = 0.04f;
+		protected int INVERSE_RING_LIFE = 1;//3;
 		protected LineRenderer _lineRenderer;
 
 		//Position
