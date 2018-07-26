@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4111907a5e7efb645866fa6fcb28a996, type: 3}
   m_Name: StaminaPotion
   m_EditorClassIdentifier: 
-  description: 
-  name: 
+  description: Restores a small amount of Max Energy
+  name: Stamina Potion
   icon: {fileID: 21300002, guid: aec048e1dbc550a44884b027dad3092b, type: 3}
   Type: 0
   concreteObject: {fileID: 1876489529557522, guid: 33e91d99d59fd6f4eb4c21721fc400a4,

@@ -40,7 +40,9 @@ public class GameManager : MonoBehaviour {
 			instance = this;
 		else if (instance != this)
 			Destroy(gameObject);
+	}
 
+	void Start() {
 		//Load staminaBarSlider object
 		GameObject sliderBarObject = GameObject.FindWithTag("StaminaBar");
 		if(sliderBarObject) {

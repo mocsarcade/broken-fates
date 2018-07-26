@@ -103,6 +103,7 @@ MonoBehaviour:
   weight: 1
   shadowObj: {fileID: 1740225091447874, guid: 42b91d7a801f1e841b5f200094faa681, type: 2}
   shadow: {fileID: 0}
+  holder: {fileID: 0}
   beingThrown: 0
   damagedObjects: []
   inventoryCounterpart: {fileID: 11400000, guid: 34335454f4f2f044c818d9765dc972f6,
@@ -125,7 +126,7 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 4e045771b2f30904db9f4ad3260e0a0b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

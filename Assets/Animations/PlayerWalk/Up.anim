@@ -68,8 +68,8 @@ AnimationClip:
   m_Events:
   - time: 0
     functionName: SetHandPosition
-    data: 
+    data: pushBack
     objectReferenceParameter: {fileID: 0}
-    floatParameter: -19
+    floatParameter: -50
     intParameter: 63
     messageOptions: 0

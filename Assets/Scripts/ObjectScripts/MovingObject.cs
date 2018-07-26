@@ -96,8 +96,9 @@ public class MovingObject : Material {
   //Any object in the player's hand will be visible actually appearing in the player's hand.
   //This is achieved by animator events for every animation clip that tell the script to
   //update where the player's hand is.
-  //@param x_percent is the x amount of pixels in PERCENT OF THE OBJECT SIZE that is traversed to reach the hand
-  //@param y_percent is the x amount of pixels in PERCENT OF THE OBJECT SIZE that is traversed to reach the hand
+  //@param x_percent is the x amount of pixels in PERCENT OF THE OBJECT SIZE that is traversed to reach the hand divided by 2
+  //@param y_percent is the x amount of pixels in PERCENT OF THE OBJECT SIZE that is traversed to reach the hand divided by 2
+  //ex: hand of player is 9 of 19 pixels in. That is ((9/19)*100)/2
   //public void SetHandPosition(float x_percent, int y_percent) {
   public void SetHandPosition(AnimationEvent animEvent) {
     Bounds rt = myRenderer.sprite.bounds;

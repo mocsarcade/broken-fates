@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb0f54c95e973c48a5dffe60519ef69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  savedObjects: []
 --- !u!114 &114452444352480128
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -112,10 +113,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 0
+  _ringSpeed: 0.15
+  _inverseRingLife: 10
   _segments: 200
   _horizRadius: 0.02
   _vertRadius: 0.02
-  _offset: 0
   _axis: 2
   _checkValuesChanged: 1
   _climbWalls: 0

@@ -14,18 +14,12 @@ public class GlobalRegistry : MonoBehaviour {
 			Destroy(gameObject);
 	}
 
-	//  Example Global Variable that can be called for:
 	private float _INVERSE_DAMAGE_MULTIPLIER = 2f;
-	//*
-	//*
 	public static float INVERSE_DAMAGE_MULTIPLIER() {
 		//Call private method to get Inverse Damage Multiplier
 		return instance.Get_Inverse_Damage_Multiplier();
 	}
 	//Private method used by public GET method
 	private float Get_Inverse_Damage_Multiplier() {return _INVERSE_DAMAGE_MULTIPLIER;}
-	//*
-	//*
-	//  EXAMPLE OVER
 
 }

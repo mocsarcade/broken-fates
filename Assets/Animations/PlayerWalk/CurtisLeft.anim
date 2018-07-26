@@ -82,7 +82,7 @@ AnimationClip:
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 47.36
+    floatParameter: 26.31
     intParameter: 66
     messageOptions: 0
   - time: 0.083333336
@@ -96,14 +96,14 @@ AnimationClip:
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 42.1
+    floatParameter: 21
     intParameter: 66
     messageOptions: 0
   - time: 0.33333334
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 47.36
+    floatParameter: 26.31
     intParameter: 66
     messageOptions: 0
   - time: 0.41666666
@@ -117,13 +117,13 @@ AnimationClip:
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 57.89
+    floatParameter: 36
     intParameter: 70
     messageOptions: 0
   - time: 0.6666667
     functionName: SetHandPosition
     data: 
     objectReferenceParameter: {fileID: 0}
-    floatParameter: 47.36
+    floatParameter: 26.31
     intParameter: 66
     messageOptions: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
 
-	public GameObject player;
+	public GameObject target;
 
 	private const float SHAKE_RATIO = 0.075f;
 	private float shakeOffset;
@@ -13,14 +13,15 @@ public class CameraController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		player = Player.GetPlayer().gameObject;
-		offset = transform.position - player.transform.position;
+		//This commented part hard-coded the player as the followed object. Leaving target open is more flexible
+		//target = Player.GetPlayer().gameObject;
+		offset = transform.position - target.transform.position;
 	}
 
 	// Update is called once per frame
 	void LateUpdate () {
-		if(player) {
-			transform.position = player.transform.position + offset + new Vector3(shakeOffset,0,0);
+		if(target) {
+			transform.position = target.transform.position + offset + new Vector3(shakeOffset,0,0);
 		}
 	}
 

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using MEC;
 
 public class Material : MonoBehaviour {
@@ -54,6 +53,8 @@ public class Material : MonoBehaviour {
 
 			//Set this object to be a child of the shadow
 			transform.parent = shadow.gameObject.transform;
+			//Set z to a random value so objects won't overlap and have a weird lighting effect
+			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, - ((Random.value/100f) + (myRenderer.bounds.size.y/100f)));
 
       myCollider = GetComponent<Collider2D>();//shadow.gameObject.GetComponent<Collider2D>();
 			myTransform = shadow.gameObject.GetComponent<Transform>();
@@ -74,9 +75,9 @@ public class Material : MonoBehaviour {
 
 		public void UpdatePosition(float z_offset) {//float x_position, float y_position, float z_offset) {
 			if(shadow) {
-				transform.localPosition = new Vector3(0, shadow.GetOffset() + z_offset, 0);//x_position, y_position + z_offset, 0);
+				transform.localPosition = new Vector3(0, shadow.GetOffset() + z_offset, transform.position.z);//x_position, y_position + z_offset, 0);
 			} else {
-				transform.localPosition = new Vector3(0, z_offset, 0);//x_position, y_position + z_offset, 0);
+				transform.localPosition = new Vector3(0, z_offset, transform.position.z);//x_position, y_position + z_offset, 0);
 			}
 		}
 
@@ -250,7 +251,8 @@ public class Material : MonoBehaviour {
 		public void UpdatePositionAtHand() {
 			if(holder != null) {
 				//Create a variable to hold the size of this object divided by two so the exact center of this object will be held
-		    Vector3 mySize = myRenderer.size/2;
+				myCollider.enabled = true;
+		    Vector3 mySize = myCollider.bounds.size/2;
 				Vector3 newPosition = holder.GetHeldPosition(GetPosition());
 				//float new_Z = holder.GetCollider().bounds.min.y - newPosition.y + holder.GetHeight();
 				if(newPosition != GetPosition()-mySize) {
@@ -258,11 +260,12 @@ public class Material : MonoBehaviour {
 
 					//Change position to fit hand
 					shadow.setHeight(mySize.y + shadowCorrector);
-					shadow.setObjectPosition(new Vector2(newPosition.x-mySize.x, newPosition.y - shadowCorrector));
+					shadow.setObjectPosition(new Vector2(newPosition.x-myCollider.offset.x, newPosition.y - myCollider.offset.y - shadowCorrector));
 
 					//Check that the item may have changed sorting order
 					myRenderer.sortingOrder = holder.GetHeldSortingOrder();
 				}
+				myCollider.enabled = false;
 			}
 		}
 

@@ -115,7 +115,7 @@ AnimationClip:
     messageOptions: 0
   - time: 0.5
     functionName: SetHandPosition
-    data: pushBack
+    data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 73.68
     intParameter: 63
