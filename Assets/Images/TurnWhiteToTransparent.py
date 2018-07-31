@@ -1,6 +1,6 @@
 from PIL import Image
 
-img = Image.open('Objects.png')
+img = Image.open('MediumItems.png')
 img = img.convert("RGBA")
 datas = img.getdata()
 

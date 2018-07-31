@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerCollision : MonoBehaviour {
 
-	private const float SPEAKING_DISTANCE = 0.75f;
 	private const int layerMask = 2048; //This layermask is binary for 0100000000000, which means this layermask is for layer 11
 
 
@@ -32,9 +31,9 @@ public class PlayerCollision : MonoBehaviour {
 			playerCollider.enabled = false;
 			RaycastHit2D touched = Physics2D.CircleCast(
 				(Vector2) playerTransform.position,
-				SPEAKING_DISTANCE,
+				GlobalRegistry.PLAYER_REACH(),
 				playerInstance.GetDirection(),
-				SPEAKING_DISTANCE,
+				GlobalRegistry.PLAYER_REACH(),
 				layerMask);
 			playerCollider.enabled = true;
 			//Pick up the object

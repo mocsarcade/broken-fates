@@ -27,7 +27,7 @@ public class Material : MonoBehaviour {
     protected Rigidbody2D rb2d;
     public Shadow shadow;
     //PickedUp object holds the object holding this object. Otherwise, it is null
-  	public Material holder;
+  	public HolderData holderData = new HolderData();
   	//protected GameObject thrower;
 
     //Runtime Variables
@@ -35,6 +35,7 @@ public class Material : MonoBehaviour {
     protected MementoData mementoData;
 		public bool beingThrown;
 		protected bool toReverse;
+		protected Vector3 _lastPosition;
 		//protected Collider2D throwerCollider;
 		protected Material throwerScript;
 		public List<GameObject> damagedObjects = new List<GameObject>();
@@ -43,25 +44,29 @@ public class Material : MonoBehaviour {
     protected virtual void Awake() {
       rb2d = GetComponent<Rigidbody2D>();
       myRenderer = GetComponent<SpriteRenderer>();
+			myCollider = GetComponent<Collider2D>();//shadow.gameObject.GetComponent<Collider2D>();
 
-			//Initailize Sorting Layer, so when this object is dropped, it will return to its regular Layer
-			defSortingLayer = myRenderer.sortingLayerName;
-      //Initialize shadow to be a bigger blob depending on size of object and
-      //give reference to transform so shadow will follow
-      shadow = Instantiate(shadowObj, transform.position, Quaternion.identity).GetComponent<Shadow>();
-      shadow.Initialize(transform, weight, GetComponent<Collider2D>());
+				//Initailize Sorting Layer, so when this object is dropped, it will return to its regular Layer
+				defSortingLayer = myRenderer.sortingLayerName;
+				//Initialize shadow to be a bigger blob depending on size of object and
+				//give reference to transform so shadow will follow
+				shadow = Instantiate(shadowObj, transform.position, Quaternion.identity).GetComponent<Shadow>();
+				shadow.Initialize(transform, weight, GetComponent<Collider2D>());
 
-			//Set this object to be a child of the shadow
-			transform.parent = shadow.gameObject.transform;
-			//Set z to a random value so objects won't overlap and have a weird lighting effect
-			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, - ((Random.value/100f) + (myRenderer.bounds.size.y/100f)));
+				//Set this object to be a child of the shadow
+				Transform oldParent = transform.parent;
+				transform.parent = shadow.gameObject.transform;
+				if(oldParent != null) {
+					//shadow.setObjectPosition(transform.position);
+					PickedUp(oldParent.gameObject, false);
+				}
+				//Set z to a random value so objects won't overlap and have a weird lighting effect
+				transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, - ((Random.value/100f) + (myRenderer.bounds.size.y/100f)));
 
-      myCollider = GetComponent<Collider2D>();//shadow.gameObject.GetComponent<Collider2D>();
-			myTransform = shadow.gameObject.GetComponent<Transform>();
+				myTransform = shadow.gameObject.GetComponent<Transform>();
 
-      holder = null;
-      LoadMemento();
-    }
+			LoadMemento();
+		}
 
 		protected virtual void Update() {
 			UpdatePositionAtHand();
@@ -86,11 +91,7 @@ public class Material : MonoBehaviour {
     public virtual IEnumerator<float> Throw(Vector2 target, int arcDegrees) {
 			beingThrown = true;
 			//Ignore collisions between this object and the thrower for a short amount of time
-			if(holder) {
-				//throwerCollider = holder.GetCollider();
-				throwerScript = holder;
-				SetCollisionFlag(throwerScript, true);
-			}
+			holderData.SetCollisionFlag(this, true);
 
 			//Run-time variables
 			float zRate = Mathf.Sqrt(9.8f*Vector2.Distance(GetPosition(), target));
@@ -101,9 +102,7 @@ public class Material : MonoBehaviour {
 			//Set object to be in front or behind player depending on direction thrown
 			Vector2 distance = target - (Vector2) GetPosition();
 			//Possessed Objects have no "holder", and so the throw object could be called without holder being defined
-			if(holder) {
-				myRenderer.sortingOrder = holder.gameObject.GetComponent<SpriteRenderer>().sortingOrder + (int) (-distance.y/Mathf.Abs(distance.y));
-			}
+			myRenderer.sortingOrder = holderData.GetSortingOrder() + (int) (-distance.y/Mathf.Abs(distance.y));
 			Drop();
 
 			shadow.addVelocity((zRate+(4.9f*Time.deltaTime))*Time.deltaTime*factor); //Arc is increased by a factor of 1/factor, multiplying distance by 1/factor
@@ -116,7 +115,7 @@ public class Material : MonoBehaviour {
 				UpdatePosition(shadow.GetHeight());
 				//When object has come to half its distance and started falling back down, continuously change sortingOrder
 				if(shadow.GetHeightVelocity() < 0 ) {
-					myRenderer.sortingOrder = (int) (-GetPosition().y*3);
+					myRenderer.sortingOrder = (int) (GetPosition().y*GlobalRegistry.SORTING_Y_MULTIPLIER());
 				}
 				yield return Timing.WaitForOneFrame;
 			}
@@ -127,13 +126,7 @@ public class Material : MonoBehaviour {
 			EmptyDamagedList();
 
 			//Object is no longer attached to thrower, so let it be able to collide with thrower again
-			//if(throwerCollider) {
-			if(throwerScript) {
-				//Use EnableCollider method for shadow's two colliders and the object colliders that takes only the touched GameObject as a param
-				SetCollisionFlag(throwerScript, false);
-				throwerScript = null;
-				//throwerCollider = null;
-			}
+			holderData.SetCollisionFlag(this, false);
 			beingThrown = false;
     }
 
@@ -193,19 +186,23 @@ public class Material : MonoBehaviour {
 
     //Picks up this object and returns either an "Item" asset object for concreteItem objects
     //or null, telling the program the Use() function cannot be done on the item in the players' hand
-    public virtual Item PickedUp(GameObject _holder) {
+    public virtual Item PickedUp(GameObject _holder, bool resetPositionFlag = true) {
       //Put the items together
       if(_holder != null) {
-				holder = _holder.GetComponent<Material>();
+				holderData.Holder = _holder;
         Transform newPosition = _holder.transform;
-    		SetPosition(newPosition.position, 0); //0 for now!
-        shadow.setFollow(newPosition);
 
+				if(resetPositionFlag) {
+					SetPosition(newPosition.position, 0); //0 for now!
+		      //Place object on Object's layer so it looks like "holding" the object
+					myRenderer.sortingLayerName = holderData.GetSortingLayerName(myRenderer.sortingLayerName);
+					myRenderer.sortingOrder = holderData.GetSortingOrder()+1;
+				}
+
+        shadow.setFollow(newPosition);
 				//Disable pickedUp object colliding or moving of its own accord
 				DisableRigidbody();
-	      //Place object on Object's layer so it looks like "holding" the object
-				myRenderer.sortingLayerName = _holder.GetComponent<SpriteRenderer>().sortingLayerName;
-				myRenderer.sortingOrder = _holder.GetComponent<SpriteRenderer>().sortingOrder+1;
+
       } else {
 				shadow.setFollow(null);
       }
@@ -227,18 +224,8 @@ public class Material : MonoBehaviour {
 			myCollider.enabled = true;
 		}
 
-		//Collision of Shadow is disabled
-		public virtual void SetCollisionFlag(Material toDisable, bool flag) {
-			//Object's Collider
-			Physics2D.IgnoreCollision(GetCollider(), toDisable.GetCollider(), flag);
-			//Shadow Regular Collider
-			Physics2D.IgnoreCollision(shadow.GetCollider(), toDisable.GetShadow().GetCollider(), flag);
-			//Shadow Solid Collider
-			toDisable.GetShadow().SetCollisionFlag(shadow.GetSolidCollider(), flag);
-		}
-
     public void Drop() {
-      holder = null;
+      holderData.Holder = null;
       shadow.setFollow(null);
 			//Reactivate rigidbody and collision
 			EnableRigidbody();
@@ -249,22 +236,23 @@ public class Material : MonoBehaviour {
     }
 
 		public void UpdatePositionAtHand() {
-			if(holder != null) {
+			if(holderData.Holder != null) {
 				//Create a variable to hold the size of this object divided by two so the exact center of this object will be held
 				myCollider.enabled = true;
-		    Vector3 mySize = myCollider.bounds.size/2;
-				Vector3 newPosition = holder.GetHeldPosition(GetPosition());
-				//float new_Z = holder.GetCollider().bounds.min.y - newPosition.y + holder.GetHeight();
-				if(newPosition != GetPosition()-mySize) {
-					float shadowCorrector = holder.GetShadow().GetSize().y/2 - GetShadow().GetSize().y;
+				Vector3 newPosition = holderData.GetHeldPosition(transform.position);
+				if(newPosition != _lastPosition) {
 
 					//Change position to fit hand
-					shadow.setHeight(mySize.y + shadowCorrector);
-					shadow.setObjectPosition(new Vector2(newPosition.x-myCollider.offset.x, newPosition.y - myCollider.offset.y - shadowCorrector));
+					float yPosition = newPosition.y;
+
+					Vector3 mySize = myCollider.bounds.size/2;
+					shadow.setHeight(-holderData.GetCollider().bounds.min.y + yPosition - mySize.y); //Add holder's size to this to make it accurate for walls
+					shadow.setPosition(new Vector2(newPosition.x-myCollider.offset.x, holderData.GetCollider().bounds.min.y - GetShadow().GetOffset()+mySize.y));// - (holderData.GetCollider().bounds.size.y + (holderData.GetCollider().bounds.min.y - yPosition))));
 
 					//Check that the item may have changed sorting order
-					myRenderer.sortingOrder = holder.GetHeldSortingOrder();
+					myRenderer.sortingOrder = holderData.GetSortingOrder();
 				}
+				_lastPosition = newPosition;
 				myCollider.enabled = false;
 			}
 		}
@@ -360,8 +348,13 @@ public class Material : MonoBehaviour {
       SetPosition(oldState.position, 0);
       //Take the object picking you up and call its "PickUp" method. Player's pick up method will call inventory
       //Monsters will just call the "picked up" method of this object
-      if(holder != oldState.holder && oldState.holder != null) {
-        oldState.holder.PickUp(gameObject);
+      if(holderData.Holder != oldState.holder && oldState.holder != null) {
+				Material oldHolderScript = oldState.holder.GetComponent<Material>();
+				if(oldHolderScript) {
+					oldHolderScript.PickUp(gameObject);
+				} else {
+					PickedUp(oldState.holder);
+				}
       }
 			//Update Image to former image
 			if(myRenderer.sprite != oldState.sprite) {
@@ -393,7 +386,7 @@ public class Material : MonoBehaviour {
       Destroy(mementoData);
   	}
 
-    public Material GetHolder() {return holder;}
+    public GameObject GetHolder() {return holderData.Holder;}
     public Sprite GetSprite() {return myRenderer.sprite;}
 
     public float GetHeight() {return shadow.GetHeight();}
@@ -426,4 +419,90 @@ public class Material : MonoBehaviour {
     // Interface so inventory can know this object has no "use"
     public virtual void Use () {}
 
+
+
+		//HolderData Class used for all holder references
+		public class HolderData {
+
+			private Material holderScript;
+			private GameObject holder;
+			private SpriteRenderer holderRenderer;
+			private Collider2D holderCollider;
+
+			public HolderData() {
+				holderScript = null;
+				holder = null;
+				holderRenderer = null;
+				holderCollider = null;
+			}
+
+			//Property for holder GameObject
+			public GameObject Holder {
+				get{
+					return holder;
+				}
+				set{
+					holder = value;
+					if(value) {
+						holderScript = value.GetComponent<Material>();
+						holderRenderer = value.GetComponent<SpriteRenderer>();
+						holderCollider = value.GetComponent<Collider2D>();
+					} else {
+						holderScript = null;
+						holderRenderer = null;
+						holderCollider = null;
+					}
+				}
+			}
+
+			//Collision of Shadow is disabled
+			public void SetCollisionFlag(Material userScript, bool flag) {
+				if(userScript && holderScript) {
+					//Object's Collider
+					Physics2D.IgnoreCollision(userScript.GetCollider(), holderScript.GetCollider(), flag);
+					//Shadow Regular Collider
+					Physics2D.IgnoreCollision(userScript.GetShadow().GetCollider(), holderScript.GetShadow().GetCollider(), flag);
+					//Shadow Solid Collider
+					holderScript.GetShadow().SetCollisionFlag(userScript.GetShadow().GetSolidCollider(), flag);
+				}
+			}
+
+			public int GetSortingOrder() {
+				if(holderRenderer) {
+					return holderRenderer.sortingOrder;
+				} else {
+					return 0;
+				}
+			}
+			public string GetSortingLayerName(string oldLayerName) {
+				if(holderRenderer) {
+					return holderRenderer.sortingLayerName;
+				} else {
+					return oldLayerName;
+				}
+			}
+
+			public Vector3 GetHeldPosition(Vector3 position) {
+				if(holderScript) {
+					return holderScript.GetHeldPosition(position);
+				} else {
+					return position;
+				}
+			}
+
+			public Shadow GetShadow() {
+				if(holderScript) {
+					return holderScript.GetShadow();
+				} else {
+					//Yeah, you just caused an error. Don't ever call GetShadow on a holder
+					//without first calling GetShadow and then checking the value of the method
+					return null;
+				}
+			}
+
+			public Collider2D GetCollider() {
+				return holderCollider;
+			}
+
+		}
 }

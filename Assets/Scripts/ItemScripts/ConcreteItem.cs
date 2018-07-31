@@ -81,9 +81,9 @@ public class ConcreteItem : Material {
 
   //Picks up this object and returns null, telling the program the Use()
   //function cannot be done on this item while in the players' hand
-  public override Item PickedUp(GameObject holder) {
+  public override Item PickedUp(GameObject holder, bool resetPositionFlag = true) {
 		//Pick up
-		base.PickedUp(holder);
+		base.PickedUp(holder, resetPositionFlag);
     //Return this object's inventory counterpart so it can be rendered and added to the inventory
     return inventoryCounterpart;
   }

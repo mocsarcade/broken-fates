@@ -83,8 +83,8 @@ public class MovingObject : Material {
 
   //Picks up this object and returns null, telling the program the Use()
   //function cannot be done on this item while in the players' hand
-  public override Item PickedUp(GameObject holder) {
-    base.PickedUp(holder);
+  public override Item PickedUp(GameObject holder, bool resetPositionFlag = true) {
+    base.PickedUp(holder, resetPositionFlag);
     //Freeze the object's movements
     SetMobility(false);
     return null;

@@ -31,7 +31,7 @@ Shader "Sprites/No-Overlap-Diffuse"
         BlendOp Max
 
         CGPROGRAM
-        #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap keepalpha noinstancing
+        #pragma surface surf Lambert vertex:vert nofog nolightmap nodynlightmap noinstancing
         #pragma multi_compile _ PIXELSNAP_ON
         #pragma multi_compile _ ETC1_EXTERNAL_ALPHA
         #include "UnitySprites.cginc"
@@ -54,7 +54,6 @@ Shader "Sprites/No-Overlap-Diffuse"
         {
             fixed4 c = SampleSpriteTexture (IN.uv_MainTex) * IN.color;
             o.Albedo = c.rgb * c.a;
-            o.Alpha = c.a;
         }
         ENDCG
     }

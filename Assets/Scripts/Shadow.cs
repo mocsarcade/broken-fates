@@ -52,7 +52,6 @@ public class Shadow : MonoBehaviour {
 
 	protected IEnumerator<float> Gravity() {
 		float drag = rb2d.drag;
-		Debug.Log("Object " + parentTransform.gameObject + " is starting its gravity! Drag is: " + drag);
 		while(1==1) {
 			//Bring object towards floor unless being held in the air
 			if(parentScript.GetHolder() == null) {
@@ -223,12 +222,24 @@ public class Shadow : MonoBehaviour {
 			//Check if you should bounce off of it
 			if(parentScript.GetThrowState()) {
 				ReverseThrow();
+				MakeVibration(collision);
 			}
 		}
 	}
 
 	protected void ReverseThrow() {
+		//Reverse Direction
 		rb2d.velocity = -rb2d.velocity;
+	}
+
+	protected void MakeVibration(Collider2D collision) {
+		//Make sure the object is touching the object the shadow touched. If not, the object is too high and is over the wall
+		//This is too far to see or appreciate the vibration, so don't show it
+		//Debug.Log(parentTransform.gameObject.GetComponent<Collider2D>().Distance(collision).isOverlapped + " and distance is " + parentTransform.gameObject.GetComponent<Collider2D>().Distance(collision).distance);
+		if(parentTransform.gameObject.GetComponent<Collider2D>().Distance(collision).isOverlapped) {
+			//Make Vibration
+			Vibration.Vibrator().MakeVibration((int) (rb2d.velocity.magnitude*100), (Vector2) parentTransform.position + rb2d.velocity*Time.deltaTime, parentScript, collision);
+		}
 	}
 
 	public void FeelVibration (Vector2 sourcePosition) {

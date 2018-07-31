@@ -325,7 +325,7 @@ public class Inventory : MonoBehaviour {
     public void throwHeldItem(Vector2 tarGet)
     {
       if(handObject != null) {
-        Timing.RunCoroutine(handObject.GetComponent<Material>().Throw(tarGet, 75).CancelWith(handObject), Segment.FixedUpdate);
+        Timing.RunCoroutine(handObject.GetComponent<Material>().Throw(tarGet, 30).CancelWith(handObject), Segment.FixedUpdate);
         if(newlyHeldObject == true) {
           handObject = null;
           handScript = null;

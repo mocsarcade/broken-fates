@@ -21,23 +21,23 @@ public class Vibration : MonoBehaviour {
 
 	//Overloaded method for making vibrations
 	//This method takes a material script as the "parent"
-	public void MakeVibration(int ringSize, Vector2 myPosition, Material _parent) {
+	public void MakeVibration(int ringSize, Vector2 myPosition, Material _parent, Collider2D onWall=null) {
 		//Create Vibration Ring
 		GameObject parentObject = _parent.GetShadow().gameObject;
 		//Instantiate(VibrationPrefab, myPosition, Quaternion.identity).GetComponent<DrawShape>().Initialize (ringSize, parent);
 		GameObject newVibration = Instantiate(VibrationPrefab, myPosition, Quaternion.identity);
 		//Add Vibration to List of Vibrations in case EraseVibrations is called
 		AddToList(newVibration);
-		newVibration.GetComponent<DrawVibration>().Initialize (ringSize, _parent.gameObject);
+		newVibration.GetComponent<DrawVibration>().Initialize (ringSize, _parent.gameObject, onWall);
 	}
 	//This method takes an object as the "parent" (used for objects that are not materials [a.k.a, don't have shadows]
-	public void MakeVibration(int ringSize, Vector2 myPosition, GameObject _parent) {
+	public void MakeVibration(int ringSize, Vector2 myPosition, GameObject _parent, Collider2D onWall=null) {
 		//Create Vibration Ring
 		//Instantiate(VibrationPrefab, myPosition, Quaternion.identity).GetComponent<DrawShape>().Initialize (ringSize, parent);
 		GameObject newVibration = Instantiate(VibrationPrefab, myPosition, Quaternion.identity);
 		//Add Vibration to List of Vibrations in case EraseVibrations is called
 		AddToList(newVibration);
-		newVibration.GetComponent<DrawVibration>().Initialize (ringSize, _parent);
+		newVibration.GetComponent<DrawVibration>().Initialize (ringSize, _parent, onWall);
 	}
 
 	public void MakeTimeVibration(int ringSize, Vector2 myPosition, GameObject _parent) {

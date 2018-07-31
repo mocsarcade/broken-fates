@@ -11,7 +11,7 @@ public class Memento : MonoBehaviour {
 	public Material parent;
 
 	//Private variables
-	public Material holder;
+	public GameObject holder;
 	public Sprite sprite;
 
 	public MementoData myData;
