@@ -10,6 +10,7 @@ TagManager:
   - ItemBox
   - ScreenTexture
   - Lightable
+  - Unique
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Vibration
   - Material Objects
   - Non-Discrete
-  - 
+  - Room Layer
   - 
   - 
   - 

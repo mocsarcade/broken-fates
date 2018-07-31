@@ -37,7 +37,7 @@ public class FloorGenerator : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	// Checks that player has moved, and if he has, add/destroy floor spaces
 	void Update () {
 		playerPosit = gameObject.transform.position;
@@ -89,7 +89,7 @@ public class FloorGenerator : MonoBehaviour {
 			//Change right bound as new blocks have been made
 			LRBound[1]--;
 		}
-		
+
 		if(playerPosit.y + height/40 > UDBound[1]) {
  			//Add new tiles on the right
 				//Change upper bound as new blocks have been made
@@ -138,5 +138,5 @@ public class FloorGenerator : MonoBehaviour {
 			UDBound[1]--;
 		}
 	}
-	
+
 }

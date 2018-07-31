@@ -58,6 +58,9 @@ public class Inventory : MonoBehaviour {
       }
 
       LoadMemento();
+    }
+
+    void Start() {
       makeHandObject();
     }
 
@@ -236,11 +239,11 @@ public class Inventory : MonoBehaviour {
     }
 
     public void makeObject(Item item) {
-      handObject = (GameObject) Instantiate(item.concreteObject);
+      handObject = (GameObject) Instantiate(item.concreteObject, transform.position, Quaternion.identity);
       handScript = handObject.GetComponent<Material>();
-      handScript.PickedUp(player);
+      handObject.transform.parent = player.transform;
       //Update object's position to be in the player's hand
-      handScript.UpdatePositionAtHand();
+      //handScript.UpdatePositionAtHand();
     }
 
     //Switches out held item for the one to the right in the list and returns the object to be displayed on the GUI

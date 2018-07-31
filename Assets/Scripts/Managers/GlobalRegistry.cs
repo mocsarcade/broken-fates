@@ -40,4 +40,20 @@ public class GlobalRegistry : MonoBehaviour {
 	//Private method used by public GET method
 	private float Get_Player_Reach() {return _PLAYER_REACH;}
 
+	public const int _ROOM_WIDTH = 24;
+	public static int ROOM_WIDTH() {
+		//Call private method to get each room's width
+		return instance.Get_Room_Width();
+	}
+	//Private method used by public GET method
+	private int Get_Room_Width() {return _ROOM_WIDTH;}
+
+	public const int _ROOM_HEIGHT = 18;
+	public static int ROOM_HEIGHT() {
+		//Call private method to get each room's height
+		return instance.Get_Room_Height();
+	}
+	//Private method used by public GET method
+	private int Get_Room_Height() {return _ROOM_HEIGHT;}
+
 }

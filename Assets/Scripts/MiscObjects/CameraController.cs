@@ -15,6 +15,8 @@ public class CameraController : MonoBehaviour {
 	void Start () {
 		//This commented part hard-coded the player as the followed object. Leaving target open is more flexible
 		//target = Player.GetPlayer().gameObject;
+		Vector2 size = target.GetComponent<Collider2D>().bounds.extents;
+		transform.position = new Vector3(target.transform.position.x + size.x, target.transform.position.y - size.y, transform.position.z);
 		offset = transform.position - target.transform.position;
 	}
 

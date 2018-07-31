@@ -8,7 +8,7 @@ public class Material : MonoBehaviour {
 	 public Memento curMemento;
 
     public const int SHADOW_CHANGE_RATE = 5;
-    public const float FALL_VIBRATION_SIZE = 17f;
+    public const float FALL_VIBRATION_SIZE = 25f;
 
 		protected string defSortingLayer;
     //Weight is important. An object's weight can be from 1 to 3, with different levels
@@ -48,24 +48,27 @@ public class Material : MonoBehaviour {
 
 				//Initailize Sorting Layer, so when this object is dropped, it will return to its regular Layer
 				defSortingLayer = myRenderer.sortingLayerName;
-				//Initialize shadow to be a bigger blob depending on size of object and
-				//give reference to transform so shadow will follow
-				shadow = Instantiate(shadowObj, transform.position, Quaternion.identity).GetComponent<Shadow>();
-				shadow.Initialize(transform, weight, GetComponent<Collider2D>());
-
-				//Set this object to be a child of the shadow
-				Transform oldParent = transform.parent;
-				transform.parent = shadow.gameObject.transform;
-				if(oldParent != null) {
-					//shadow.setObjectPosition(transform.position);
-					PickedUp(oldParent.gameObject, false);
-				}
-				//Set z to a random value so objects won't overlap and have a weird lighting effect
-				transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, - ((Random.value/100f) + (myRenderer.bounds.size.y/100f)));
-
-				myTransform = shadow.gameObject.GetComponent<Transform>();
 
 			LoadMemento();
+		}
+
+		protected void Start() {
+			//Initialize shadow to be a bigger blob depending on size of object and
+			//give reference to transform so shadow will follow
+			shadow = Instantiate(shadowObj, transform.position, Quaternion.identity).GetComponent<Shadow>();
+			shadow.Initialize(transform, weight, GetComponent<Collider2D>());
+
+			//Set this object to be a child of the shadow
+			Transform oldParent = transform.parent;
+			transform.parent = shadow.gameObject.transform;
+			if(oldParent != null) {
+				//shadow.setObjectPosition(transform.position);
+				PickedUp(oldParent.gameObject, false);
+			}
+			//Set z to a random value so objects won't overlap and have a weird lighting effect
+			transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, - ((Random.value/100f) + (myRenderer.bounds.size.y/100f)));
+
+			myTransform = shadow.gameObject.GetComponent<Transform>();
 		}
 
 		protected virtual void Update() {
@@ -129,14 +132,6 @@ public class Material : MonoBehaviour {
 			holderData.SetCollisionFlag(this, false);
 			beingThrown = false;
     }
-
-		/* //IF NO ERRORS AROSE FROM THIS BEING REMOVED, GET RID OF THIS SLICE OF CODE; IT WAS NEVER USED
-		public void UpdateZ(float z) {
-			//Update Order in Layer
-			myRenderer.sortingOrder = (int)(-GetPosition().y + z);
-			//Update shadow depending on height from object to shadow
-			shadow.UpdateSize();
-		}*/
 
 		/*
 		public void reverseThrow() {

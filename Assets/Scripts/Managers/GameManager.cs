@@ -28,6 +28,13 @@ public class GameManager : MonoBehaviour {
 	private int StaminaCap;
 	private int Stamina;
 
+	//NOTE: Later floor setup and world-switches will have loading time, causing
+	//need for the game to be pitch-black while loading. This variable controls that
+	/*
+	private bool _active = true;
+	public bool Active{get; set;}
+	*/
+
 	//Stamian Bar Slider (Holds a float from 0 to 1)
  	private Slider staminaBarSlider;  //reference for slider
 	private RectTransform staminaBarObject;  //reference for slider
