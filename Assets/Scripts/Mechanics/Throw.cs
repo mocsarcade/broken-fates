@@ -28,7 +28,7 @@ public class Throw : PlayerMechanics {
 
 		public override bool Activate() {
 			base.Activate();
-			if(Inventory.instance.itemsInInventory() > 0) {
+			if(Inventory.instance.isHolding()) {
 				tarPos = powerUser.transform.position;
 				//Variable magicTar is used for when magicTar has to be destroyed when the activation key (ex: F) is released
 				magicTar = Instantiate(target, tarPos, Quaternion.identity);
@@ -46,7 +46,7 @@ public class Throw : PlayerMechanics {
 
 		public override void Release () {
 			base.Release();
-			if(Inventory.instance.itemsInInventory() > 0) {
+			if(Inventory.instance.isHolding()) {
 				if((Vector2) magicTar.transform.position != tarPos) {
 					//Drain stamina for using spell. Status is the status variable for whether player had enough stamina for activation
 					bool status = GameManager.instance.DrainStamina(STAMINA_COST);
@@ -56,9 +56,11 @@ public class Throw : PlayerMechanics {
 						userScript.throwHeldObject(tarPos);
 					}
 				}
-				//Spell cleanup
-				Destroy(magicTar);
-				userScript.SetMobility(true);
+		}
+		if(magicTar) {
+			//Spell cleanup
+			Destroy(magicTar);
+			userScript.SetMobility(true);
 		}
 	}
 

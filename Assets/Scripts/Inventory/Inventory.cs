@@ -332,7 +332,8 @@ public class Inventory : MonoBehaviour {
         if(newlyHeldObject == true) {
           handObject = null;
           handScript = null;
-          makeHandObject();
+          if(itemsInInventory() > 0)
+            makeHandObject();
           newlyHeldObject = false;
         }
         else {
@@ -352,6 +353,13 @@ public class Inventory : MonoBehaviour {
 
     public float GetStrength() {
       return strength;
+    }
+
+    public bool isHolding() {
+      if(handObject != null) {
+        return true;
+      }
+      return false;
     }
 
     public int GetWeight() {

@@ -59,6 +59,7 @@
 			private bool _climbWalls = true;
 
 			private Collider2D onWall;
+			private EdgeCollider2D trueCollider;
 
 			private int _previousSegmentsValue;
 			private float _previousHorizRadiusValue;
@@ -66,10 +67,14 @@
 			private Axis _previousAxisValue;
 
 			private LineRenderer _line;
+			private CircleCollider2D pointCollider;
 
 			void OnEnable() {
 				_line = gameObject.GetComponent<LineRenderer>();
 				_colliderScript = GetComponent<VibrationCollision>();
+
+				pointCollider = (new GameObject()).AddComponent(typeof(CircleCollider2D)) as CircleCollider2D;
+				pointCollider.radius = 0.01f;
 			}
 
 			void Start()
@@ -89,6 +94,7 @@
 				beginningTime = time;
 				parent = _parent;
 				onWall = _onWall;
+				trueCollider = WallScript.GetEdgeCollider();
 			}
 
 			private void FixedUpdate()
@@ -142,8 +148,6 @@
 					float y;
 					float z = 0;
 
-					bool offWall;
-
 					float angle = 0f;
 
 					for (int i = 0; i < (_segments + 1); i++)
@@ -153,38 +157,39 @@
 
 							Vector2 vertex = new Vector2(x, y);
 
-							offWall = false;
 
-							if(onWall && _climbWalls) {		//Y of vibrations set on walls is easy
-								y *= Y_MULTIPLIER;
+							//All calculations for vibrations on walls
+							if(onWall && _climbWalls) {
+								y *= Y_MULTIPLIER;	//Y of vibrations set on walls is easy
 
 								vertex = new Vector2(x, y);
 
-								//Vibrations on the wall get tricky when they get OFF the wall
-									//For horizontal extension, set x to end of wall
-									if(vertex.y + transform.position.y < onWall.bounds.max.y && vertex.y + transform.position.y > onWall.bounds.min.y) {
-										if(vertex.x + transform.position.x > onWall.bounds.max.x) {
-											x = onWall.bounds.max.x - transform.position.x - 0.0000001f*i;
-											offWall = true;
-										} else if(vertex.x + transform.position.x < onWall.bounds.min.x) {
-											x = onWall.bounds.min.x - transform.position.x - 0.0000001f*i;
-											offWall = true;
+								//Checks if there is a wall within 0.1 units of this segement, and returns null if none exists
+								result = Physics2D.OverlapCircle(vertex + (Vector2) transform.position, BLOCK_OFFSET, WALL_LAYERMASK);
+								if(result == null) {
+									//Vibrations on the wall get tricky when they get OFF the wall
+										//For horizontal extension, set x to end of wall
+										if(vertex.y + transform.position.y < onWall.bounds.max.y && vertex.y + transform.position.y > onWall.bounds.min.y) {
+											if(vertex.x + transform.position.x > onWall.bounds.max.x) {
+												x = onWall.bounds.max.x - transform.position.x - 0.0000001f*i;
+											} else if(vertex.x + transform.position.x < onWall.bounds.min.x) {
+												x = onWall.bounds.min.x - transform.position.x - 0.0000001f*i;
+											}
 										}
-									}
 
-									//For vertical extension, set y to elliptical once off wall
-									if(vertex.y + transform.position.y >= onWall.bounds.max.y) {
-										float distance = (vertex.y + transform.position.y) - onWall.bounds.max.y;
-										//y = onWall.bounds.max.y - transform.position.y + (distance / Y_MULTIPLIER);
-										y = (onWall.bounds.max.y - transform.position.y) + distance/Y_MULTIPLIER + BLOCK_OFFSET;
-										offWall = true;
-									} else if(vertex.y + transform.position.y <= onWall.bounds.min.y) {
-										float distance = onWall.bounds.min.y - (vertex.y + transform.position.y);
-										//y = onWall.bounds.min.y - transform.position.y - (distance / Y_MULTIPLIER);
-										y = (onWall.bounds.min.y - transform.position.y) - distance/Y_MULTIPLIER - BLOCK_OFFSET;
-										offWall = true;
-									}
-							}
+										//For vertical extension, set y to elliptical once off wall
+										if(vertex.y + transform.position.y >= onWall.bounds.max.y) {
+											//float distance = (vertex.y + transform.position.y) - onWall.bounds.max.y;
+											float distance = onWall.bounds.max.y - (vertex.y + transform.position.y);
+											//y = onWall.bounds.max.y - transform.position.y + (distance / Y_MULTIPLIER);
+											y = (onWall.bounds.max.y - transform.position.y) - distance/Y_MULTIPLIER + BLOCK_OFFSET;
+										} else if(vertex.y + transform.position.y <= onWall.bounds.min.y) {
+											float distance = onWall.bounds.min.y - (vertex.y + transform.position.y);
+											//y = onWall.bounds.min.y - transform.position.y - (distance / Y_MULTIPLIER);
+											y = (onWall.bounds.min.y - transform.position.y) - distance/Y_MULTIPLIER - BLOCK_OFFSET;
+										}
+								}
+							} //End onWall work
 
 							if(_climbWalls) {
 								//Update Y depending on whether colliding with a wall
@@ -192,8 +197,8 @@
 								//Checks if there is a wall within 0.1 units of this segement, and returns null if none exists
 								result = Physics2D.OverlapCircle(vertex + (Vector2) transform.position, BLOCK_OFFSET, WALL_LAYERMASK);
 								//Updates when on a wall if the vibration is regular or if it is a wall-vibration now off of its wall
-								if(result != null && (onWall == null || offWall == true)) {
-									y = ClimbWall(vertex, result, i);
+								if(result != null && onWall == null) {
+									y = ClimbWall(vertex, i);
 								}
 							}
 
@@ -221,9 +226,10 @@
 			}
 
 			//Takes in vertex position and the colliding wall and increments y appropriately
-			protected float ClimbWall(Vector2 vertex, Collider2D result, int i) {
+			protected float ClimbWall(Vector2 vertex, int i) {
 				float y;
 
+				/*
 				//Set distToEnd according to wall side closest to vibration point (left, right or down)
 				float distToEnd = Mathf.Min(
 					Mathf.Min(
@@ -232,16 +238,22 @@
 						Vector2.Distance(vertex + (Vector2) transform.position, new Vector2(result.bounds.center.x - result.bounds.extents.x, vertex.y + transform.position.y))),
 					//Bottom side
 					Vector2.Distance(vertex + (Vector2) transform.position, new Vector2(vertex.x + transform.position.x, result.bounds.center.y - result.bounds.extents.y))
-				);
+				);*/
+				//Call NavMesh.FindClosestEdge to find distance to wallMesh's closest edge
+				pointCollider.transform.position = new Vector3(transform.position.x + vertex.x, transform.position.y + vertex.y, -0.0000001f*i);
+				float distToEnd = (trueCollider.Distance(pointCollider)).distance;
 
+				//Checks if there is a wall within 0.1 units of this segement, and returns null if none exists
+				//Collider2D aboveResult = Physics2D.OverlapCircle( (Vector2) transform.position + vertex + new Vector2(0, distToEnd*Y_MULTIPLIER), BLOCK_OFFSET, WALL_LAYERMASK);
 				//If the increased amount is over the top of the wall, just set it equal to the top of the wall
-				if((transform.position.y > result.bounds.max.y) || (transform.position.y + vertex.y + (distToEnd*Y_MULTIPLIER) > result.bounds.max.y) ) {
+				/*if((transform.position.y > result.bounds.max.y) || (transform.position.y + vertex.y + (distToEnd*Y_MULTIPLIER) > result.bounds.max.y)) {
 					//The small increase is for variation, as meshes cannot be drawn with too many of the exact same point on the line
 					y = result.bounds.max.y - transform.position.y - 0.0000001f*i;
 				} else {
 					//Add to vertex.y by distToSide*Y_MULTIPLIER to make the "climbing wall" effect
 					y = vertex.y + (distToEnd*Y_MULTIPLIER);
-				}
+				}*/
+				y = vertex.y + (distToEnd*Y_MULTIPLIER);
 
 				return y;
 			}

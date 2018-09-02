@@ -11,6 +11,7 @@ TagManager:
   - ScreenTexture
   - Lightable
   - Unique
+  - Wall
   layers:
   - Default
   - TransparentFX

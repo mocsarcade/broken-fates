@@ -10,6 +10,9 @@ public class Material : MonoBehaviour {
     public const int SHADOW_CHANGE_RATE = 5;
     public const float FALL_VIBRATION_SIZE = 25f;
 
+		public const float AVERAGE_DELTA_TIME = 0.02f; //DeltaTime varies and by that causes the "throw" distance to...
+		//well, fluctuate. Greater consistency is required, so we have provided a constant "average deltaTime"
+
 		protected string defSortingLayer;
     //Weight is important. An object's weight can be from 1 to 3, with different levels
     //Of max throw height depending on how heavy the object is. An object of weight 3
@@ -108,7 +111,8 @@ public class Material : MonoBehaviour {
 			myRenderer.sortingOrder = holderData.GetSortingOrder() + (int) (-distance.y/Mathf.Abs(distance.y));
 			Drop();
 
-			shadow.addVelocity((zRate+(4.9f*Time.deltaTime))*Time.deltaTime*factor); //Arc is increased by a factor of 1/factor, multiplying distance by 1/factor
+			Debug.Log("factor is " + factor + ". deltaTime is " + Time.deltaTime);
+			shadow.addVelocity((zRate+(4.9f*AVERAGE_DELTA_TIME))*AVERAGE_DELTA_TIME*factor); //Arc is increased by a factor of 1/factor, multiplying distance by 1/factor
 			distance = distance*(1f/factor); //By increasing distance by a multiple of inverse factor, the speed (and so distance) will be multiplied by factor
 			//These two together cause distance to be the same; the distance to target, but it makes the speed and arc different
 			shadow.PushDist(distance.normalized*distance.magnitude/(shadow.GetRigidbody().drag * (26f/15)), ForceMode2D.Impulse);

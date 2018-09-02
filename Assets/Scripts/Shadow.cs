@@ -238,7 +238,7 @@ public class Shadow : MonoBehaviour {
 		//Debug.Log(parentTransform.gameObject.GetComponent<Collider2D>().Distance(collision).isOverlapped + " and distance is " + parentTransform.gameObject.GetComponent<Collider2D>().Distance(collision).distance);
 		if(parentTransform.gameObject.GetComponent<Collider2D>().Distance(collision).isOverlapped) {
 			//Make Vibration
-			Vibration.Vibrator().MakeVibration((int) (rb2d.velocity.magnitude*100), (Vector2) parentTransform.position + rb2d.velocity*Time.deltaTime, parentScript, collision);
+			Vibration.Vibrator().MakeVibration((int) (rb2d.velocity.magnitude*100), (Vector2) parentTransform.position + rb2d.velocity*Time.deltaTime, this.gameObject, collision);
 		}
 	}
 

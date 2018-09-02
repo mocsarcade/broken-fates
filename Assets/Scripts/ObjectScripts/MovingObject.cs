@@ -76,6 +76,16 @@ public class MovingObject : Material {
     frozen = !mobility;
   }
 
+  // Set when sneaking or slow
+  public void Sneak() {
+    speed = speed * GlobalRegistry.SNEAK_FRACTION();
+  }
+
+  // Set when sneaking or slow
+  public void WalkNormal() {
+    speed = speed / GlobalRegistry.SNEAK_FRACTION();
+  }
+
   //Simple method used by MovingObjectMemento to save the object's animator state
 	public Animator GetAnimator () {return animator;}
 

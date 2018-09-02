@@ -56,4 +56,32 @@ public class GlobalRegistry : MonoBehaviour {
 	//Private method used by public GET method
 	private int Get_Room_Height() {return _ROOM_HEIGHT;}
 
+	private int wallRank = 0;
+	private int numWalls = 0;
+	public static int GetWallRank() {
+		//Call private method to get this wall's rank
+		return instance.Get_Wall_Rank();
+	}
+	//Private method used by public GET method
+	private int Get_Wall_Rank() {
+		wallRank += 1;
+		numWalls = wallRank;
+		return wallRank;
+	}
+	public static int GetWallNum() {
+		return instance.Get_Wall_Num();
+	}
+	//Private method used by public GET method
+	private int Get_Wall_Num() {
+		return numWalls;
+	}
+
+  protected const float _SNEAK_FRACTION = 0.5f;
+	public static float SNEAK_FRACTION() {
+		//Call private method to get each room's height
+		return instance.Sneak_Fraction();
+	}
+	//Private method used by public GET method
+	private float Sneak_Fraction() {return _SNEAK_FRACTION;}
+
 }
