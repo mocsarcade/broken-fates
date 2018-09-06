@@ -14,6 +14,14 @@ public class GlobalRegistry : MonoBehaviour {
 			Destroy(gameObject);
 	}
 
+	public static void Reset() {
+		instance._Reset();
+	}
+	private void _Reset() {
+		wallRank = 0;
+		numWalls = 0;
+	}
+
 	private float _INVERSE_DAMAGE_MULTIPLIER = 2f;
 	public static float INVERSE_DAMAGE_MULTIPLIER() {
 		//Call private method to get Inverse Damage Multiplier

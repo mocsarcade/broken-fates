@@ -219,6 +219,7 @@ public class GameManager : MonoBehaviour {
 	//This method may be moved to its own class as the internals of this method might Get too complicated
 	private void swapWorld() {
 		//Code to be written later
+		GlobalRegistry.Reset();
 	}
 
 	public Data GetDataReference(GameManager.DataType returnType) {

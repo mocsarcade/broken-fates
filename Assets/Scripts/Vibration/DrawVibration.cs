@@ -1,4 +1,5 @@
 ﻿	using UnityEngine;
+ using System.Collections.Generic;
 
 	[RequireComponent(typeof(LineRenderer))]
 
@@ -13,6 +14,7 @@
 			//Vibration collision
 			protected VibrationCollision _colliderScript;
 			protected const int WALL_LAYERMASK = 256;
+			protected Dictionary<Collider2D, EdgeCollider2D> trueColliderDict;
 
 			//Vibration Lastability settings
 			public int time;
@@ -59,7 +61,6 @@
 			private bool _climbWalls = true;
 
 			private Collider2D onWall;
-			private EdgeCollider2D trueCollider;
 
 			private int _previousSegmentsValue;
 			private float _previousHorizRadiusValue;
@@ -67,14 +68,14 @@
 			private Axis _previousAxisValue;
 
 			private LineRenderer _line;
-			private CircleCollider2D pointCollider;
+			//private CircleCollider2D pointCollider;
 
 			void OnEnable() {
 				_line = gameObject.GetComponent<LineRenderer>();
 				_colliderScript = GetComponent<VibrationCollision>();
 
-				pointCollider = (new GameObject()).AddComponent(typeof(CircleCollider2D)) as CircleCollider2D;
-				pointCollider.radius = 0.01f;
+				//pointCollider = (new GameObject()).AddComponent(typeof(CircleCollider2D)) as CircleCollider2D;
+				//pointCollider.radius = 0.01f;
 			}
 
 			void Start()
@@ -82,6 +83,8 @@
 					//_line.SetVertexCount(_segments + 1);
 					_line.positionCount = _segments + 1;
 					_line.useWorldSpace = false;
+
+					trueColliderDict = new Dictionary<Collider2D, EdgeCollider2D>();
 
 					UpdateValuesChanged();
 
@@ -94,7 +97,6 @@
 				beginningTime = time;
 				parent = _parent;
 				onWall = _onWall;
-				trueCollider = WallScript.GetEdgeCollider();
 			}
 
 			private void FixedUpdate()
@@ -198,7 +200,21 @@
 								result = Physics2D.OverlapCircle(vertex + (Vector2) transform.position, BLOCK_OFFSET, WALL_LAYERMASK);
 								//Updates when on a wall if the vibration is regular or if it is a wall-vibration now off of its wall
 								if(result != null && onWall == null) {
-									y = ClimbWall(vertex, i);
+									//Get trueCollider
+									//Check dictionary cache
+					        EdgeCollider2D trueCollider = null;
+					        if(trueColliderDict.TryGetValue(result, out trueCollider))
+					        {
+					            //success!
+											//trueCollider has been set
+					        }
+					        else
+					        {
+										//If it's not in the cache, get collider and add to cache
+										trueCollider = result.gameObject.GetComponent<WallScript>().GetEdgeCollider();
+										trueColliderDict.Add(result, trueCollider);
+					        }
+									y = ClimbWall(vertex, i, trueCollider);
 								}
 							}
 
@@ -226,7 +242,7 @@
 			}
 
 			//Takes in vertex position and the colliding wall and increments y appropriately
-			protected float ClimbWall(Vector2 vertex, int i) {
+			protected float ClimbWall(Vector2 vertex, int i, EdgeCollider2D trueCollider) {
 				float y;
 
 				/*
@@ -240,8 +256,19 @@
 					Vector2.Distance(vertex + (Vector2) transform.position, new Vector2(vertex.x + transform.position.x, result.bounds.center.y - result.bounds.extents.y))
 				);*/
 				//Call NavMesh.FindClosestEdge to find distance to wallMesh's closest edge
-				pointCollider.transform.position = new Vector3(transform.position.x + vertex.x, transform.position.y + vertex.y, -0.0000001f*i);
-				float distToEnd = (trueCollider.Distance(pointCollider)).distance;
+
+				//pointCollider.transform.position = new Vector3(transform.position.x + vertex.x, transform.position.y + vertex.y, -0.0000001f*i);
+				//float distToEnd = (trueCollider.Distance(pointCollider)).distance;
+				float distToEnd = Mathf.Infinity;
+				Vector3 trueObject = trueCollider.gameObject.transform.position;
+				foreach(Vector2 point in trueCollider.points) {
+					if(Mathf.Abs((point.x+trueObject.x)-(vertex.x+transform.position.x))<distToEnd) {
+						distToEnd = Mathf.Abs((point.x+trueObject.x)-(vertex.x+transform.position.x));
+					}
+					if(Mathf.Abs((point.y+trueObject.y)-(vertex.y+transform.position.y))<distToEnd) {
+						distToEnd = Mathf.Abs((point.y+trueObject.y)-(vertex.y+transform.position.y));
+					}
+				}
 
 				//Checks if there is a wall within 0.1 units of this segement, and returns null if none exists
 				//Collider2D aboveResult = Physics2D.OverlapCircle( (Vector2) transform.position + vertex + new Vector2(0, distToEnd*Y_MULTIPLIER), BLOCK_OFFSET, WALL_LAYERMASK);
