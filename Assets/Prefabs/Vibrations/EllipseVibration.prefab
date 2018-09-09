@@ -101,10 +101,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   time: 100
-  _segments: 125
+  _ringSpeed: 0.06
+  _inverseRingLife: 7
+  _segments: 100
   _horizRadius: 0.02
   _vertRadius: 0.02
-  _offset: 0
   _axis: 2
   _checkValuesChanged: 1
   _climbWalls: 1

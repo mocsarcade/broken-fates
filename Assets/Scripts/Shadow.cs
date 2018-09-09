@@ -222,7 +222,7 @@ public class Shadow : MonoBehaviour {
 			//Check if you should bounce off of it
 			if(parentScript.GetThrowState()) {
 				ReverseThrow();
-				MakeVibration(collision);
+				//MakeVibration(collision);
 			}
 		}
 	}

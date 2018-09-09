@@ -7,6 +7,7 @@ using System.Linq;
 public class WallScript : MonoBehaviour {
 
 	private EdgeCollider2D mainWall;
+	private WallScript mainScript;
 
 	private SpriteRenderer myRenderer;
 	public List<GameObject> childObjects = new List<GameObject>();
@@ -67,12 +68,17 @@ public class WallScript : MonoBehaviour {
 			}
 	}
 
+	public WallScript GetMainWallScript() {
+		return mainScript;
+	}
+
 	public EdgeCollider2D GetEdgeCollider() {
 		return mainWall;
 	}
 
 	public void SetEdgeCollider(EdgeCollider2D _myWall) {
 		mainWall = _myWall;
+		mainScript = _myWall.gameObject.GetComponent<WallScript>();
 	}
 
 	public int GetRank() {
@@ -151,6 +157,10 @@ public class WallScript : MonoBehaviour {
 		Debug.Log("Couldn't find it for rank " + rank);
 		return Vector3.zero;
 	}
+
+
+	private Vector2[] sortedByX;
+	private Vector2[] sortedByY;
 
 	public List<int> MakeEdgeCollider() {
 		//Call "get entries" of all walls and combine into dictionary
@@ -420,7 +430,128 @@ public class WallScript : MonoBehaviour {
 		//Make this full array the points for mainWall
 		mainWall.points = edgePoints.ToArray();
 
+		sortedByX = edgePoints.OrderBy(v => v.x).ToArray<Vector2>();
+		sortedByY = edgePoints.OrderBy(v => v.y).ToArray<Vector2>();
+
 		return pointRanks;
+	}
+
+	//Uses Binary Search to find the x or y position that is closest to the given point
+	// @param: point - point in vibration that is looking for distance to EdgeCollider
+	// @return: The distance from this point to the closest edge of EdgeCollider
+	public float GetDistance(Vector3 point) {
+		float distance = Mathf.Infinity;
+		//Search by X
+		int min = 0; int max = sortedByX.Length - 1;
+		while (min <=max)
+		{
+			 int mid = (min + max) / 2;
+			 float curX = sortedByX[mid].x+transform.position.x;
+			 if (point.x == curX)
+			 {
+					return 0f;
+			 }
+			 else if (point.x < curX)
+			 {
+					max = mid - 1;
+	 				if(Mathf.Abs(curX - point.x) < distance) {
+						distance = Mathf.Abs(curX - point.x);
+					}
+			 }
+			 else
+			 {
+					min = mid + 1;
+	 				if(Mathf.Abs(curX - point.x) < distance) {
+						distance = Mathf.Abs(curX - point.x);
+					}
+			 }
+	 }
+	 //Search by Y
+	 min = 0; max = sortedByY.Length - 1;
+	 while (min <=max)
+	 {
+	 	 int mid = (min + max) / 2;
+	 	 float curY = sortedByY[mid].y+transform.position.y;
+	 	 if (point.y == curY)
+	 	 {
+	 				return 0f;
+	 	 }
+	 	 else if (point.y < curY)
+	 	 {
+	 			 max = mid - 1;
+				 if(Mathf.Abs(curY - point.y) < distance) {
+					 distance = Mathf.Abs(curY - point.y);
+				 }
+	 	 }
+	 	 else
+	 	 {
+	 			min = mid + 1;
+ 				if(Mathf.Abs(curY - point.y) < distance) {
+ 					distance = Mathf.Abs(curY - point.y);
+ 				}
+	 	 }
+	 }
+	 return distance;
+	}
+
+	public Vector2 GetClosestPoint(Vector3 point) {
+		Vector2 chosenPoint = new Vector2(0,0); float distance=Mathf.Infinity;
+		//Search by X
+		int min = 0; int max = sortedByX.Length - 1;
+		while (min <=max)
+		{
+			 int mid = (min + max) / 2;
+			 float curX = sortedByX[mid].x+transform.position.x;
+			 if (point.x == curX)
+			 {
+						return sortedByX[mid] + (Vector2) transform.position;
+			 }
+			 else if (point.x < curX)
+			 {
+					max = mid - 1;
+					if(Mathf.Abs(curX - point.x) < distance) {
+						chosenPoint = sortedByX[mid] + (Vector2) transform.position;
+				 	 	distance = Mathf.Abs(curX - point.x);
+					}
+			 }
+			 else
+			 {
+					min = mid + 1;
+					if(Mathf.Abs(curX - point.x) < distance) {
+						chosenPoint = sortedByX[mid] + (Vector2) transform.position;
+				 	 	distance = Mathf.Abs(curX - point.x);
+					}
+			 }
+	 }
+
+	 //Search by Y
+	 min = 0; max = sortedByY.Length - 1;
+	 while (min <=max)
+	 {
+	 	 int mid = (min + max) / 2;
+	 	 float curY = sortedByY[mid].y+transform.position.y;
+	 	 if (point.y == curY)
+	 	 {
+	 				return sortedByY[mid] + (Vector2) transform.position;
+	 	 }
+	 	 else if (point.y < curY)
+	 	 {
+	 			 max = mid - 1;
+				 if(Mathf.Abs(curY - point.y) < distance) {
+					 chosenPoint = sortedByY[mid] + (Vector2) transform.position;
+					 distance = Mathf.Abs(curY - point.y);
+				 }
+	 	 }
+	 	 else
+	 	 {
+	 				min = mid + 1;
+	 				if(Mathf.Abs(curY - point.y) < distance) {
+	 					chosenPoint = sortedByY[mid] + (Vector2) transform.position;
+				 	 	distance = Mathf.Abs(curY - point.y);
+	 				}
+	 	 }
+	 }
+	 return chosenPoint;
 	}
 
 	public enum border {

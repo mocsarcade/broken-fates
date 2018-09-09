@@ -14,7 +14,7 @@
 			//Vibration collision
 			protected VibrationCollision _colliderScript;
 			protected const int WALL_LAYERMASK = 256;
-			protected Dictionary<Collider2D, EdgeCollider2D> trueColliderDict;
+			protected Dictionary<Collider2D, WallScript> trueColliderDict;
 
 			//Vibration Lastability settings
 			public int time;
@@ -84,7 +84,7 @@
 					_line.positionCount = _segments + 1;
 					_line.useWorldSpace = false;
 
-					trueColliderDict = new Dictionary<Collider2D, EdgeCollider2D>();
+					trueColliderDict = new Dictionary<Collider2D, WallScript>();
 
 					UpdateValuesChanged();
 
@@ -159,7 +159,7 @@
 
 							Vector2 vertex = new Vector2(x, y);
 
-
+              /*
 							//All calculations for vibrations on walls
 							if(onWall && _climbWalls) {
 								y *= Y_MULTIPLIER;	//Y of vibrations set on walls is easy
@@ -192,6 +192,7 @@
 										}
 								}
 							} //End onWall work
+              */
 
 							if(_climbWalls) {
 								//Update Y depending on whether colliding with a wall
@@ -202,7 +203,7 @@
 								if(result != null && onWall == null) {
 									//Get trueCollider
 									//Check dictionary cache
-					        EdgeCollider2D trueCollider = null;
+					        WallScript trueCollider = null;
 					        if(trueColliderDict.TryGetValue(result, out trueCollider))
 					        {
 					            //success!
@@ -211,7 +212,7 @@
 					        else
 					        {
 										//If it's not in the cache, get collider and add to cache
-										trueCollider = result.gameObject.GetComponent<WallScript>().GetEdgeCollider();
+										trueCollider = result.gameObject.GetComponent<WallScript>().GetMainWallScript();
 										trueColliderDict.Add(result, trueCollider);
 					        }
 									y = ClimbWall(vertex, i, trueCollider);
@@ -242,45 +243,18 @@
 			}
 
 			//Takes in vertex position and the colliding wall and increments y appropriately
-			protected float ClimbWall(Vector2 vertex, int i, EdgeCollider2D trueCollider) {
-				float y;
+			protected float ClimbWall(Vector2 vertex, int i, WallScript trueColliderScript) {
+				float y=vertex.y;
+        float replace_y=Mathf.Infinity;
 
-				/*
-				//Set distToEnd according to wall side closest to vibration point (left, right or down)
-				float distToEnd = Mathf.Min(
-					Mathf.Min(
-						//Left and Right sides
-						Vector2.Distance(vertex + (Vector2) transform.position, new Vector2(result.bounds.center.x + result.bounds.extents.x, vertex.y + transform.position.y)),
-						Vector2.Distance(vertex + (Vector2) transform.position, new Vector2(result.bounds.center.x - result.bounds.extents.x, vertex.y + transform.position.y))),
-					//Bottom side
-					Vector2.Distance(vertex + (Vector2) transform.position, new Vector2(vertex.x + transform.position.x, result.bounds.center.y - result.bounds.extents.y))
-				);*/
-				//Call NavMesh.FindClosestEdge to find distance to wallMesh's closest edge
+          Vector2 point = trueColliderScript.GetClosestPoint((Vector3) vertex + transform.position);
+          float distToEnd = Mathf.Min(Mathf.Abs(vertex.x + transform.position.x - point.x), Mathf.Abs(vertex.y + transform.position.y - point.y));
 
-				//pointCollider.transform.position = new Vector3(transform.position.x + vertex.x, transform.position.y + vertex.y, -0.0000001f*i);
-				//float distToEnd = (trueCollider.Distance(pointCollider)).distance;
-				float distToEnd = Mathf.Infinity;
-				Vector3 trueObject = trueCollider.gameObject.transform.position;
-				foreach(Vector2 point in trueCollider.points) {
-					if(Mathf.Abs((point.x+trueObject.x)-(vertex.x+transform.position.x))<distToEnd) {
-						distToEnd = Mathf.Abs((point.x+trueObject.x)-(vertex.x+transform.position.x));
-					}
-					if(Mathf.Abs((point.y+trueObject.y)-(vertex.y+transform.position.y))<distToEnd) {
-						distToEnd = Mathf.Abs((point.y+trueObject.y)-(vertex.y+transform.position.y));
-					}
-				}
-
-				//Checks if there is a wall within 0.1 units of this segement, and returns null if none exists
-				//Collider2D aboveResult = Physics2D.OverlapCircle( (Vector2) transform.position + vertex + new Vector2(0, distToEnd*Y_MULTIPLIER), BLOCK_OFFSET, WALL_LAYERMASK);
-				//If the increased amount is over the top of the wall, just set it equal to the top of the wall
-				/*if((transform.position.y > result.bounds.max.y) || (transform.position.y + vertex.y + (distToEnd*Y_MULTIPLIER) > result.bounds.max.y)) {
-					//The small increase is for variation, as meshes cannot be drawn with too many of the exact same point on the line
-					y = result.bounds.max.y - transform.position.y - 0.0000001f*i;
-				} else {
-					//Add to vertex.y by distToSide*Y_MULTIPLIER to make the "climbing wall" effect
-					y = vertex.y + (distToEnd*Y_MULTIPLIER);
-				}*/
-				y = vertex.y + (distToEnd*Y_MULTIPLIER);
+        if(vertex.y > 0) {
+          y = (vertex.y + (distToEnd*Y_MULTIPLIER));
+        } else {
+          y = (vertex.y + distToEnd);
+        }
 
 				return y;
 			}
