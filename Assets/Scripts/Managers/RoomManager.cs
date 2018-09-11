@@ -15,17 +15,13 @@ namespace DungeonManager {
 		protected GameObject[][] roomLibrary;
 		protected GameObject[][] usedRooms;
 
-		private Dictionary<Exits, Exits> opposingEntrance = new Dictionary<Exits, Exits>();
+		private Dictionary<Direction, Direction> opposingEntrance = new Dictionary<Exits, Exits>();
 
 		void Start() {
-			opposingEntrance.Add(Exits.Left, Exits.Right);
-			opposingEntrance.Add(Exits.TopLeft, Exits.BottomLeft);
-			opposingEntrance.Add(Exits.Top, Exits.Bottom);
-			opposingEntrance.Add(Exits.TopRight, Exits.BottomRight);
-			opposingEntrance.Add(Exits.Right, Exits.Left);
-			opposingEntrance.Add(Exits.BottomRight, Exits.TopRight);
-			opposingEntrance.Add(Exits.Bottom, Exits.Top);
-			opposingEntrance.Add(Exits.BottomLeft, Exits.TopLeft);
+			opposingEntrance.Add(Direction.Left, Direction.Right);
+			opposingEntrance.Add(Direction.Top, Direction.Bottom);
+			opposingEntrance.Add(Direction.Right, Direction.Left);
+			opposingEntrance.Add(Direction.Bottom, Direction.Top);
 		}
 
 		//This method is called whenever this world/castle is entered.
@@ -36,15 +32,14 @@ namespace DungeonManager {
 		//The dungeon starts at starting position for player and keeps building with proper entrances and exits matching
 		//until full of dead ends, and then adds and replaces rooms to reach desired cutscene and treasure rooms
 		//NOTE: All rooms must have a unique name and the
-		public void Initialize(Floor curFloor) {
-			//Place First Room at proper position in _floorRooms
+		public void BuildFloor(Floor curFloor) {
+			//Build path graph using "Bridge" Algorithm
 
-			//Place all occurences in floorRooms
-
-			//Import roomLibrary using difficulty level
-
-			//Call BuildOffRoom for first room
-			//BuildRoom(..., true)
+			//Go through each point on the graph and find a room that fits its qualifications
+			//while() {
+				//Find room
+				//Create room
+			//}
 		}
 
 		//Goes through every exit to build four lists of exits; one for each direction then take each
@@ -110,7 +105,7 @@ namespace DungeonManager {
 				//MoveInto(..., ..., target)
 
 		}
-
+1
 		protected void MoveInto(int xPos, int yPos, Room target) {
 				//Check if there is a room there at all
 
@@ -207,13 +202,13 @@ namespace DungeonManager {
 	}
 
 	public class Floor {
-		public Vector2 floorSize;
+		public Vector2 floorSize = 5,10;
 
 		//Rooms with special purpose
 		public GameObject[] occurences;
 		public Vector2[] occurencePositions;
 
-		public GameObject[] startingRoom;
+		public GameObject startingRoom;
 		public Vector2 startingPosition;
 
 		public int difficulty;
@@ -221,9 +216,9 @@ namespace DungeonManager {
 	}
 
 	public enum Direction : int {
-		Up = 1,
-		Down = -1,
-		Right = 1,
-		Left = -1,
+		Up,
+		Down,
+		Right,
+		Left,
 	}
 }
