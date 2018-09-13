@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+//Namespace with Room class declared inside it
+using DungeonRooms;
 
 namespace DungeonManager {
 
@@ -13,13 +15,13 @@ namespace DungeonManager {
 		protected GameObject[][] roomLibrary;
 		protected GameObject[][] usedRooms;
 
-		private Dictionary<Direction, Direction> opposingEntrance = new Dictionary<Exits, Exits>();
+		private Dictionary<Direction, Direction> opposingEntrance = new Dictionary<Direction, Direction>();
 
 		void Start() {
 			opposingEntrance.Add(Direction.Left, Direction.Right);
-			opposingEntrance.Add(Direction.Top, Direction.Bottom);
+			opposingEntrance.Add(Direction.Up, Direction.Down);
 			opposingEntrance.Add(Direction.Right, Direction.Left);
-			opposingEntrance.Add(Direction.Bottom, Direction.Top);
+			opposingEntrance.Add(Direction.Down, Direction.Up);
 		}
 
 		//This method is called whenever this world/castle is entered.
