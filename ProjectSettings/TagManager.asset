@@ -12,6 +12,8 @@ TagManager:
   - Lightable
   - Unique
   - Wall
+  - SpawnPoint
+  - Rooms
   layers:
   - Default
   - TransparentFX
