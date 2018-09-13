@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-//Namespace with Exits enum declared inside it
-using DungeonRooms;
 
 namespace DungeonManager {
 
@@ -105,7 +103,7 @@ namespace DungeonManager {
 				//MoveInto(..., ..., target)
 
 		}
-1
+
 		protected void MoveInto(int xPos, int yPos, Room target) {
 				//Check if there is a room there at all
 
@@ -202,7 +200,7 @@ namespace DungeonManager {
 	}
 
 	public class Floor {
-		public Vector2 floorSize = 5,10;
+		public Vector2 floorSize;
 
 		//Rooms with special purpose
 		public GameObject[] occurences;
