@@ -245,7 +245,6 @@
 			//Takes in vertex position and the colliding wall and increments y appropriately
 			protected float ClimbWall(Vector2 vertex, int i, WallScript trueColliderScript) {
 				float y=vertex.y;
-        float replace_y=Mathf.Infinity;
 
           Vector2 point = trueColliderScript.GetClosestPoint((Vector3) vertex + transform.position);
           float distToEnd = Mathf.Min(Mathf.Abs(vertex.x + transform.position.x - point.x), Mathf.Abs(vertex.y + transform.position.y - point.y));
