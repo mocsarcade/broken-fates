@@ -13,6 +13,8 @@ public class WallScript : MonoBehaviour {
 	public List<GameObject> childObjects = new List<GameObject>();
 	public int wallRank;
 
+	public static WallScript rankOne;
+
 	//Initialize
 	protected void Awake() {
 		myRenderer = GetComponent<SpriteRenderer>();
@@ -26,46 +28,52 @@ public class WallScript : MonoBehaviour {
 			if(wallRank == 0) {
 				wallRank = GlobalRegistry.GetWallRank();
 			}
-			//If this wall's rank is the first one:
 			if(wallRank == 1) {
-				//Make EdgeCollider for this wall
-				List<int> usedRanks = MakeEdgeCollider();
-				List<int> wallsInt = Enumerable.Range(1, GlobalRegistry.GetWallNum()).ToList();
-
-
-				GameObject[] wallsInScene = GameObject.FindGameObjectsWithTag("Wall");
-				WallScript makingWall = this;
-				int numLoops = 0;
-				do {
-					//Find if there are wall ranks that weren't used
-					foreach(GameObject wall in wallsInScene) {
-						WallScript checkingWall = wall.GetComponent<WallScript>();
-						if(usedRanks.Contains(checkingWall.GetRank())) {
-							wallsInt.Remove(checkingWall.GetRank());
-							//Tell each wall that they are in this wall
-							if(makingWall.GetEdgeCollider()) {
-								checkingWall.SetEdgeCollider(makingWall.GetEdgeCollider());
-							}
-						}
-					}
-
-					if(wallsInt.Count > 0) {
-						//Get all ranks and call MakeEdgeCollider on the first one remaining in wallsInt
-						foreach(GameObject wall in wallsInScene) {
-							makingWall = wall.GetComponent<WallScript>();
-							if(wallsInt.Contains(makingWall.GetRank())) {
-								usedRanks = makingWall.MakeEdgeCollider();
-								break;
-							}
-						}
-					}
-					numLoops++;
-				} while(wallsInt.Count > 0 && numLoops < GlobalRegistry.GetWallNum());
-
-				foreach(int rank in wallsInt) {
-					Debug.LogException(new Exception("Unused rank " + rank), this);
-				}
+				rankOne = this;
 			}
+	}
+
+	public void populateFirstRank() {
+		//If this wall's rank is the first one:
+		if(wallRank == 1) {
+			//Make EdgeCollider for this wall
+			List<int> usedRanks = MakeEdgeCollider();
+			List<int> wallsInt = Enumerable.Range(1, GlobalRegistry.GetWallNum()).ToList();
+
+
+			GameObject[] wallsInScene = GameObject.FindGameObjectsWithTag("Wall");
+			WallScript makingWall = this;
+			int numLoops = 0;
+			do {
+				//Find if there are wall ranks that weren't used
+				foreach(GameObject wall in wallsInScene) {
+					WallScript checkingWall = wall.GetComponent<WallScript>();
+					if(usedRanks.Contains(checkingWall.GetRank())) {
+						wallsInt.Remove(checkingWall.GetRank());
+						//Tell each wall that they are in this wall
+						if(makingWall.GetEdgeCollider()) {
+							checkingWall.SetEdgeCollider(makingWall.GetEdgeCollider());
+						}
+					}
+				}
+
+				if(wallsInt.Count > 0) {
+					//Get all ranks and call MakeEdgeCollider on the first one remaining in wallsInt
+					foreach(GameObject wall in wallsInScene) {
+						makingWall = wall.GetComponent<WallScript>();
+						if(wallsInt.Contains(makingWall.GetRank())) {
+							usedRanks = makingWall.MakeEdgeCollider();
+							break;
+						}
+					}
+				}
+				numLoops++;
+			} while(wallsInt.Count > 0 && numLoops < GlobalRegistry.GetWallNum());
+
+			foreach(int rank in wallsInt) {
+				Debug.LogException(new Exception("Unused rank " + rank), this);
+			}
+		}
 	}
 
 	public WallScript GetMainWallScript() {

@@ -216,9 +216,9 @@ namespace DungeonManager {
 	}
 
 	public enum Direction : int {
-		Up,
-		Down,
-		Right,
-		Left,
+		Up = 3,
+		Down = 1,
+		Right = 4,
+		Left = 2,
 	}
 }

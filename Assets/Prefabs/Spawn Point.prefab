@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61371243054079282}
   - component: {fileID: 50765135597843786}
   m_Layer: 0
-  m_Name: Spawn Point (1)
+  m_Name: Spawn Point
   m_TagString: SpawnPoint
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -98,3 +98,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf06be1e3ad656743aa42bb282ae7cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  openingDir: 0

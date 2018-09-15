@@ -15,8 +15,8 @@ public class RoomTemplate : MonoBehaviour {
 
     private bool exitSpawned = false;
 
-    public GameObject xit;   
-	
+    public GameObject xit;
+
 	// Update is called once per frame
 	void Update () {
         if(waitTime >= 300 && exitSpawned == false)
@@ -29,6 +29,7 @@ public class RoomTemplate : MonoBehaviour {
                     exitSpawned = true;
                 }
             }
+            //WallScript.rankOne.populateFirstRank();
         }
 		else
         {
