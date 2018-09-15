@@ -86,7 +86,7 @@ public class Material : MonoBehaviour {
 
 		public void UpdatePosition(float z_offset) {//float x_position, float y_position, float z_offset) {
 			if(shadow) {
-				transform.localPosition = new Vector3(0, shadow.GetOffset() + z_offset, transform.position.z);//x_position, y_position + z_offset, 0);
+				transform.localPosition = new Vector3(0, shadow.GetOffset() + z_offset, transform.localPosition.z);//x_position, y_position + z_offset, 0);
 			} else {
 				transform.localPosition = new Vector3(0, z_offset, transform.position.z);//x_position, y_position + z_offset, 0);
 			}

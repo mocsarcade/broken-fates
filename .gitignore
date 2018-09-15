@@ -1,4 +1,3 @@
-
 # Created by https://www.gitignore.io/api/unity
 
 ### Unity ###
@@ -35,6 +34,8 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-
 # End of https://www.gitignore.io/api/unity
 *.userprefs
+
+# VSCode editor settings
+/.vscode/
