@@ -5,5 +5,5 @@ Open Command Prompt
 Type: pip install Pillow
 This will install Pillow, which is used in TurnWhiteToTransparent
 Open your Python compiler and open TurnWhiteToTransparent
-Change the name of the input image from Shadow.png to whatever file you're changing
+Change the name of the input image from ???.png to whatever file you're changing
 Run!

@@ -44,7 +44,7 @@ public class WallScript : MonoBehaviour {
 			GameObject[] wallsInScene = GameObject.FindGameObjectsWithTag("Wall");
 			WallScript makingWall = this;
 			int numLoops = 0;
-			do {
+			//do {
 				//Find if there are wall ranks that weren't used
 				foreach(GameObject wall in wallsInScene) {
 					WallScript checkingWall = wall.GetComponent<WallScript>();
@@ -57,6 +57,7 @@ public class WallScript : MonoBehaviour {
 					}
 				}
 
+				/*
 				if(wallsInt.Count > 0) {
 					//Get all ranks and call MakeEdgeCollider on the first one remaining in wallsInt
 					foreach(GameObject wall in wallsInScene) {
@@ -68,7 +69,7 @@ public class WallScript : MonoBehaviour {
 					}
 				}
 				numLoops++;
-			} while(wallsInt.Count > 0 && numLoops < GlobalRegistry.GetWallNum());
+			} while(wallsInt.Count > 0 && numLoops < GlobalRegistry.GetWallNum());*/
 
 			foreach(int rank in wallsInt) {
 				Debug.LogException(new Exception("Unused rank " + rank), this);

@@ -2,13 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
+//Make use of directions enum and roomTemplate class
+using DungeonManager;
 
 namespace DungeonRooms {
 
 	public class Room : MonoBehaviour {
 
-		public List<Exits> _entrances;
 		private List<Renderer> roomObjects = new List<Renderer>();
+		private RoomTemplate template;
+    // Use this for initialization
+    void Start()
+    {
+        template = GameObject.FindGameObjectWithTag("Rooms").GetComponent<RoomTemplate>();
+        template.rooms.Add(this.gameObject);
+    }
 
 		// Use this for initialization
 		void Awake () {
@@ -34,14 +42,6 @@ namespace DungeonRooms {
 				Instantiate(toCreate, toCreate.transform.position + new Vector3(xUnit * ROOM_WIDTH, yUnit * ROOM_HEIGHT), Quaternion.identity);
 			}
 		}*/
-
-		public bool CheckEntrance(Exits direc) {
-			if(_entrances.Contains(direc)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
 
 		private void UnpackRoom() {
 			Renderer childRenderer;
@@ -74,19 +74,5 @@ namespace DungeonRooms {
 			}
 			yield return Timing.WaitForSeconds(1f);
 		}
-	}
-
-	public enum Exits
-	{
-		//Integer value is which side of the room this value will be on
-		//This is used in cross-referencing whether a room needs multiple entrances on a single side
-		Left = 4,
-		TopLeft = 1,
-		Top = 1,
-		TopRight = 1,
-		Right = 2,
-		BottomLeft = 3,
-		Bottom = 3,
-		BottomRight = 3
 	}
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 //Namespace with Room class declared inside it
-using DungeonRooms;
-
+//using DungeonRooms;
+/*
 namespace DungeonManager {
 
 	public class RoomManager : MonoBehaviour {
@@ -214,11 +214,5 @@ namespace DungeonManager {
 		public int difficulty;
 
 	}
-
-	public enum Direction : int {
-		Up = 3,
-		Down = 1,
-		Right = 4,
-		Left = 2,
-	}
 }
+*/
