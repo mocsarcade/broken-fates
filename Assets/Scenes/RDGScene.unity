@@ -1625,12 +1625,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   topRooms:
   - {fileID: 1668579670974362, guid: 137ab3118a5cf2a4b905b8a839799411, type: 2}
+  - {fileID: 1243799777795054, guid: e725967ceda6c2240a1daf8a384a5e84, type: 2}
   bottomRooms:
   - {fileID: 1227426377900854, guid: f69784732c8c6464183647809dbb3ece, type: 2}
+  - {fileID: 1243799777795054, guid: e725967ceda6c2240a1daf8a384a5e84, type: 2}
   leftRooms:
+  - {fileID: 1468281091758860, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 2}
   - {fileID: 1791164602821352, guid: 6b89673c36e4e3a438a7fdcf4fef4b09, type: 2}
   rightRooms:
   - {fileID: 1934044320080306, guid: 6f64493f487c38b4c9d75b4fa51c78fe, type: 2}
+  - {fileID: 1468281091758860, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 2}
   closedRoom: []
   rooms: []
   waitTime: 0
