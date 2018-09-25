@@ -12,6 +12,7 @@ import java.util.*;
 public class FloorManager {
     //Define important constants
     public static final int ROOM_CHANCE = 50;
+    public static List<Room> mainRooms;
 
     public static void main(String[] args) {
 
@@ -29,7 +30,7 @@ public class FloorManager {
 
       //Get the full list of rooms from floor class
       //This is something more of a mock example since we already have the rooms in mainRooms XD
-      List<Room> mainRooms = thisFloor.GetRooms();
+      mainRooms = thisFloor.GetRooms();
       //Declare for layout of this floor
       Room[][] floorLayout = new Room[thisFloor.xSize][thisFloor.ySize];
 
@@ -61,7 +62,7 @@ public class FloorManager {
           for(int i=0; i<4; i++) {
             if(exits[i]) {
               //Call recursive algorithm that begins making corridor rooms starting from each exit
-              Tunnel(_room.x + Direction.getX(i), _room.y + Direction.getY(i), floorLayout, Direction.opposite(i));
+              Tunnel(_room.x + Direction.getX(i), _room.y + Direction.getY(i), floorLayout, Direction.opposite(i), _room);
             }
             _room.exits[i] = exits[i];
           }
@@ -87,7 +88,10 @@ public class FloorManager {
                 case 0:
                   System.out.print("O");
                   if(floorLayout[row][col].CheckExit(Direction.UP)) {
-                    System.out.print(" ");
+                    if(floorLayout[row][col].isMain)
+                      System.out.print("!");
+                    else
+                      System.out.print(" ");
                   } else {
                     System.out.print("O");
                   }
@@ -95,13 +99,22 @@ public class FloorManager {
                 break;
                 case 1:
                   if(floorLayout[row][col].CheckExit(Direction.LEFT)) {
-                    System.out.print(" ");
+                    if(floorLayout[row][col].isMain)
+                      System.out.print("!");
+                    else
+                      System.out.print(" ");
                   } else {
                     System.out.print("O");
                   }
-                  System.out.print(" ");
-                  if(floorLayout[row][col].CheckExit(Direction.RIGHT)) {
+                  if(floorLayout[row][col].isMain)
+                    System.out.print("!");
+                  else
                     System.out.print(" ");
+                  if(floorLayout[row][col].CheckExit(Direction.RIGHT)) {
+                    if(floorLayout[row][col].isMain)
+                      System.out.print("!");
+                    else
+                      System.out.print(" ");
                   } else {
                     System.out.print("O");
                   }
@@ -109,7 +122,10 @@ public class FloorManager {
                 case 2:
                   System.out.print("O");
                   if(floorLayout[row][col].CheckExit(Direction.DOWN)) {
-                    System.out.print(" ");
+                    if(floorLayout[row][col].isMain)
+                      System.out.print("!");
+                    else
+                      System.out.print(" ");
                   } else {
                     System.out.print("O");
                   }
@@ -129,9 +145,9 @@ public class FloorManager {
     }
 
     //The Tunnel method will decide what kind of room is needed and call getCorridor to make rooms
-    public static void Tunnel(int x, int y, Room[][] floorLayout, Direction from) {
+    public static void Tunnel(int x, int y, Room[][] floorLayout, Direction from, Room _room) {
       //Decide directions this room will go to
-      boolean[] exits = FindDirections(x, y, floorLayout);
+      boolean[] exits = FindDirections(x, y, floorLayout, _room);
       exits[from.getIndex()] = true;
 
       //Once all exits have been found, ask for a room to fill in this one
@@ -142,14 +158,13 @@ public class FloorManager {
       for(int i=0; i<4; i++) {
         if(exits[i]==true && i != from.getIndex()) {
           //if(CheckPoint(x+Direction.getX(i),y+Direction.getY(i), floorLayout)) {
-            System.out.println(x + " and " + y + " going in direction " + i + " going to " + (x + Direction.getX(i)) + "," + (y + Direction.getY(i)) + " which is " + floorLayout[x + Direction.getX(i)][y + Direction.getY(i)]);
-            Tunnel(x + Direction.getX(i), y + Direction.getY(i), floorLayout, Direction.opposite(i));
+            Tunnel(x + Direction.getX(i), y + Direction.getY(i), floorLayout, Direction.opposite(i), _room);
           //}
         }
       }
     }
 
-    public static boolean[] FindDirections(int x, int y, Room[][] floorLayout) {
+    public static boolean[] FindDirections(int x, int y, Room[][] floorLayout, Room _baseRoom) {
       boolean[] exits = new boolean[4]; boolean noExit = true;
       Random rand = new Random();
       List<Integer> goingDirections = new ArrayList<>(Arrays.asList(0, 1, 2, 3));
@@ -159,11 +174,32 @@ public class FloorManager {
         while(iter.hasNext()) {
           i = iter.next();
           //Make sure we're inside the bounds of the loop
-          if(CheckPoint(x+Direction.getX(i),y+Direction.getY(i), floorLayout)) {
+          int _x = x+Direction.getX(i);
+          int _y = y+Direction.getY(i);
+          if(_x<floorLayout.length && _x>=0 && _y<floorLayout[0].length && _y>=0) {
+            if(floorLayout[_x][_y] == null) {
             //Randomize whether this exit will be used
-            if(rand.nextInt(100) < ROOM_CHANCE) {
-                exits[i] = true;
-                noExit = false;
+              if(rand.nextInt(100) < ROOM_CHANCE) {
+                  exits[i] = true;
+                  noExit = false;
+              }
+            } else {
+              //Check if this this room is a mainRoom
+              for(Room _checkedRoom : mainRooms) {
+                if(floorLayout[_x][_y]==_checkedRoom && _checkedRoom != _baseRoom) {
+                  //If it is, check if this mainRoom is connected to another room yet
+                  if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && _checkedRoom.CheckExit(Direction.opposite(i))) {
+                    //If it isn't, connect it
+                    _baseRoom.Connect(_checkedRoom);
+                    exits[i] = true;
+                    noExit = false;
+                  }
+                }
+              }
+              //If we've made it through this far, there is no mainRoom we can go to so remove this room
+              if(exits[i] == false) {
+                iter.remove();
+              }
             }
           } else {
             //Remove directions that are blocked off by other walls
@@ -184,12 +220,25 @@ public class FloorManager {
         Iterator<Integer> iter = goingDirections.iterator();
         while(iter.hasNext()) {
           i = iter.next();
-          //Make sure we're inside the bounds of the loop
-          if(CheckPoint(x+Direction.getX(i),y+Direction.getY(i), floorLayout) && constraints[i]) {
-            //Randomize whether this exit will be used
-            if(rand.nextInt(100) < ROOM_CHANCE) {
+          int _x = x+Direction.getX(i);
+          int _y = y+Direction.getY(i);
+          //Make sure we're inside the bounds of the loop and not overlapping with an already existing room
+          if(_x<floorLayout.length && _x>=0 && _y<floorLayout[0].length && _y>=0) {
+            if(floorLayout[_x][_y] == null) {
+              //Randomize whether this exit will be used
+              if(rand.nextInt(100) < ROOM_CHANCE) {
+                  exits[i] = true;
+                  noExit = false;
+              }
+            } else {
+              //If the room seen is opening into this room, it's OK!
+              if(floorLayout[_x][_y].CheckExit(Direction.opposite(i))) {
                 exits[i] = true;
                 noExit = false;
+              } else {
+                //Otherwise, yeah, remove it
+                iter.remove();
+              }
             }
           } else {
             //Remove directions that are blocked off by other walls
@@ -199,15 +248,6 @@ public class FloorManager {
       } while(noExit && goingDirections.size()>0);
 
       return exits;
-    }
-
-    public static boolean CheckPoint(int x, int y, Room[][] floorLayout) {
-      if(x<floorLayout.length && x>=0 && y<floorLayout[0].length && y>=0) {
-        if(floorLayout[x][y] == null) {
-          return true;
-        }
-      }
-      return false;
     }
 
     public static Room GetCorridor(boolean[] exits) {
