@@ -41,13 +41,11 @@ public class FloorManager {
         boolean repeat;
         do {
           repeat = false;
-          _room.x = rand.nextInt(floorLayout.length);
-          _room.y = rand.nextInt(floorLayout[0].length);
-          if(floorLayout[_room.x][_room.y] == null) {
+          _room.x = rand.nextInt(thisFloor.xSize-2)+1;
+          _room.y = rand.nextInt(thisFloor.ySize-2)+1;
+          repeat = CheckSpot(_room.x, _room.y, floorLayout);
+          if(repeat == false) {
             floorLayout[_room.x][_room.y] = _room;
-          } else {
-            //If this room is on another room, randomize again to a new room
-            repeat = true;
           }
         } while(repeat);
 
@@ -89,7 +87,7 @@ public class FloorManager {
                   System.out.print("O");
                   if(floorLayout[row][col].CheckExit(Direction.UP)) {
                     if(floorLayout[row][col].isMain)
-                      System.out.print("!");
+                      System.out.print("`");
                     else
                       System.out.print(" ");
                   } else {
@@ -100,19 +98,19 @@ public class FloorManager {
                 case 1:
                   if(floorLayout[row][col].CheckExit(Direction.LEFT)) {
                     if(floorLayout[row][col].isMain)
-                      System.out.print("!");
+                      System.out.print("`");
                     else
                       System.out.print(" ");
                   } else {
                     System.out.print("O");
                   }
                   if(floorLayout[row][col].isMain)
-                    System.out.print("!");
+                    System.out.print("`");
                   else
                     System.out.print(" ");
                   if(floorLayout[row][col].CheckExit(Direction.RIGHT)) {
                     if(floorLayout[row][col].isMain)
-                      System.out.print("!");
+                      System.out.print("`");
                     else
                       System.out.print(" ");
                   } else {
@@ -123,7 +121,7 @@ public class FloorManager {
                   System.out.print("O");
                   if(floorLayout[row][col].CheckExit(Direction.DOWN)) {
                     if(floorLayout[row][col].isMain)
-                      System.out.print("!");
+                      System.out.print("`");
                     else
                       System.out.print(" ");
                   } else {
@@ -162,6 +160,31 @@ public class FloorManager {
           //}
         }
       }
+    }
+
+    public static boolean CheckSpot(int x, int y, Room[][] floorLayout) {
+      int check = 0;
+      if(floorLayout[x][y] == null) {
+        check++;
+      }
+      for(int i=0; i<4; i++) {
+        if(floorLayout[x+Direction.getX(i)][y+Direction.getY(i)] == null) {
+          check++;
+        }
+        for(int j=0; j<4; j++) {
+          if(x+Direction.getX(i)+Direction.getX(j)>0 && x+Direction.getX(i)+Direction.getX(j)<floorLayout.length && y+Direction.getY(i)+Direction.getY(j)>0 && y+Direction.getY(i)+Direction.getY(j)<floorLayout[0].length) {
+            if(floorLayout[x+Direction.getX(i)+Direction.getX(j)][y+Direction.getY(i)+Direction.getY(j)] == null) {
+              check++;
+            }
+          } else {
+            check++;
+          }
+        }
+      }
+      if(check==21) {
+        return false;
+      }
+      return true;
     }
 
     public static boolean[] FindDirections(int x, int y, Room[][] floorLayout, Room _baseRoom) {

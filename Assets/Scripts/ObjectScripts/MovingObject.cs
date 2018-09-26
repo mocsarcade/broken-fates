@@ -55,6 +55,13 @@ public class MovingObject : Material {
 	   //Add force to move our character. VelocityChange ignores mass to remove stopping latency
   }
 
+  /*public IEnumerator<float> MoveToPlace () {
+    while(notthereyet) {
+      //Move forward
+      yield
+    }
+  }*/
+
 	//The "virtual" is important to show this method will be overriden
 	//This is the method that will be overriden in any method that inherits this class. This is how all moving objects decide their move patterns
 	protected virtual void ComputeVelo () {}
