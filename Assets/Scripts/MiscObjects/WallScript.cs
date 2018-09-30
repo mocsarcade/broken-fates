@@ -43,7 +43,6 @@ public class WallScript : MonoBehaviour {
 
 			GameObject[] wallsInScene = GameObject.FindGameObjectsWithTag("Wall");
 			WallScript makingWall = this;
-			int numLoops = 0;
 			//do {
 				//Find if there are wall ranks that weren't used
 				foreach(GameObject wall in wallsInScene) {

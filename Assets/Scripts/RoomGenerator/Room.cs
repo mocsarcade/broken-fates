@@ -2,21 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
-//Make use of directions enum and roomTemplate class
-using DungeonManager;
+
+using DirectionClass; // Direction class
 
 namespace DungeonRooms {
 
 	public class Room : MonoBehaviour {
 
+		//Logistic info
+	  private bool connected;
+	  public int x;
+	  public int y;
+	  public bool[] exits;
 		private List<Renderer> roomObjects = new List<Renderer>();
-		private RoomTemplate template;
+
+		//RoomTemplate object (THIS IS NO LONGER USED)
+		//private RoomTemplate template;
+
     // Use this for initialization
-    void Start()
+    /*void Start()
     {
         template = GameObject.FindGameObjectWithTag("Rooms").GetComponent<RoomTemplate>();
         template.rooms.Add(this.gameObject);
-    }
+    }*/
 
 		// Use this for initialization
 		void Awake () {
@@ -74,5 +82,23 @@ namespace DungeonRooms {
 			}
 			yield return Timing.WaitForSeconds(1f);
 		}
+
+	  public bool CheckExit(Direction checkMe) {
+	    return exits[DirectionUtility.getIndex(checkMe)];
+	  }
+
+	  public bool isConnected() {
+	    return connected;
+	  }
+
+	  public void Connect(Room _connectedRoom) {
+	    connected=true;
+	    _connectedRoom.Connected();
+	  }
+
+	  public void Connected() {
+	    connected=true;
+	  }
+
 	}
 }

@@ -1,7 +1,215 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+
+//Include namespaces
+using DungeonRooms; // Room class
+using DungeonFloor; // Floor class
+using DirectionClass; // Direction class
+
+  public class RoomManager : MonoBehaviour {
+
+  	//Singleton reference
+  	public static RoomManager instance = null;
+
+  	// Use this for initialization
+  	void Awake () {
+  		//Make RoomManager a Singleton
+  		if (instance == null)
+  			instance = this;
+  		else if (instance != this)
+  			Destroy(gameObject);
+  	}
+
+    //Define important constants
+    public const int ROOM_CHANCE = 50;
+    public static List<Room> mainRooms;
+
+    public void createFloor(Floor thisFloor) {
+
+      //Get the full list of rooms from floor class
+      mainRooms = thisFloor.GetRooms();
+      //Declare for layout of this floor
+      Room[,] floorLayout = new Room[thisFloor.xSize,thisFloor.ySize];
+
+      //Place each importantRoom in a random place on the floor
+      foreach (Room _room in mainRooms) {
+        bool repeat;
+        do {
+          repeat = false;
+          _room.x = Random.Range(1, thisFloor.xSize-2);
+          _room.y = Random.Range(1, thisFloor.xSize-2);
+          repeat = CheckSpot(_room.x, _room.y, floorLayout);
+          if(repeat == false) {
+            floorLayout[_room.x, _room.y] = _room;
+          }
+        } while(repeat);
+
+      }
+
+      //Create Connections
+        //Go through each reqired room that was placed and build a graph to connect them all to each other
+        foreach(Room _room in mainRooms)
+        {
+          bool[] exits = FindDirections(_room.x, _room.y, floorLayout, _room.exits);
+          //Go through each exit
+          for(int i=0; i<4; i++) {
+            if(exits[i]) {
+              //Call recursive algorithm that begins making corridor rooms starting from each exit
+              Tunnel(_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
+            }
+            _room.exits[i] = exits[i];
+          }
+        }
+    }
+
+    //The Tunnel method will decide what kind of room is needed and call getCorridor to make rooms
+    public static void Tunnel(int x, int y, Room[,] floorLayout, Direction from, Room _room) {
+      //Decide directions this room will go to
+      bool[] exits = FindDirections(x, y, floorLayout, _room);
+      exits[DirectionUtility.getIndex(from)] = true;
+
+      //Once all exits have been found, ask for a room to fill in this one
+      if(x>=0 && y>=0 && x<floorLayout.GetLength(0) && y<floorLayout.GetLength(1))
+        if(floorLayout[x,y] == null) {
+          floorLayout[x,y] = GetCorridor(exits);
+          //TODO: Instantiate Room
+
+
+
+
+
+
+        }
+      //Call Tunnel on each room this one can go to
+      for(int i=0; i<4; i++) {
+        if(exits[i]==true && i != DirectionUtility.getIndex(from)) {
+          //if(CheckPoint(x+Direction.getX(i),y+Direction.getY(i), floorLayout)) {
+            Tunnel(x + DirectionUtility.getX(i), y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
+          //}
+        }
+      }
+    }
+
+    public static bool CheckSpot(int x, int y, Room[,] floorLayout) {
+      int check = 0;
+      if(floorLayout[x,y] == null) {
+        check++;
+      }
+      for(int i=0; i<4; i++) {
+        if(floorLayout[x+DirectionUtility.getX(i),y+DirectionUtility.getY(i)] == null) {
+          check++;
+        }
+        for(int j=0; j<4; j++) {
+          if(x+DirectionUtility.getX(i)+DirectionUtility.getX(j)>0 && x+DirectionUtility.getX(i)+DirectionUtility.getX(j)<floorLayout.GetLength(0) && y+DirectionUtility.getY(i)+DirectionUtility.getY(j)>0 && y+DirectionUtility.getY(i)+DirectionUtility.getY(j)<floorLayout.GetLength(1)) {
+            if(floorLayout[x+DirectionUtility.getX(i)+DirectionUtility.getX(j),y+DirectionUtility.getY(i)+DirectionUtility.getY(j)] == null) {
+              check++;
+            }
+          } else {
+            check++;
+          }
+        }
+      }
+      if(check==21) {
+        return false;
+      }
+      return true;
+    }
+
+    public static bool[] FindDirections(int x, int y, Room[,] floorLayout, Room _baseRoom) {
+      bool[] exits = new bool[4]; bool noExit = true;
+      List<int> goingDirections = new List<int> {0, 1, 2, 3};
+      do {
+        foreach(int i in goingDirections) {
+          //Make sure we're inside the bounds of the loop
+          int _x = x+DirectionUtility.getX(i);
+          int _y = y+DirectionUtility.getY(i);
+          if(_x<floorLayout.GetLength(0) && _x>=0 && _y<floorLayout.GetLength(1) && _y>=0) {
+            if(floorLayout[_x,_y] == null) {
+            //Randomize whether this exit will be used
+              if(Random.Range(0,100) < ROOM_CHANCE) {
+                  exits[i] = true;
+                  noExit = false;
+              }
+            } else {
+              //Check if this this room is a mainRoom
+              foreach(Room _checkedRoom in mainRooms) {
+                if(floorLayout[_x,_y]==_checkedRoom && _checkedRoom != _baseRoom) {
+                  //If it is, check if this mainRoom is connected to another room yet
+                  if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && _checkedRoom.CheckExit(DirectionUtility.opposite(i))) {
+                    //If it isn't, connect it
+                    _baseRoom.Connect(_checkedRoom);
+                    exits[i] = true;
+                    noExit = false;
+                  }
+                }
+              }
+              //If we've made it through this far, there is no mainRoom we can go to so remove this room
+              if(exits[i] == false) {
+                goingDirections.Remove(i);
+              }
+            }
+          } else {
+            //Remove directions that are blocked off by other walls
+            goingDirections.Remove(i);
+          }
+        }
+      } while(noExit && goingDirections.Count>0);
+
+      return exits;
+    }
+
+    public static bool[] FindDirections(int x, int y, Room[,] floorLayout, bool[] constraints) {
+      bool[] exits = new bool[4]; bool noExit = true;
+      List<int> goingDirections = new List<int> {0, 1, 2, 3};
+      do {
+        foreach(int i in goingDirections) {
+          int _x = x+DirectionUtility.getX(i);
+          int _y = y+DirectionUtility.getY(i);
+          //Make sure we're inside the bounds of the loop and not overlapping with an already existing room
+          if(_x<floorLayout.GetLength(0) && _x>=0 && _y<floorLayout.GetLength(1) && _y>=0) {
+            if(floorLayout[_x,_y] == null) {
+              //Randomize whether this exit will be used
+              if(Random.Range(0,100) < ROOM_CHANCE) {
+                  exits[i] = true;
+                  noExit = false;
+              }
+            } else {
+              //If the room seen is opening into this room, it's OK!
+              if(floorLayout[_x,_y].CheckExit(DirectionUtility.opposite(i))) {
+                exits[i] = true;
+                noExit = false;
+              } else {
+                //Otherwise, yeah, remove it
+                goingDirections.Remove(i);
+              }
+            }
+          } else {
+            //Remove directions that are blocked off by other walls
+            goingDirections.Remove(i);
+          }
+        }
+      } while(noExit && goingDirections.Count>0);
+
+      return exits;
+    }
+
+    public static Room GetCorridor(bool[] exits) {
+      //This room in the main code would get the corridor room required
+
+      //TODO: WRITE THIS!!!
+        //Find Room that fits specifications
+
+        //External conditions: Don't do the same room too often
+
+        //CREATE this room
+      return null;
+
+
+      //After writing this, don't forget to go back to Tunnel() to instantiate it
+    }
+}
+
 //Namespace with Room class declared inside it
 //using DungeonRooms;
 /*
