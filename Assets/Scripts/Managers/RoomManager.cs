@@ -34,7 +34,7 @@ using DirectionClass; // Direction class
       //Get the full list of rooms from floor class
       mainRooms = thisFloor.GetRooms();
       //Declare for layout of this floor
-      GameObject[,] floorLayout = new GameObject[thisFloor.xSize,thisFloor.ySize];
+      Room[,] floorLayout = new Room[thisFloor.xSize,thisFloor.ySize];
 
       //Place each importantRoom in a random place on the floor
       foreach (Room _room in mainRooms) {
@@ -47,7 +47,8 @@ using DirectionClass; // Direction class
           if(repeat == false) {
             //After going through exits, create this mainRoom
             //TODO: Make this mainRoom open or close walls depending on which exits have been set to open
-            floorLayout[_room.x, _room.y] = Instantiate(_room.gameObject, new Vector3(_room.x*10, _room.y*-10, 0), Quaternion.identity);
+            floorLayout[_room.x, _room.y] = _room;
+            Instantiate(_room.gameObject, new Vector3(_room.x*10, _room.y*-10, 0), Quaternion.identity);
           }
         } while(repeat);
 
@@ -73,7 +74,7 @@ using DirectionClass; // Direction class
     }
 
     //The Tunnel method will decide what kind of room is needed and call getCorridor to make rooms
-    public void Tunnel(int x, int y, GameObject[,] floorLayout, Direction from, Room _room) {
+    public void Tunnel(int x, int y, Room[,] floorLayout, Direction from, Room _room) {
       //Decide directions this room will go to
       bool[] exits = FindDirections(x, y, floorLayout, _room);
       exits[DirectionUtility.getIndex(from)] = true;
@@ -81,12 +82,11 @@ using DirectionClass; // Direction class
       //Once all exits have been found, ask for a room to fill in this one
       if(x>=0 && y>=0 && x<floorLayout.GetLength(0) && y<floorLayout.GetLength(1))
         if(floorLayout[x,y] == null) {
-          GameObject createdRoom = GetCorridor(exits);
-          floorLayout[x,y] = Instantiate(createdRoom, new Vector3(x*10, y*-10, 0), Quaternion.identity);
-          //TODO: Calling getComponent on objects is slow. Find a better way to get Room
-          Room _newRoom = floorLayout[x,y].GetComponent<Room>();
-          _newRoom.x = x;
-          _newRoom.y = y;
+          Room createdRoom = GetCorridor(exits);
+          createdRoom.x = x;
+          createdRoom.y = y;
+          floorLayout[x,y] = createdRoom;
+          Instantiate(createdRoom.gameObject, new Vector3(x*10, y*-10, 0), Quaternion.identity);
 
           //Call Tunnel on each room this one can go to
           for(int i=0; i<4; i++) {
@@ -101,7 +101,7 @@ using DirectionClass; // Direction class
         }
     }
 
-    public static bool CheckSpot(int x, int y, GameObject[,] floorLayout) {
+    public static bool CheckSpot(int x, int y, Room[,] floorLayout) {
       int check = 0;
       if(floorLayout[x,y] == null) {
         check++;
@@ -126,7 +126,7 @@ using DirectionClass; // Direction class
       return true;
     }
 
-    public static bool[] FindDirections(int x, int y, GameObject[,] floorLayout, Room _baseRoom) {
+    public static bool[] FindDirections(int x, int y, Room[,] floorLayout, Room _baseRoom) {
       bool[] exits = new bool[4]; bool noExit = true;
       List<int> goingDirections = new List<int> {0, 1, 2, 3};
       do {
@@ -142,9 +142,8 @@ using DirectionClass; // Direction class
                   noExit = false;
               }
             } else {
-              //TODO: Calling getComponent on objects is slow. Find a better way to get Room
               //Check if room this one is facing is already open to this room
-              bool[] roomExits = floorLayout[_x,_y].GetComponent<Room>().getExits();
+              bool[] roomExits = floorLayout[_x,_y].getExits();
               //Otherwise, Check if this this room is a mainRoom
               foreach(Room _checkedRoom in mainRooms) {
                 if(floorLayout[_x,_y]==_checkedRoom && _checkedRoom != _baseRoom) {
@@ -180,7 +179,7 @@ using DirectionClass; // Direction class
       return exits;
     }
 
-    public static bool[] FindDirections(int x, int y, GameObject[,] floorLayout, bool[] constraints) {
+    public static bool[] FindDirections(int x, int y, Room[,] floorLayout, bool[] constraints) {
       bool[] exits = new bool[4]; bool noExit = true;
       List<int> goingDirections = new List<int> {0, 1, 2, 3};
       for(int i=0; i<4; i++) {
@@ -202,8 +201,7 @@ using DirectionClass; // Direction class
               }
             } else {
               //If the room seen is opening into this room, it's OK!
-              //TODO: Calling getComponent on objects is slow. Find a better way to get Room
-              if(floorLayout[_x,_y].GetComponent<Room>().CheckExit(DirectionUtility.opposite(i))) {
+              if(floorLayout[_x,_y].CheckExit(DirectionUtility.opposite(i))) {
                 exits[i] = true;
                 noExit = false;
               } else {
@@ -223,9 +221,9 @@ using DirectionClass; // Direction class
       return exits;
     }
 
-    private GameObject GetCorridor(bool[] exits) {
+    private Room GetCorridor(bool[] exits) {
         //Find Room that fits specifications
-        List<GameObject> rooms = new List<GameObject>();
+        List<Room> rooms = new List<Room>();
         //Find first direction and populate list
         bool repeat = true; int i = 0;
         while(repeat) {

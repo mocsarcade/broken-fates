@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DungeonRooms;
 
 public class RoomTemplate : MonoBehaviour {
-    public List<GameObject> topRooms;
-    public List<GameObject> bottomRooms;
-    public List<GameObject> leftRooms;
-    public List<GameObject> rightRooms;
+    public List<Room> topRooms;
+    public List<Room> bottomRooms;
+    public List<Room> leftRooms;
+    public List<Room> rightRooms;
 
-    public List<GameObject> getRooms(int direction) {
+    public List<Room> getRooms(int direction) {
       switch(direction) {
         case 0:
         return topRooms;
@@ -19,7 +20,7 @@ public class RoomTemplate : MonoBehaviour {
         case 3:
         return rightRooms;
         default:
-        return new List<GameObject>();
+        return new List<Room>();
       }
     }
 }
