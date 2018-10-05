@@ -24,6 +24,23 @@ namespace DirectionClass {
           return (int) dir;
       }
 
+			// getter method
+      public static Direction getDirection(int dir)
+      {
+				if (dir == 0) {
+          return Direction.UP;
+        }
+				else if(dir == 1) {
+          return Direction.DOWN;
+        }
+				else if(dir == 2) {
+          return Direction.LEFT;
+        }
+        else { //In this case dir == Direciton.RIGHT
+          return Direction.RIGHT;
+        }
+      }
+
       public static Direction opposite(Direction dir) {
         if(dir == Direction.UP) {
           return Direction.DOWN;
@@ -64,7 +81,7 @@ namespace DirectionClass {
 
       public static int getY(Direction dir) {
         if(getIndex(dir) == 1 || getIndex(dir) == 0) {
-          return getIndex(dir) * 2 - 1;
+          return (getIndex(dir) * 2 - 1);
         } else {
           return 0;
         }

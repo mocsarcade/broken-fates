@@ -13,8 +13,22 @@ namespace DungeonRooms {
 	  private bool connected;
 	  public int x;
 	  public int y;
-	  public bool[] exits;
+	  private bool[] exits;
 		private List<Renderer> roomObjects = new List<Renderer>();
+
+		//Editor-changed-values
+		public bool exitUp; public bool exitDown; public bool exitLeft; public bool exitRight;
+
+		//Is called when the editor updates any of the public variables (exitUp,Down,etc)
+		void OnValidate()
+		{
+			//Update exits whenever the four bools are updated
+			exits = new bool[4];
+			exits[0] = exitUp;
+			exits[1] = exitDown;
+			exits[2] = exitLeft;
+			exits[3] = exitRight;
+		}
 
 		//RoomTemplate object (THIS IS NO LONGER USED)
 		//private RoomTemplate template;
@@ -84,8 +98,27 @@ namespace DungeonRooms {
 		}
 
 	  public bool CheckExit(Direction checkMe) {
+			exits = validateExits();
 	    return exits[DirectionUtility.getIndex(checkMe)];
 	  }
+
+		public bool[] getExits() {
+			exits = validateExits();
+	    return exits;
+	  }
+
+		private bool[] validateExits() {
+			exits = new bool[4];
+			exits[0] = exitUp;
+			exits[1] = exitDown;
+			exits[2] = exitLeft;
+			exits[3] = exitRight;
+			return exits;
+		}
+
+		/*public void setExit(int index, bool toSet) {
+	    exits[index] = toSet;
+	  }*/
 
 	  public bool isConnected() {
 	    return connected;

@@ -58,7 +58,7 @@
 
 			[SerializeField]
 			[Tooltip("If checked, the circle will be affected by walls and will look like it slopes up them.")]
-			private bool _climbWalls = true;
+			private bool _climbWalls = false;
 
 			private Collider2D onWall;
 
