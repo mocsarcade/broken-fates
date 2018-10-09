@@ -8,6 +8,7 @@ using System.Linq;
 using DungeonRooms; // Room class
 using DungeonFloor; // Floor class
 using DirectionClass; // Direction class
+using SpecialDungeonRooms;
 
   public class RoomManager : MonoBehaviour {
 
@@ -26,7 +27,7 @@ using DirectionClass; // Direction class
 
     //Define important constants
     public const int ROOM_CHANCE = 50;
-    public static List<Room> mainRooms;
+    public static List<SpecialRoom> mainRooms;
 
     public void createFloor(Floor thisFloor) {
       roomList = GameObject.FindWithTag("Rooms").GetComponent<RoomTemplate>();
@@ -37,7 +38,7 @@ using DirectionClass; // Direction class
       Room[,] floorLayout = new Room[thisFloor.xSize,thisFloor.ySize];
 
       //Place each importantRoom in a random place on the floor
-      foreach (Room _room in mainRooms) {
+      foreach (SpecialRoom _room in mainRooms) {
         bool repeat;
         do {
           repeat = false;
@@ -46,7 +47,6 @@ using DirectionClass; // Direction class
           repeat = CheckSpot(_room.x, _room.y, floorLayout);
           if(repeat == false) {
             //After going through exits, create this mainRoom
-            //TODO: Make this mainRoom open or close walls depending on which exits have been set to open
             floorLayout[_room.x, _room.y] = _room;
             Instantiate(_room.gameObject, new Vector3(_room.x*10, _room.y*-10, 0), Quaternion.identity);
           }
@@ -56,7 +56,7 @@ using DirectionClass; // Direction class
 
       //Create Connections
         //Go through each reqired room that was placed and build a graph to connect them all to each other
-        foreach(Room _room in mainRooms)
+        foreach(SpecialRoom _room in mainRooms)
         {
           bool[] exits = FindDirections(_room.x, _room.y, floorLayout, _room.getExits());
           //TODO: Make the map close each exit that is false
@@ -67,10 +67,16 @@ using DirectionClass; // Direction class
             if(exits[i]) {
               //Call recursive algorithm that begins making corridor rooms starting from each exit
               Tunnel(_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
+              //Make this mainRoom open or close walls depending on which exits have been set to open
+              _room.EnableRoom(DirectionUtility.getDirection(i));
+            } else {
+              _room.DisableRoom(DirectionUtility.getDirection(i));
             }
+
           }
         }
-        //TODO: Find a way to know where the START is and place player (player's shadow, technically) there
+        //TODO: Find a way to know where the START is and place player there
+        //Player.GetPlayer().SetPosition(new Vector2(), 0)
     }
 
     //The Tunnel method will decide what kind of room is needed and call getCorridor to make rooms

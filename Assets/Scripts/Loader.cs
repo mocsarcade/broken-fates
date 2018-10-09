@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 //TODO: REMOVE THIS. THIS IS JUST FOR TESTING
-using DungeonFloor; using DungeonRooms;
+using DungeonFloor; using SpecialDungeonRooms;
 
 public class Loader : MonoBehaviour {
 
@@ -12,7 +12,8 @@ public class Loader : MonoBehaviour {
 	public Text subDialogueText;
 
 	//Stuff for testing purposes
-	public List<Room> room;
+	public List<SpecialRoom> room;
+	public SpecialRoom entrance;
 
 	// Use this for initialization
 	void Awake () {
@@ -20,7 +21,7 @@ public class Loader : MonoBehaviour {
 			Instantiate (gameManager);
 
 			//Test FloorMaker
-			Floor testFloor = new Floor(9,9,room);
+			Floor testFloor = new Floor(9,9,room, entrance);
 			RoomManager.instance.createFloor(testFloor);
 			//gameController.GetComponent<DialogueManager>().nameText = subNameText;
 			//gameController.GetComponent<DialogueManager>().dialogueText = subDialogueText;
