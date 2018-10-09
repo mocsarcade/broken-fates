@@ -34,6 +34,7 @@ using SpecialDungeonRooms;
 
       //Get the full list of rooms from floor class
       mainRooms = thisFloor.GetRooms();
+      mainRooms.Add(thisFloor.GetEntrance());
       //Declare for layout of this floor
       Room[,] floorLayout = new Room[thisFloor.xSize,thisFloor.ySize];
 
@@ -59,8 +60,6 @@ using SpecialDungeonRooms;
         foreach(SpecialRoom _room in mainRooms)
         {
           bool[] exits = FindDirections(_room.x, _room.y, floorLayout, _room.getExits());
-          //TODO: Make the map close each exit that is false
-
           //Go through each exit
           for(int i=0; i<4; i++) {
             //_room.setExit(i, exits[i]);
@@ -151,15 +150,16 @@ using SpecialDungeonRooms;
               //Check if room this one is facing is already open to this room
               bool[] roomExits = floorLayout[_x,_y].getExits();
               //Otherwise, Check if this this room is a mainRoom
-              foreach(Room _checkedRoom in mainRooms) {
-                if(floorLayout[_x,_y]==_checkedRoom && _checkedRoom != _baseRoom) {
+              foreach(SpecialRoom _checkedRoom in mainRooms) {
+                if(floorLayout[_x,_y]==_checkedRoom && ((Room) _checkedRoom) != _baseRoom) {
                   //If it is, check if this mainRoom is connected to another room yet
                   if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && _checkedRoom.CheckExit(DirectionUtility.opposite(i))) {
                     //If it isn't, connect it
                     _baseRoom.Connect(_checkedRoom);
                     exits[i] = true;
                     noExit = false;
-                    //TODO: Make method for opening this entrance of the mainRoom
+                    //Open this entrance of the mainRoom
+                    _checkedRoom.EnableRoom(DirectionUtility.opposite(i));
                   }
                 }
               }
