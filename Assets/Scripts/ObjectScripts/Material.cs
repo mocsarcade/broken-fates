@@ -257,8 +257,12 @@ public class Material : MonoBehaviour {
 		}
 
 		public void SetPosition(Vector2 newPosition, int z) {
-			shadow.setPosition(newPosition);
-		}
+            if(shadow != null) {
+                shadow.setPosition(newPosition);
+            } else {
+                transform.position = newPosition;
+            }
+        }
 
 		public Vector3 GetPosition() {
 			return myTransform.position;

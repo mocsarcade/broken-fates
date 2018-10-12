@@ -75,7 +75,9 @@ using SpecialDungeonRooms;
           }
         }
         //TODO: Find a way to know where the START is and place player there
-        //Player.GetPlayer().SetPosition(new Vector2(), 0)
+        Player.GetPlayer().
+              SetPosition
+              ((Vector2)(GameObject.FindWithTag("SpawnPoint").transform.position), 0);
     }
 
     //The Tunnel method will decide what kind of room is needed and call getCorridor to make rooms
