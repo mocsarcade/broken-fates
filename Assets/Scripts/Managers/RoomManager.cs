@@ -149,22 +149,24 @@ using SpecialDungeonRooms;
             } else {
               //Check if room this one is facing is already open to this room
               bool[] roomExits = floorLayout[_x,_y].getExits();
+              bool isMain = false;
               //Otherwise, Check if this this room is a mainRoom
               foreach(SpecialRoom _checkedRoom in mainRooms) {
-                if(floorLayout[_x,_y]==_checkedRoom && ((Room) _checkedRoom) != _baseRoom) {
+                if(floorLayout[_x,_y]==((Room) _checkedRoom) && ((Room) _checkedRoom) != _baseRoom) {
                   //If it is, check if this mainRoom is connected to another room yet
-                  if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && _checkedRoom.CheckExit(DirectionUtility.opposite(i))) {
+                  if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
                     //If it isn't, connect it
                     _baseRoom.Connect(_checkedRoom);
                     exits[i] = true;
                     noExit = false;
                     //Open this entrance of the mainRoom
                     _checkedRoom.EnableRoom(DirectionUtility.opposite(i));
+                    isMain = true;
                   }
                 }
               }
               //If we haven't found a mainRoom, check again to see if it's just a room already open on this direction
-              if(exits[i] == false && roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
+              if(exits[i] == false && isMain == false && roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
                 exits[i] = true;
                 noExit = false;
               }
