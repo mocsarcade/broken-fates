@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 114357461690807326}
   - component: {fileID: 61882702328813326}
   m_Layer: 8
-  m_Name: Wall (32)
+  m_Name: leftWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 114287313803966660}
   - component: {fileID: 61867597938964610}
   m_Layer: 8
-  m_Name: Wall (37)
+  m_Name: upWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -249,7 +249,7 @@ GameObject:
   m_Layer: 0
   m_Name: Spawn Point
   m_TagString: SpawnPoint
-  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -285,7 +285,7 @@ GameObject:
   - component: {fileID: 114361701919907524}
   - component: {fileID: 61769723092567572}
   m_Layer: 8
-  m_Name: Wall (38)
+  m_Name: downWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 114749206980205958}
   - component: {fileID: 61153558126818882}
   m_Layer: 8
-  m_Name: Wall (33)
+  m_Name: rightWall
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1276,16 +1276,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea871a38e8bc5f6409aa1cca9c5c06b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  connected: 0
   x: 6
-  y: 3
+  y: 1
+  exits: 01010101
   exitUp: 1
   exitDown: 1
   exitLeft: 1
   exitRight: 1
-  upWall: {fileID: 1424322753468698}
-  downWall: {fileID: 1993937334230870}
-  leftWall: {fileID: 1209940617213968}
-  rightWall: {fileID: 1999519341210168}
+  initialized: 0
+  upWall: []
+  downWall: []
+  leftWall: []
+  rightWall: []
 --- !u!114 &114384462217835962
 MonoBehaviour:
   m_ObjectHideFlags: 1

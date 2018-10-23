@@ -9,12 +9,14 @@ namespace DungeonRooms {
 
 	public class Room : MonoBehaviour {
 
+		protected bool unPacked;
 		//Logistic info
-	  private bool connected;
+	  public bool connected;
 	  public int x;
 	  public int y;
-	  private bool[] exits;
-		private List<Renderer> roomObjects = new List<Renderer>();
+	  public bool[] exits;
+		protected List<Renderer> roomObjects = new List<Renderer>();
+		private Room baseRoom;
 
 		//Editor-changed-values
 		public bool exitUp; public bool exitDown; public bool exitLeft; public bool exitRight;
@@ -41,9 +43,10 @@ namespace DungeonRooms {
     }*/
 
 		// Use this for initialization
-		void Awake () {
+		public virtual void Awake () {
 			//CreateRoom(0,0);
-			UnpackRoom();
+			if(!unPacked)
+				UnpackRoom();
 		}
 
 		/*
@@ -74,6 +77,7 @@ namespace DungeonRooms {
 				}
 				Unpack(transform.GetChild(0), 5);
 			}
+			unPacked = true;
 		}
 
 		//Sets the object, if it is a child of the room to be a child of null
@@ -107,6 +111,14 @@ namespace DungeonRooms {
 	    return exits;
 	  }
 
+		public virtual bool AddExit(Direction dir, Room[,] floorLayout) {
+			if(exits[DirectionUtility.getIndex(dir)] == false) {
+				exits[DirectionUtility.getIndex(dir)] = true;
+				RoomManager.instance.ReplaceRoom(this, exits, floorLayout);
+			}
+			return true;
+		}
+
 		private bool[] validateExits() {
 			exits = new bool[4];
 			exits[0] = exitUp;
@@ -120,16 +132,31 @@ namespace DungeonRooms {
 	    exits[index] = toSet;
 	  }*/
 
+		public void setBase(Room _base) {
+			baseRoom = _base;
+		}
+
 	  public bool isConnected() {
-	    return connected;
+			if(baseRoom != null) {
+				return baseRoom.isConnected();
+			} else {
+				return connected;
+			}
 	  }
 
 	  public void Connect(Room _connectedRoom) {
-	    connected=true;
+			if(baseRoom != null) {
+				baseRoom.Connected();
+			} else {
+				connected=true;
+			}
 	    _connectedRoom.Connected();
 	  }
 
 	  public void Connected() {
+			if(baseRoom != null) {
+				baseRoom.Connected();
+			}
 	    connected=true;
 	  }
 

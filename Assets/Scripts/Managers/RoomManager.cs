@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Exception = System.Exception;
 using System.Linq;
+using MEC;
 
 //Include namespaces
 using DungeonRooms; // Room class
@@ -12,6 +13,8 @@ using SpecialDungeonRooms;
 
   public class RoomManager : MonoBehaviour {
 
+    public const int ROOM_SIZE_X = 10;
+    public const int ROOM_SIZE_Y = 10;
   	//Singleton reference
     public static RoomManager instance = null;
     public RoomTemplate roomList;
@@ -35,6 +38,7 @@ using SpecialDungeonRooms;
       //Get the full list of rooms from floor class
       mainRooms = thisFloor.GetRooms();
       mainRooms.Add(thisFloor.GetEntrance());
+      List<SpecialRoom> createdMainRooms = new List<SpecialRoom>();
       //Declare for layout of this floor
       Room[,] floorLayout = new Room[thisFloor.xSize,thisFloor.ySize];
 
@@ -48,8 +52,12 @@ using SpecialDungeonRooms;
           repeat = CheckSpot(_room.x, _room.y, floorLayout);
           if(repeat == false) {
             //After going through exits, create this mainRoom
-            floorLayout[_room.x, _room.y] = _room;
-            Instantiate(_room.gameObject, new Vector3(_room.x*10, _room.y*-10, 0), Quaternion.identity);
+            SpecialRoom tempScript = Instantiate(_room.gameObject, new Vector3(_room.x*ROOM_SIZE_X, _room.y*-ROOM_SIZE_Y, 0), Quaternion.identity).GetComponent<SpecialRoom>();
+            floorLayout[_room.x, _room.y] = tempScript;
+            if(tempScript) {
+              tempScript.Initialize();
+              createdMainRooms.Add(tempScript);
+            }
           }
         } while(repeat);
 
@@ -57,27 +65,37 @@ using SpecialDungeonRooms;
 
       //Create Connections
         //Go through each reqired room that was placed and build a graph to connect them all to each other
-        foreach(SpecialRoom _room in mainRooms)
+        foreach(SpecialRoom _room in createdMainRooms)
         {
           bool[] exits = FindDirections(_room.x, _room.y, floorLayout, _room.getExits());
+          Debug.Log("Special Room " + _room);
+          foreach(bool ex in exits) {
+            Debug.Log(ex);
+          }
           //Go through each exit
           for(int i=0; i<4; i++) {
             //_room.setExit(i, exits[i]);
             if(exits[i]) {
-              //Call recursive algorithm that begins making corridor rooms starting from each exit
-              Tunnel(_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
-              //Make this mainRoom open or close walls depending on which exits have been set to open
-              _room.EnableRoom(DirectionUtility.getDirection(i));
-            } else {
-              _room.DisableRoom(DirectionUtility.getDirection(i));
+              //Check if a room has somehow been created in the interim
+              if(floorLayout[_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i)] == null) {
+                //Call recursive algorithm that begins making corridor rooms starting from each exit
+                Tunnel(_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
+                //Make this mainRoom open or close walls depending on which exits have been set to open
+                _room.DisableRoom(DirectionUtility.getDirection(i));
+              }/* else {
+                //Check if the wall doesn't open to this room
+                bool[] roomExits = floorLayout[_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i)].getExits();
+                if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == false) {
+                  //If the room doesn't open up, block it off
+                  _room.EnableRoom(DirectionUtility.getDirection(i));
+                }
+              }*/
             }
 
           }
         }
-        //TODO: Find a way to know where the START is and place player there
         Player.GetPlayer().
-              SetPosition
-              ((Vector2)(GameObject.FindWithTag("SpawnPoint").transform.position), 0);
+              SetPosition((Vector2)(GameObject.FindWithTag("SpawnPoint").transform.position), 0);
     }
 
     //The Tunnel method will decide what kind of room is needed and call getCorridor to make rooms
@@ -93,7 +111,9 @@ using SpecialDungeonRooms;
           createdRoom.x = x;
           createdRoom.y = y;
           floorLayout[x,y] = createdRoom;
-          Instantiate(createdRoom.gameObject, new Vector3(x*10, y*-10, 0), Quaternion.identity);
+          GameObject madeRoom = Instantiate(createdRoom.gameObject, new Vector3(x*ROOM_SIZE_X, y*-ROOM_SIZE_Y, 0), Quaternion.identity);
+          //Set baseRoom
+          madeRoom.GetComponent<Room>().setBase(_room);
 
           //Call Tunnel on each room this one can go to
           for(int i=0; i<4; i++) {
@@ -149,29 +169,41 @@ using SpecialDungeonRooms;
                   noExit = false;
               }
             } else {
-              //Check if room this one is facing is already open to this room
-              bool[] roomExits = floorLayout[_x,_y].getExits();
-              bool isMain = false;
-              //Otherwise, Check if this this room is a mainRoom
+              //Check if this this room is connected to an UNCONNECTED MAINROOM
+              if(floorLayout[_x,_y].isConnected() == false || !_baseRoom.isConnected()) {
+                  //Open this entrance of the mainRoom
+                  //_checkedRoom.DisableRoom(DirectionUtility.opposite(i));
+                  bool addStatus = floorLayout[_x,_y].AddExit(DirectionUtility.opposite(i), floorLayout);
+                  if(addStatus == true) {
+                    //Flag connection
+                    _baseRoom.Connect(floorLayout[_x,_y]);
+                    exits[i] = true;
+                    noExit = false;
+                  }
+                } else {
+                  //Check if room this one is facing is already open to this room
+                  bool[] roomExits = floorLayout[_x,_y].getExits();
+
+                  if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
+                    exits[i] = true;
+                    noExit = false;
+                  }
+                }
+              /*
               foreach(SpecialRoom _checkedRoom in mainRooms) {
                 if(floorLayout[_x,_y]==((Room) _checkedRoom) && ((Room) _checkedRoom) != _baseRoom) {
                   //If it is, check if this mainRoom is connected to another room yet
-                  if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
+                  //if((!_checkedRoom.isConnected() || !_baseRoom.isConnected()) && roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
+                  if(!_checkedRoom.isConnected() || !_baseRoom.isConnected() || roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
                     //If it isn't, connect it
                     _baseRoom.Connect(_checkedRoom);
                     exits[i] = true;
                     noExit = false;
                     //Open this entrance of the mainRoom
-                    _checkedRoom.EnableRoom(DirectionUtility.opposite(i));
-                    isMain = true;
+                    _checkedRoom.DisableRoom(DirectionUtility.opposite(i));
                   }
                 }
-              }
-              //If we haven't found a mainRoom, check again to see if it's just a room already open on this direction
-              if(exits[i] == false && isMain == false && roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
-                exits[i] = true;
-                noExit = false;
-              }
+              }*/
               //If we've made it through this far, there is no hope of connecting here so remove this direction
               if(exits[i] == false) {
                 goingDirections.Remove(i);
@@ -179,7 +211,7 @@ using SpecialDungeonRooms;
               }
             }
           } else {
-            //Remove directions that are blocked off by other walls
+            //Remove directions that are blocked off by the edge of the floormap
             goingDirections.Remove(i);
             break;
           }
@@ -241,10 +273,10 @@ using SpecialDungeonRooms;
             rooms = roomList.getRooms(i);
             repeat = false;
           }
-          i++;
           if(i>=4) {
       			Debug.LogException(new Exception("Looking for a room with no entrances!"), this);
           }
+          i++;
         }
 
         //Now go through all directions again and check for intersection
@@ -265,5 +297,12 @@ using SpecialDungeonRooms;
         //}
         //TODO: External conditions: Don't do the same room too often
 
+    }
+
+    public void ReplaceRoom(Room oldRoom, bool[] exits, Room[,] floorLayout) {
+      Room newRoom = GetCorridor(exits);
+      GameObject newObject = Instantiate(newRoom.gameObject, new Vector3(oldRoom.x*ROOM_SIZE_X, oldRoom.y*-ROOM_SIZE_Y, 0), Quaternion.identity);
+      floorLayout[oldRoom.x,oldRoom.y] = newObject.GetComponent<Room>();
+    	Timing.RunCoroutine(oldRoom.DestroyRoom());
     }
 }

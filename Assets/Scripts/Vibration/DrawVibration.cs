@@ -215,7 +215,7 @@
 										trueCollider = result.gameObject.GetComponent<WallScript>().GetMainWallScript();
 										trueColliderDict.Add(result, trueCollider);
 					        }
-									y = ClimbWall(vertex, i, trueCollider);
+                  y = ClimbWall(vertex, i, trueCollider);
 								}
 							}
 

@@ -1119,8 +1119,9 @@ MonoBehaviour:
   subNameText: {fileID: 1601109650}
   subDialogueText: {fileID: 1274386791}
   room:
-  - {fileID: 114000548514278104, guid: e725967ceda6c2240a1daf8a384a5e84, type: 2}
-  - {fileID: 114139291389944916, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 2}
+  - {fileID: 114744351635238220, guid: b966d6b3abbb85f47aaa668b481048b3, type: 2}
+  - {fileID: 114013073727860584, guid: 7c20b7a68e8d73f4ba12bd47d1b5ebd4, type: 2}
+  entrance: {fileID: 114383029106276796, guid: 5af037fecb8d5482ba78820344847870, type: 2}
 --- !u!58 &1289932575
 CircleCollider2D:
   m_ObjectHideFlags: 0
