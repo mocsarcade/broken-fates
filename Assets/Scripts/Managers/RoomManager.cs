@@ -110,10 +110,10 @@ using SpecialDungeonRooms;
           Room createdRoom = GetCorridor(exits);
           createdRoom.x = x;
           createdRoom.y = y;
-          floorLayout[x,y] = createdRoom;
           GameObject madeRoom = Instantiate(createdRoom.gameObject, new Vector3(x*ROOM_SIZE_X, y*-ROOM_SIZE_Y, 0), Quaternion.identity);
           //Set baseRoom
-          madeRoom.GetComponent<Room>().setBase(_room);
+          floorLayout[x,y] = madeRoom.GetComponent<Room>()
+          floorLayout[x,y].setBase(_room);
 
           //Call Tunnel on each room this one can go to
           for(int i=0; i<4; i++) {
@@ -170,23 +170,30 @@ using SpecialDungeonRooms;
               }
             } else {
               //Check if this this room is connected to an UNCONNECTED MAINROOM
-              if(floorLayout[_x,_y].isConnected() == false || !_baseRoom.isConnected()) {
+              if((floorLayout[_x,_y].isConnected() == false || _baseRoom.isConnected() == false) && floorLayout[_x,_y].getBaseRoom() != _baseRoom) {
+                Debug.Log(_baseRoom + " and " + floorLayout[_x,_y].getBaseRoom());
                   //Open this entrance of the mainRoom
                   //_checkedRoom.DisableRoom(DirectionUtility.opposite(i));
                   bool addStatus = floorLayout[_x,_y].AddExit(DirectionUtility.opposite(i), floorLayout);
+                  Debug.Log("Adding " + DirectionUtility.opposite(i) + " exit to room at " + _x + " and " + _y);
                   if(addStatus == true) {
                     //Flag connection
+                    Debug.Log("AddExit succeeded! Exits[i] at " + x + ", " + y + " is true");
                     _baseRoom.Connect(floorLayout[_x,_y]);
                     exits[i] = true;
                     noExit = false;
                   }
                 } else {
-                  //Check if room this one is facing is already open to this room
-                  bool[] roomExits = floorLayout[_x,_y].getExits();
+                  //Make sure we're not dealing with a special room (that only opens up IF we're not connected, so get with the program!)
+                  SpecialRoom tempRoom = floorLayout[_x,_y] as SpecialRoom;
+                  if(tempRoom == null) {
+                    //Check if room this one is facing is already open to this room
+                    bool[] roomExits = floorLayout[_x,_y].getExits();
 
-                  if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
-                    exits[i] = true;
-                    noExit = false;
+                    if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
+                      exits[i] = true;
+                      noExit = false;
+                    }
                   }
                 }
               /*

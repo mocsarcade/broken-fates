@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 114383029106276796}
   m_Layer: 0
   m_Name: Entrance
-  m_TagString: Untagged
+  m_TagString: SpecialRoom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -244,7 +244,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4999275838107926}
-  - component: {fileID: 61850211548813132}
   - component: {fileID: 50034728869244084}
   m_Layer: 0
   m_Name: Spawn Point
@@ -1088,31 +1087,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2, y: 1}
   m_EdgeRadius: 0
---- !u!61 &61850211548813132
-BoxCollider2D:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1834027710701604}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 1
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!61 &61867597938964610
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -1277,9 +1251,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connected: 0
-  x: 6
+  x: 1
   y: 1
   exits: 01010101
+  baseRoom: {fileID: 0}
   exitUp: 1
   exitDown: 1
   exitLeft: 1

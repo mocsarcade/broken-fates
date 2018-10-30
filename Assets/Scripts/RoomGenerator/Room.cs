@@ -16,7 +16,7 @@ namespace DungeonRooms {
 	  public int y;
 	  public bool[] exits;
 		protected List<Renderer> roomObjects = new List<Renderer>();
-		private Room baseRoom;
+		public Room baseRoom;
 
 		//Editor-changed-values
 		public bool exitUp; public bool exitDown; public bool exitLeft; public bool exitRight;
@@ -116,6 +116,7 @@ namespace DungeonRooms {
 				exits[DirectionUtility.getIndex(dir)] = true;
 				RoomManager.instance.ReplaceRoom(this, exits, floorLayout);
 			}
+			Debug.Log("Replacing Room " + x + " and " + y);
 			return true;
 		}
 
@@ -144,10 +145,16 @@ namespace DungeonRooms {
 			}
 	  }
 
+		public virtual Room getBaseRoom() {
+			Debug.Log("MY BASEROOM IS " + baseRoom);
+			return baseRoom;
+		}
+
 	  public void Connect(Room _connectedRoom) {
 			if(baseRoom != null) {
 				baseRoom.Connected();
 			} else {
+				Debug.Log(gameObject.name + " is connected!");
 				connected=true;
 			}
 	    _connectedRoom.Connected();
@@ -157,6 +164,7 @@ namespace DungeonRooms {
 			if(baseRoom != null) {
 				baseRoom.Connected();
 			}
+			Debug.Log(gameObject.name + " is connected!");
 	    connected=true;
 	  }
 

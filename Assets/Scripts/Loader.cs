@@ -21,7 +21,7 @@ public class Loader : MonoBehaviour {
 			Instantiate (gameManager);
 
 			//Test FloorMaker
-			Floor testFloor = new Floor(9,9,room, entrance);
+			Floor testFloor = new Floor(7,7,room, entrance);
 			RoomManager.instance.createFloor(testFloor);
 			//gameController.GetComponent<DialogueManager>().nameText = subNameText;
 			//gameController.GetComponent<DialogueManager>().dialogueText = subDialogueText;

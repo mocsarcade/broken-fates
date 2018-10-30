@@ -84,8 +84,13 @@ namespace SpecialDungeonRooms {
 				DisableRoom(dir);
 				return true;
 			}
+			Debug.Log("Returning False");
 			return false;
 		}
-	}
 
+		public override Room getBaseRoom() {
+			return this;
+		}
+
+	}
 }

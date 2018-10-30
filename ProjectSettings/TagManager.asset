@@ -14,6 +14,7 @@ TagManager:
   - Wall
   - SpawnPoint
   - Rooms
+  - SpecialRoom
   layers:
   - Default
   - TransparentFX

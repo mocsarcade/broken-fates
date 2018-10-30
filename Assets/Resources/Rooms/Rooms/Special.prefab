@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 114744351635238220}
   m_Layer: 0
   m_Name: Special
-  m_TagString: Untagged
+  m_TagString: SpecialRoom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1299,9 +1299,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connected: 0
-  x: 6
-  y: 4
+  x: 4
+  y: 2
   exits: 01010101
+  baseRoom: {fileID: 0}
   exitUp: 1
   exitDown: 1
   exitLeft: 1
