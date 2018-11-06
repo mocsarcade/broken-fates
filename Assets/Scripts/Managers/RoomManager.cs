@@ -13,6 +13,8 @@ using SpecialDungeonRooms;
 
   public class RoomManager : MonoBehaviour {
 
+    public int order = 0;
+
     public const int ROOM_SIZE_X = 10;
     public const int ROOM_SIZE_Y = 10;
   	//Singleton reference
@@ -68,10 +70,6 @@ using SpecialDungeonRooms;
         foreach(SpecialRoom _room in createdMainRooms)
         {
           bool[] exits = FindDirections(_room.x, _room.y, floorLayout, _room.getExits());
-          Debug.Log("Special Room " + _room);
-          foreach(bool ex in exits) {
-            Debug.Log(ex);
-          }
           //Go through each exit
           for(int i=0; i<4; i++) {
             //_room.setExit(i, exits[i]);
@@ -112,8 +110,11 @@ using SpecialDungeonRooms;
           createdRoom.y = y;
           GameObject madeRoom = Instantiate(createdRoom.gameObject, new Vector3(x*ROOM_SIZE_X, y*-ROOM_SIZE_Y, 0), Quaternion.identity);
           //Set baseRoom
-          floorLayout[x,y] = madeRoom.GetComponent<Room>()
+          floorLayout[x,y] = madeRoom.GetComponent<Room>();
           floorLayout[x,y].setBase(_room);
+
+          order++;
+          floorLayout[x,y].setOrder(order);
 
           //Call Tunnel on each room this one can go to
           for(int i=0; i<4; i++) {
@@ -154,7 +155,7 @@ using SpecialDungeonRooms;
     }
 
     public static bool[] FindDirections(int x, int y, Room[,] floorLayout, Room _baseRoom) {
-      bool[] exits = new bool[4]; bool noExit = true;
+      bool[] exits = new bool[4];
       List<int> goingDirections = new List<int> {0, 1, 2, 3};
       do {
         foreach(int i in goingDirections) {
@@ -166,34 +167,26 @@ using SpecialDungeonRooms;
             //Randomize whether this exit will be used
               if(Random.Range(0,100) < ROOM_CHANCE) {
                   exits[i] = true;
-                  noExit = false;
               }
             } else {
               //Check if this this room is connected to an UNCONNECTED MAINROOM
               if((floorLayout[_x,_y].isConnected() == false || _baseRoom.isConnected() == false) && floorLayout[_x,_y].getBaseRoom() != _baseRoom) {
-                Debug.Log(_baseRoom + " and " + floorLayout[_x,_y].getBaseRoom());
                   //Open this entrance of the mainRoom
                   //_checkedRoom.DisableRoom(DirectionUtility.opposite(i));
                   bool addStatus = floorLayout[_x,_y].AddExit(DirectionUtility.opposite(i), floorLayout);
-                  Debug.Log("Adding " + DirectionUtility.opposite(i) + " exit to room at " + _x + " and " + _y);
                   if(addStatus == true) {
                     //Flag connection
-                    Debug.Log("AddExit succeeded! Exits[i] at " + x + ", " + y + " is true");
                     _baseRoom.Connect(floorLayout[_x,_y]);
                     exits[i] = true;
-                    noExit = false;
                   }
-                } else {
-                  //Make sure we're not dealing with a special room (that only opens up IF we're not connected, so get with the program!)
-                  SpecialRoom tempRoom = floorLayout[_x,_y] as SpecialRoom;
-                  if(tempRoom == null) {
-                    //Check if room this one is facing is already open to this room
-                    bool[] roomExits = floorLayout[_x,_y].getExits();
-
-                    if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
-                      exits[i] = true;
-                      noExit = false;
-                    }
+                }
+                //Make sure we're not dealing with a special room (that only opens up IF we're not connected, so get with the program!)
+                SpecialRoom tempRoom = floorLayout[_x,_y] as SpecialRoom;
+                if(tempRoom == null) {
+                  //Check if room this one is facing is already open to this room
+                  bool[] roomExits = floorLayout[_x,_y].getExits();
+                  if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == true) {
+                    exits[i] = true;
                   }
                 }
               /*
@@ -211,23 +204,18 @@ using SpecialDungeonRooms;
                   }
                 }
               }*/
-              //If we've made it through this far, there is no hope of connecting here so remove this direction
-              if(exits[i] == false) {
-                goingDirections.Remove(i);
-                break;
-              }
             }
-          } else {
-            //Remove directions that are blocked off by the edge of the floormap
-            goingDirections.Remove(i);
-            break;
           }
-        }
-      } while(noExit && goingDirections.Count>0);
+          //Now that everything has been checked, remove this direction
+          goingDirections.Remove(i);
+          break;
+        } // End of for loop
+      } while(goingDirections.Count>0);
 
       return exits;
     }
 
+    //Specialized FindDirections for specialRooms. Because it's a specialroom, its algorithm is simpler
     public static bool[] FindDirections(int x, int y, Room[,] floorLayout, bool[] constraints) {
       bool[] exits = new bool[4]; bool noExit = true;
       List<int> goingDirections = new List<int> {0, 1, 2, 3};

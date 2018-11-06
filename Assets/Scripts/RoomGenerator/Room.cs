@@ -9,6 +9,11 @@ namespace DungeonRooms {
 
 	public class Room : MonoBehaviour {
 
+		public int order;
+		public void setOrder(int _order) {
+			order = _order;
+		}
+
 		protected bool unPacked;
 		//Logistic info
 	  public bool connected;
@@ -93,9 +98,10 @@ namespace DungeonRooms {
 
 		public virtual IEnumerator<float> DestroyRoom() {
 			foreach(Renderer roomPiece in roomObjects) {
-				if(roomPiece.isVisible == false) {
-					roomObjects.Remove(roomPiece);
-					Destroy(roomPiece.gameObject);
+				if(roomPiece != null) {
+					if(roomPiece.isVisible == false) {
+						Destroy(roomPiece.gameObject);
+					}
 				}
 			}
 			yield return Timing.WaitForSeconds(1f);
@@ -146,7 +152,6 @@ namespace DungeonRooms {
 	  }
 
 		public virtual Room getBaseRoom() {
-			Debug.Log("MY BASEROOM IS " + baseRoom);
 			return baseRoom;
 		}
 
