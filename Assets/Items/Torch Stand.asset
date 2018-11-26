@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4111907a5e7efb645866fa6fcb28a996, type: 3}
+  m_Name: Torch Stand
+  m_EditorClassIdentifier: 
+  description: If this is in your inventory, it's a figment of your imagination
+  name: Torch Stand
+  icon: {fileID: 21300006, guid: aec048e1dbc550a44884b027dad3092b, type: 3}
+  Type: 0
+  concreteObject: {fileID: 0}

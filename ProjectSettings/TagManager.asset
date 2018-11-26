@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - DialogueManager
+  - StaminaBar
+  - MechanicsBox
+  - ItemBox
+  - ScreenTexture
+  - Lightable
+  - Unique
+  - Wall
+  - SpawnPoint
+  - Rooms
+  - SpecialRoom
   layers:
   - Default
   - TransparentFX
@@ -13,12 +24,12 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Walls
+  - All Shadows
+  - Vibration
+  - Material Objects
+  - Non-Discrete
+  - Room Layer
   - 
   - 
   - 
@@ -44,7 +55,13 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Players and Monsters
+  - name: Level Design and Walls
+    uniqueID: 1031746619
+    locked: 0
+  - name: Floor Effects
+    uniqueID: 3878874161
+    locked: 0
+  - name: Objects
     uniqueID: 1603478371
     locked: 0
   - name: Shimers and magic
