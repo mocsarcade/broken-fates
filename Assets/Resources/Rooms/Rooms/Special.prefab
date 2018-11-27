@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4714829713506620}
   - component: {fileID: 61934434990984212}
-  - component: {fileID: 114880336498609372}
+  - component: {fileID: 114675250693619980}
   m_Layer: 11
   m_Name: SceneTrigger
   m_TagString: Untagged
@@ -1333,6 +1333,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects: []
   wallRank: 0
+--- !u!114 &114675250693619980
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1274156176849270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2aa903c35d3250247a76744fb9204c67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogue: []
+  target:
+  - {fileID: 1351382212321448}
+  containedRoom: {fileID: 114744351635238220}
 --- !u!114 &114678525845620398
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1411,21 +1426,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects: []
   wallRank: 0
---- !u!114 &114880336498609372
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1274156176849270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b707ad8e709d4d64d9c3a933dd24c0da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogue: []
-  target:
-  - {fileID: 1351382212321448}
-  containedRoom: {fileID: 114744351635238220}
 --- !u!114 &114928164367852280
 MonoBehaviour:
   m_ObjectHideFlags: 1
