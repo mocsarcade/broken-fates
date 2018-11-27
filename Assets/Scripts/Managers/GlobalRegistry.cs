@@ -2,8 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Global Registry keeps track of global variables, counters and key input
 public class GlobalRegistry : MonoBehaviour {
 
+	/*
+	* Input Section
+	*/
+	public static bool CheckKey(string key) {
+		//Next sentence is specialized
+		if(key == "Next") {
+			return Input.GetButtonDown ("PickUp");
+		}
+		if(Player.GetPlayer().acceptingInput()) {
+			//If this is not a specialized keyword, just check for if it's being pushed
+			return Input.GetButtonDown (key);
+		}
+		//If immobile and String key isn't specialized, return false
+		return false;
+	}
+	public static bool CheckKeyUp(string key) {
+		if(key == "Next") {
+			return Input.GetButtonUp ("PickUp");
+		}
+		//If this is not a specialized keyword, just check for if it's being pushed
+		return Input.GetButtonUp (key);
+	}
+
+	/*
+	* Global Section
+	*/
 	private static GlobalRegistry instance = null;
 
 	void Awake () {

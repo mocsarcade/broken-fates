@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 114629128478098464}
   - component: {fileID: 114647425102589614}
   - component: {fileID: 114450596037626538}
+  - component: {fileID: 114524007872125704}
   m_Layer: 12
   m_Name: GameManager
   m_TagString: Untagged
@@ -69,6 +70,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 488b3fb3efa81b946ac94018e7a982ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114524007872125704
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1174451432255360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bf883fb4d7e0864f9610657f36fec37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114570222015350722
@@ -126,3 +138,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5053539ad8228444b7307a84f576e8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  order: 0
+  roomList: {fileID: 0}

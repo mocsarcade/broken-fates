@@ -79,13 +79,13 @@ using SpecialDungeonRooms;
                 //Call recursive algorithm that begins making corridor rooms starting from each exit
                 Tunnel(_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
                 //Make this mainRoom open or close walls depending on which exits have been set to open
-                _room.DisableRoom(DirectionUtility.getDirection(i));
+                _room.DisableWall(DirectionUtility.getDirection(i));
               }/* else {
                 //Check if the wall doesn't open to this room
                 bool[] roomExits = floorLayout[_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i)].getExits();
                 if(roomExits[DirectionUtility.getIndex(DirectionUtility.opposite(i))] == false) {
                   //If the room doesn't open up, block it off
-                  _room.EnableRoom(DirectionUtility.getDirection(i));
+                  _room.EnableWall(DirectionUtility.getDirection(i));
                 }
               }*/
             }
@@ -172,7 +172,7 @@ using SpecialDungeonRooms;
               //Check if this this room is connected to an UNCONNECTED MAINROOM
               if((floorLayout[_x,_y].isConnected() == false || _baseRoom.isConnected() == false) && floorLayout[_x,_y].getBaseRoom() != _baseRoom) {
                   //Open this entrance of the mainRoom
-                  //_checkedRoom.DisableRoom(DirectionUtility.opposite(i));
+                  //_checkedRoom.DisableWall(DirectionUtility.opposite(i));
                   bool addStatus = floorLayout[_x,_y].AddExit(DirectionUtility.opposite(i), floorLayout);
                   if(addStatus == true) {
                     //Flag connection
@@ -200,7 +200,7 @@ using SpecialDungeonRooms;
                     exits[i] = true;
                     noExit = false;
                     //Open this entrance of the mainRoom
-                    _checkedRoom.DisableRoom(DirectionUtility.opposite(i));
+                    _checkedRoom.DisableWall(DirectionUtility.opposite(i));
                   }
                 }
               }*/

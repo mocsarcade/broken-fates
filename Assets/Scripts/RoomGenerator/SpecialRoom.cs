@@ -16,6 +16,8 @@ namespace SpecialDungeonRooms {
 		public List<GameObject> leftWall = new List<GameObject>();
 		public List<GameObject> rightWall = new List<GameObject>();
 
+		private bool[] storedExits = new bool[4];
+
 		public void Initialize() {
 			if(!initialized && unPacked) {
 				foreach (Renderer child in roomObjects){
@@ -36,7 +38,7 @@ namespace SpecialDungeonRooms {
 			}
 		}
 
-		public void DisableRoom(Direction dir) {
+		public void DisableWall(Direction dir) {
 			if(dir == Direction.UP) {
 				Timing.RunCoroutine(SetVisibility(upWall, false));
 			}
@@ -49,9 +51,10 @@ namespace SpecialDungeonRooms {
 			if(dir == Direction.RIGHT) {
 				Timing.RunCoroutine(SetVisibility(rightWall,false));
 			}
+			storedExits[DirectionUtility.getIndex(dir)] = true;
 		}
 
-		public void EnableRoom(Direction dir) {
+		public void EnableWall(Direction dir) {
 			if(dir == Direction.UP) {
 				Timing.RunCoroutine(SetVisibility(upWall, true));
 			}
@@ -64,6 +67,7 @@ namespace SpecialDungeonRooms {
 			if(dir == Direction.RIGHT) {
 				Timing.RunCoroutine(SetVisibility(rightWall,true));
 			}
+			storedExits[DirectionUtility.getIndex(dir)] = false;
 		}
 
 		private IEnumerator<float> SetVisibility(List<GameObject> list, bool flag) {
@@ -79,17 +83,31 @@ namespace SpecialDungeonRooms {
 		}
 
 		public override bool AddExit(Direction dir, Room[,] floorLayout) {
-			Debug.Log("Removing wall at " + dir);
 			if(exits[DirectionUtility.getIndex(dir)] == true) {
-				DisableRoom(dir);
+				DisableWall(dir);
 				return true;
 			}
-			Debug.Log("Returning False");
 			return false;
 		}
 
 		public override Room getBaseRoom() {
 			return this;
+		}
+
+		public void CloseRoom() {
+			for(int i=0; i<4; i++) {
+				if(storedExits[i]) {
+					EnableWall(DirectionUtility.getDirection(i));
+				}
+			}
+		}
+
+		public void ReopenRoom() {
+			for(int i=0; i<4; i++) {
+				if(storedExits[i]) {
+					DisableWall(DirectionUtility.getDirection(i));
+				}
+			}
 		}
 
 	}

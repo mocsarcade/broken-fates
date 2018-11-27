@@ -27,13 +27,10 @@ public class GameManager : MonoBehaviour {
 	//Run-time variables
 	private int StaminaCap;
 	private int Stamina;
-
-	//NOTE: Later floor setup and world-switches will have loading time, causing
-	//need for the game to be pitch-black while loading. This variable controls that
-	/*
-	private bool _active = true;
-	public bool Active{get; set;}
-	*/
+	private bool _activePlay = true;
+	public static bool activePlay {
+		get{return GameManager.instance._activePlay;}
+	}
 
 	//Stamian Bar Slider (Holds a float from 0 to 1)
  	private Slider staminaBarSlider;  //reference for slider
@@ -192,13 +189,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 	public void DamageEffect() {
-		Timing.RunCoroutine(CameraShake().CancelWith(Camera.main.gameObject));
+		Timing.RunCoroutine(CameraShake(5).CancelWith(Camera.main.gameObject));
 		Timing.RunCoroutine(RedView(100).CancelWith(ScreenOverlay.gameObject));
 	}
 
-	private IEnumerator<float> CameraShake() {
+	public static IEnumerator<float> CameraShake(int shakeAmount) {
 		CameraController currentCamera = Camera.main.gameObject.GetComponent<CameraController>();
-		for(int amount=5; amount>0; amount--) {
+		for(int amount=shakeAmount; amount>0; amount--) {
 			for(int direc=1; direc>=-1; direc=direc-2) {
 				currentCamera.Shake(amount*direc);
 				yield return Timing.WaitForSeconds(SHAKE_DELAY);
@@ -277,5 +274,9 @@ public class GameManager : MonoBehaviour {
 	public enum DataType {
 		t_AnimatorData,
 		t_MementoData
+	}
+
+	public void SetActivePlay(bool flag) {
+		_activePlay = flag;
 	}
 }
