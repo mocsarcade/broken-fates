@@ -82,6 +82,10 @@ namespace SpecialDungeonRooms {
 			}
 		}
 
+		protected override bool TestExit(int direction) {
+			return storedExits[direction];
+	  }
+
 		public override bool AddExit(Direction dir, Room[,] floorLayout) {
 			if(exits[DirectionUtility.getIndex(dir)] == true) {
 				DisableWall(dir);
@@ -109,6 +113,7 @@ namespace SpecialDungeonRooms {
 				}
 			}
 		}
+
 
 	}
 }

@@ -112,6 +112,10 @@ namespace DungeonRooms {
 	    return exits[DirectionUtility.getIndex(checkMe)];
 	  }
 
+	  protected virtual bool TestExit(int direction) {
+			return exits[direction];
+	  }
+
 		public bool[] getExits() {
 			exits = validateExits();
 	    return exits;
@@ -150,6 +154,43 @@ namespace DungeonRooms {
 				return connected;
 			}
 	  }
+
+		public virtual void BuildTowards(Room target, Room _source, Room[,] floorLayout) {
+      List<int> goingDirections = new List<int> {0, 1, 2, 3};
+      foreach(int i in goingDirections) {
+				int _x = x+DirectionUtility.getX(i);
+				int _y = y+DirectionUtility.getY(i);
+				int dist = Mathf.Abs(x-target.x) + Mathf.Abs(y-target.y);
+				int directDist = Mathf.Abs(_x-target.x) + Mathf.Abs(_y-target.y);
+
+				if(directDist < dist && _x<floorLayout.GetLength(0) && _x>=0 && _y<floorLayout.GetLength(1) && _y>=0) {
+					//Build Towards that direction
+					if(floorLayout[_x,_y] == null) {
+						Debug.Log("Tunneling " + x + ", " + y + " into " + _x + ", " + _y);
+						//If there is no room here, Tunnel!
+						RoomManager.instance.Tunnel(_x, _y, floorLayout, DirectionUtility.opposite(i), _source);
+						bool status = AddExit(DirectionUtility.getDirection(i), floorLayout);
+						if(status == true) {
+							return;
+						}
+					} else if(TestExit(i) == true) {
+						Debug.Log("Building towards " + _x + ", " + _y);
+						floorLayout[_x,_y].BuildTowards(target, _source, floorLayout);
+						return;
+					} else {
+						//If there is a room there, connect them!
+						if(floorLayout[_x,_y].getBaseRoom() != _source)
+							floorLayout[_x,_y].Connect(_source);
+						RoomManager.instance.FuseRooms(this, floorLayout[_x,_y], floorLayout);
+						return;
+					}
+					//End
+					return;
+				}
+			}
+			//If we've made it here, no direction is closer to the target, which means THIS IS THE TARGET!
+			_source.Connect(target);
+		}
 
 		public virtual Room getBaseRoom() {
 			return baseRoom;

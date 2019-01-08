@@ -34,6 +34,7 @@ using SpecialDungeonRooms;
     public const int ROOM_CHANCE = 50;
     public static List<SpecialRoom> mainRooms;
 
+
     public void createFloor(Floor thisFloor) {
       roomList = GameObject.FindWithTag("Rooms").GetComponent<RoomTemplate>();
 
@@ -46,9 +47,8 @@ using SpecialDungeonRooms;
 
       //Place each importantRoom in a random place on the floor
       foreach (SpecialRoom _room in mainRooms) {
-        bool repeat;
+        bool repeat=false;
         do {
-          repeat = false;
           _room.x = Random.Range(1, thisFloor.xSize-2);
           _room.y = Random.Range(1, thisFloor.xSize-2);
           repeat = CheckSpot(_room.x, _room.y, floorLayout);
@@ -69,9 +69,12 @@ using SpecialDungeonRooms;
         //Go through each reqired room that was placed and build a graph to connect them all to each other
         foreach(SpecialRoom _room in createdMainRooms)
         {
+          //Debug.Log("Connecting room " + _room.gameObject.name);
           bool[] exits = FindDirections(_room.x, _room.y, floorLayout, _room.getExits());
           //Go through each exit
           for(int i=0; i<4; i++) {
+            //Debug.Log("Direction " + i);
+            //yield return 0;
             //_room.setExit(i, exits[i]);
             if(exits[i]) {
               //Check if a room has somehow been created in the interim
@@ -80,6 +83,8 @@ using SpecialDungeonRooms;
                 Tunnel(_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i), floorLayout, DirectionUtility.opposite(i), _room);
                 //Make this mainRoom open or close walls depending on which exits have been set to open
                 _room.DisableWall(DirectionUtility.getDirection(i));
+                //Debug.Log("Cleanedup");
+                //yield return 0;
               }/* else {
                 //Check if the wall doesn't open to this room
                 bool[] roomExits = floorLayout[_room.x + DirectionUtility.getX(i), _room.y + DirectionUtility.getY(i)].getExits();
@@ -89,9 +94,26 @@ using SpecialDungeonRooms;
                 }
               }*/
             }
-
           }
         }
+
+        //Go through all SpecialRooms and check if any are not connected
+        foreach(SpecialRoom _room in createdMainRooms)
+        {
+          for(int attempt=0; attempt<4; attempt++) {
+            if(_room.isConnected() == false) {
+              // Force a connection by calling tunnel on an outskirt room
+              //Build towards a random room
+              SpecialRoom targetRoom = null;
+              do {
+                targetRoom = createdMainRooms[Random.Range( 0, createdMainRooms.Count )];
+              }
+              while(targetRoom == _room);
+              _room.BuildTowards(targetRoom, _room, floorLayout);
+            }
+          }
+        }
+
         Player.GetPlayer().
               SetPosition((Vector2)(GameObject.FindWithTag("SpawnPoint").transform.position), 0);
     }
@@ -298,6 +320,24 @@ using SpecialDungeonRooms;
       Room newRoom = GetCorridor(exits);
       GameObject newObject = Instantiate(newRoom.gameObject, new Vector3(oldRoom.x*ROOM_SIZE_X, oldRoom.y*-ROOM_SIZE_Y, 0), Quaternion.identity);
       floorLayout[oldRoom.x,oldRoom.y] = newObject.GetComponent<Room>();
+      floorLayout[oldRoom.x,oldRoom.y].x = oldRoom.x;
+      floorLayout[oldRoom.x,oldRoom.y].y = oldRoom.y;
+      floorLayout[oldRoom.x,oldRoom.y].setBase(oldRoom.getBaseRoom());
     	Timing.RunCoroutine(oldRoom.DestroyRoom());
+    }
+
+    public void FuseRooms(Room roomA, Room roomB, Room[,] floorLayout) {
+        Debug.Log("Fusing " + roomA.x + ", " + roomA.y + " and " + roomB.x + ", " + roomB.y);
+        List<int> goingDirections = new List<int> {0, 1, 2, 3};
+        foreach(int i in goingDirections) {
+          if(roomA.x + DirectionUtility.getX(i) == roomB.x && roomA.y + DirectionUtility.getY(i) == roomB.y) {
+            bool[] roomAexits = roomA.getExits(); roomAexits[i]=true;
+            bool[] roomBexits = roomB.getExits(); roomBexits[DirectionUtility.getIndex(DirectionUtility.opposite(i))]=true;
+
+            ReplaceRoom(roomA, roomAexits, floorLayout);
+            ReplaceRoom(roomB, roomBexits, floorLayout);
+            return;
+          }
+        }
     }
 }
