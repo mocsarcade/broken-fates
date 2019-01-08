@@ -69,15 +69,15 @@ public class Inventory : MonoBehaviour {
   	}
 
     void Update() {
-      if(Input.GetButtonDown("ToggleL"))
+      if(GlobalRegistry.CheckKey ("ToggleL"))
       {
         toggleHand(-1);
       }
-        if(Input.GetButtonDown("ToggleR"))
+        if(GlobalRegistry.CheckKey ("ToggleR"))
       {
         toggleHand(1);
       }
-      if(Input.GetButtonDown("Use")) {useHeldItem();}
+      if(GlobalRegistry.CheckKey ("Use")) {useHeldItem();}
     }
 
     //This is the dungeon-crawl item addition, used when picking up objects to throw

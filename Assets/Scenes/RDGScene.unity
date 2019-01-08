@@ -1120,7 +1120,6 @@ MonoBehaviour:
   subDialogueText: {fileID: 1274386791}
   room:
   - {fileID: 114744351635238220, guid: b966d6b3abbb85f47aaa668b481048b3, type: 2}
-  - {fileID: 114013073727860584, guid: 7c20b7a68e8d73f4ba12bd47d1b5ebd4, type: 2}
   entrance: {fileID: 114383029106276796, guid: 5af037fecb8d5482ba78820344847870, type: 2}
 --- !u!58 &1289932575
 CircleCollider2D:
@@ -1371,7 +1370,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MEC;
 
 public class PossessableObject : Material {
 
@@ -19,7 +20,7 @@ public class PossessableObject : Material {
 		if(possessed && beingThrown == false && broken == false) {
 			Vector2 newPosition = (sourcePosition*2) - (Vector2) GetPosition();
 
-			StartCoroutine(Throw(newPosition, 15));//possessed.GetStrength()));
+			Timing.RunCoroutine(Throw(newPosition, 15));//possessed.GetStrength()));
 		}
 	}
 
@@ -45,11 +46,13 @@ public class PossessableObject : Material {
 
 	//Attack function all objects use to damage other objects. Is the only function that calls the damage function
 	public override void Attack(Material damaged, float damageAmo) {
-		base.Attack(damaged, damageAmo);
-		if(damageAmo > 0) {
-			float mySize = shadow.GetSize().x*(3f/2);
-			//Take recoil damage
-			Damage(damageAmo/mySize);
+		if(GameManager.activePlay) {
+			base.Attack(damaged, damageAmo);
+			if(damageAmo > 0) {
+				float mySize = shadow.GetSize().x*(3f/2);
+				//Take recoil damage
+				Damage(damageAmo/mySize);
+			}
 		}
 	}
 
