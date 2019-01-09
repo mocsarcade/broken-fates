@@ -2609,6 +2609,51 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1186153624
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1186153626}
+  - component: {fileID: 1186153625}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1186153625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1186153624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bbc929ef622cb54bb511a9f142fe2e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  oneLine:
+    name: ???
+    sentences:
+    - Crash!
+    - Zorlag!
+--- !u!4 &1186153626
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1186153624}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1219511107
 GameObject:
   m_ObjectHideFlags: 0
@@ -3106,6 +3151,8 @@ MonoBehaviour:
     type: 2}
   subNameText: {fileID: 1601109650}
   subDialogueText: {fileID: 1274386791}
+  room: []
+  entrance: {fileID: 0}
 --- !u!58 &1289932575
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -5531,7 +5578,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55997441b6903144c87208981dc0e0c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _entrances: 0500000007000000
+  order: 0
+  connected: 0
+  x: 0
+  y: 0
+  exits: 00000000
+  baseRoom: {fileID: 0}
+  exitUp: 0
+  exitDown: 0
+  exitLeft: 0
+  exitRight: 0
 --- !u!4 &2110381362
 Transform:
   m_ObjectHideFlags: 0

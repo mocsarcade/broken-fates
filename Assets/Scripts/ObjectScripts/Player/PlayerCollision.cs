@@ -26,7 +26,7 @@ public class PlayerCollision : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-    if(Input.GetButtonDown("PickUp"))
+    if(GlobalRegistry.CheckKey("PickUp"))
     {
 			playerCollider.enabled = false;
 			RaycastHit2D touched = Physics2D.CircleCast(

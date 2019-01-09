@@ -12,6 +12,7 @@ public class Player : MovingObject
 	protected static Player instance;
 
 	public const int WALK_SPEED = 200;
+	protected bool inputting = true;
 
     // animator Gets its component every time this script is "enabled". Basically when the script begins.
     protected override void Awake()
@@ -40,7 +41,7 @@ public class Player : MovingObject
    }
 
 	//Renders the player in all scenarios when the player has free movement and is moving
-	protected override void UpdateAnimator (Vector2 direction)
+	public override void UpdateAnimator (Vector2 direction)
 	{
 		//Set Move and MoveX which tell animator what direction our player should be facing (unless player is idle, in which case direction will be unchanged for animator
 		if(direction.magnitude > 0.1 && frozen == false)
@@ -82,6 +83,14 @@ public class Player : MovingObject
 		int ringSize = (int) ((speed*2 - WALK_SPEED)/3)*weight;
 		//Create Vibration Ring
 		Vibration.Vibrator().MakeVibration(ringSize, GetPosition(), this);
+	}
+
+	public void allowInput(bool flag) {
+		inputting = flag;
+	}
+
+	public bool acceptingInput() {
+		return inputting;
 	}
 
 	//When Vibration is felt from other objects

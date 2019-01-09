@@ -95,46 +95,48 @@ public class Material : MonoBehaviour {
     //Throw this object from x starting position to y target
     //This method is a coroutine
     public virtual IEnumerator<float> Throw(Vector2 target, int arcDegrees) {
-			beingThrown = true;
-			//Ignore collisions between this object and the thrower for a short amount of time
-			holderData.SetCollisionFlag(this, true);
+			if(GameManager.activePlay) {
+				beingThrown = true;
+				//Ignore collisions between this object and the thrower for a short amount of time
+				holderData.SetCollisionFlag(this, true);
 
-			//Run-time variables
-			float zRate = Mathf.Sqrt(9.8f*Vector2.Distance(GetPosition(), target));
+				//Run-time variables
+				float zRate = Mathf.Sqrt(9.8f*Vector2.Distance(GetPosition(), target));
 
-			float arcRadians = arcDegrees*Mathf.PI/180;
-			float factor = Mathf.Sin(arcRadians)/Mathf.Sin(Mathf.PI/4);
+				float arcRadians = arcDegrees*Mathf.PI/180;
+				float factor = Mathf.Sin(arcRadians)/Mathf.Sin(Mathf.PI/4);
 
-			//Set object to be in front or behind player depending on direction thrown
-			Vector2 distance = target - (Vector2) GetPosition();
-			//Possessed Objects have no "holder", and so the throw object could be called without holder being defined
-			myRenderer.sortingOrder = holderData.GetSortingOrder() + (int) (-distance.y/Mathf.Abs(distance.y));
-			Drop();
+				//Set object to be in front or behind player depending on direction thrown
+				Vector2 distance = target - (Vector2) GetPosition();
+				//Possessed Objects have no "holder", and so the throw object could be called without holder being defined
+				myRenderer.sortingOrder = holderData.GetSortingOrder() + (int) (-distance.y/Mathf.Abs(distance.y));
+				Drop();
 
-			Debug.Log("factor is " + factor + ". deltaTime is " + Time.deltaTime);
-			shadow.addVelocity((zRate+(4.9f*AVERAGE_DELTA_TIME))*AVERAGE_DELTA_TIME*factor); //Arc is increased by a factor of 1/factor, multiplying distance by 1/factor
-			distance = distance*(1f/factor); //By increasing distance by a multiple of inverse factor, the speed (and so distance) will be multiplied by factor
-			//These two together cause distance to be the same; the distance to target, but it makes the speed and arc different
-			shadow.PushDist(distance.normalized*distance.magnitude/(shadow.GetRigidbody().drag * (26f/15)), ForceMode2D.Impulse);
+				Debug.Log("factor is " + factor + ". deltaTime is " + Time.deltaTime);
+				shadow.addVelocity((zRate+(4.9f*AVERAGE_DELTA_TIME))*AVERAGE_DELTA_TIME*factor); //Arc is increased by a factor of 1/factor, multiplying distance by 1/factor
+				distance = distance*(1f/factor); //By increasing distance by a multiple of inverse factor, the speed (and so distance) will be multiplied by factor
+				//These two together cause distance to be the same; the distance to target, but it makes the speed and arc different
+				shadow.PushDist(distance.normalized*distance.magnitude/(shadow.GetRigidbody().drag * (26f/15)), ForceMode2D.Impulse);
 
-			//Wait for the object to hit the ground again
-			while(shadow.GetHeight() != 0 || shadow.GetHeightVelocity() > 0) {
-				UpdatePosition(shadow.GetHeight());
-				//When object has come to half its distance and started falling back down, continuously change sortingOrder
-				if(shadow.GetHeightVelocity() < 0 ) {
-					myRenderer.sortingOrder = (int) (GetPosition().y*GlobalRegistry.SORTING_Y_MULTIPLIER());
+				//Wait for the object to hit the ground again
+				while(shadow.GetHeight() != 0 || shadow.GetHeightVelocity() > 0) {
+					UpdatePosition(shadow.GetHeight());
+					//When object has come to half its distance and started falling back down, continuously change sortingOrder
+					if(shadow.GetHeightVelocity() < 0 ) {
+						myRenderer.sortingOrder = (int) (GetPosition().y*GlobalRegistry.SORTING_Y_MULTIPLIER());
+					}
+					yield return Timing.WaitForOneFrame;
 				}
-				yield return Timing.WaitForOneFrame;
+				//Object has reached target, so make vibration
+				Vibration.Vibrator().MakeVibration((int) ((zRate)*FALL_VIBRATION_SIZE), (Vector2) GetPosition(), this);
+
+				//Object may have crashed into other objects and hurt them, so empty the damagedList as well
+				EmptyDamagedList();
+
+				//Object is no longer attached to thrower, so let it be able to collide with thrower again
+				holderData.SetCollisionFlag(this, false);
+				beingThrown = false;
 			}
-			//Object has reached target, so make vibration
-			Vibration.Vibrator().MakeVibration((int) ((zRate)*FALL_VIBRATION_SIZE), (Vector2) GetPosition(), this);
-
-			//Object may have crashed into other objects and hurt them, so empty the damagedList as well
-			EmptyDamagedList();
-
-			//Object is no longer attached to thrower, so let it be able to collide with thrower again
-			holderData.SetCollisionFlag(this, false);
-			beingThrown = false;
     }
 
 		/*

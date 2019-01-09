@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using MEC;
 
 public class MechanicsManager : MonoBehaviour {
 
@@ -26,8 +27,6 @@ public class MechanicsManager : MonoBehaviour {
 	private bool[] mechanicMenu;
 	private bool[] axisPushed;
 	private int[] currentPower;
-	//This variable keeps track of the current changeSize method and stops it if the user is impatient
-	private Coroutine[] runningRoutine;
 
 
 	// Use this for initialization
@@ -39,8 +38,8 @@ public class MechanicsManager : MonoBehaviour {
 		mechanicMenu = new bool[MECHANIC_SLOTS];
 		UISlots = new Image[MECHANIC_SLOTS];
 		currentPower = new int[MECHANIC_SLOTS];
-		runningRoutine = new Coroutine[MECHANIC_SLOTS];
 		axisPushed = new bool[MECHANIC_SLOTS];
+
 		GameObject MechanicsBox = GameObject.FindWithTag("MechanicsBox");
 		for (int slot=0; slot<MECHANIC_SLOTS; slot++) {
 			//Fill UISlots
@@ -56,22 +55,20 @@ public class MechanicsManager : MonoBehaviour {
 		//pressed, get its power attached and do it.
 			for (int i=0; i < MECHANIC_SLOTS; i++) {
 				//Open a Power-choosing menu
-				if(Input.GetButtonDown ("PowerMenu" + i)) {
+				if(GlobalRegistry.CheckKey ("PowerMenu" + i)) {
 					mechanicMenu[i] = true;
 					//If the Image is currently shrinking, stop it from doing that!
-	        if(runningRoutine[i] != null) {
-	          StopCoroutine(runningRoutine[i]);
-	        }
-					runningRoutine[i] = StartCoroutine(resizeUIImage(UISlots[i], 75));
+	        Timing.KillCoroutines("PowerUI" + i);
+					//Start new routine
+					Timing.RunCoroutine(resizeUIImage(UISlots[i], 75), "PowerUI" + i);
 					Player.GetPlayer().SetMobility(false);
 				}
-				if(Input.GetButtonUp ("PowerMenu" + i)) {
+				if(GlobalRegistry.CheckKeyUp ("PowerMenu" + i)) {
 					mechanicMenu[i] = false;
 					//If the Image is currently growing, stop it from doing that!
-	        if(runningRoutine[i] != null) {
-	          StopCoroutine(runningRoutine[i]);
-	        }
-					runningRoutine[i] = StartCoroutine(resizeUIImage(UISlots[i], 50));
+	        Timing.KillCoroutines("PowerUI" + i);
+					//Start new routine
+					Timing.RunCoroutine(resizeUIImage(UISlots[i], 50), "PowerUI" + i);
 					//If all other mechanicMenu variables are false as well, reactivate mobility
 					//Start by reactivating mobility...
 					Player.GetPlayer().SetMobility(true);
@@ -120,16 +117,16 @@ public class MechanicsManager : MonoBehaviour {
 	}
 
 	private void activePower(int index) {
-		if (Input.GetButtonDown ("Mechanic" + index)) {
+		if (GlobalRegistry.CheckKey ("Mechanic" + index)) {
 			keyMechanics[index].Activate();
 		}
-		if (Input.GetButtonUp ("Mechanic" + index)) {
+		if (GlobalRegistry.CheckKeyUp ("Mechanic" + index)) {
 			keyMechanics[index].Release();
 		}
 	}
 
 	// Enlarge the mechanics icon when the menu button is held, so it is clear which menu is being shifted
-	private IEnumerator resizeUIImage(Image mechanicIcon, int newSize) {
+	private IEnumerator<float> resizeUIImage(Image mechanicIcon, int newSize) {
 		RectTransform iconTransform = mechanicIcon.gameObject.GetComponent<RectTransform>();
 		while(Mathf.Abs(iconTransform.sizeDelta.x-newSize) > 1) {
 			if(iconTransform.sizeDelta.x > newSize) {
@@ -137,7 +134,7 @@ public class MechanicsManager : MonoBehaviour {
 			} else {
 				iconTransform.sizeDelta = new Vector2(iconTransform.sizeDelta.x+1, iconTransform.sizeDelta.y+1);
 			}
-			yield return null;
+			yield return Timing.WaitForOneFrame;
 		}
 	}
 

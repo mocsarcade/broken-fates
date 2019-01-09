@@ -20,6 +20,11 @@ public class DialogueManager : MonoBehaviour {
 
 	void Awake()
 	{
+    //Make DialogueManager a Singleton
+    if (instance == null)
+      instance = this;
+    else if (instance != this)
+      Destroy(gameObject);
     //Hide the dialogue box at the beginning of the dialogue box's existence
 		OpenDialogue (false);
 	}
@@ -29,10 +34,19 @@ public class DialogueManager : MonoBehaviour {
         sentences = new Queue<string>();
     }
 
+    private void Update() {
+        if(animator.GetBool("IsOpen")) {
+          if(GlobalRegistry.CheckKey ("Next")) {
+            DisplayNextSentence();
+          }
+        }
+    }
+
     public void StartDialogue(Dialogue dialogue, GameObject _speaker)
     {
         // Make the player still (be nice and pay attention)
         Player.GetPlayer().SetMobility(false);
+        Player.GetPlayer().allowInput(false);
         // Whenever IsOpen is set to true, the dialogue animation will move the dialoguebox to the screen.
         OpenDialogue (true);
         // The UI's nameText will be the name of the speaker, as designated in the inspector.
@@ -83,6 +97,7 @@ public class DialogueManager : MonoBehaviour {
     {
         // Setting this boolean to false will trigger an animation, causing the dialogue box to move off screen.
         Player.GetPlayer().SetMobility(true);
+        Player.GetPlayer().allowInput(true);
         OpenDialogue (false);
         speaker = null;
     }
@@ -95,4 +110,8 @@ public class DialogueManager : MonoBehaviour {
 	{
     animator.SetBool("IsOpen", flag);
 	}
+
+  public bool isSpeaking() {
+    return animator.GetBool("IsOpen");
+  }
 }
