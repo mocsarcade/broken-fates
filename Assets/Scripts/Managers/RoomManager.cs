@@ -12,14 +12,18 @@ using DirectionClass; // Direction class
 using SpecialDungeonRooms;
 
   public class RoomManager : MonoBehaviour {
+    //TODO: If there is a way to get these lists from another script (like the GameManager)
+    //when this level is loaded, remove these
+    public List<SpecialRoom> room;
+    public SpecialRoom entrance;
 
-    public int order = 0;
+    protected int order = 0;
 
     public const int ROOM_SIZE_X = 10;
     public const int ROOM_SIZE_Y = 10;
   	//Singleton reference
     public static RoomManager instance = null;
-    public RoomTemplate roomList;
+    protected RoomTemplate roomList;
 
   	// Use this for initialization
   	void Awake () {
@@ -30,13 +34,28 @@ using SpecialDungeonRooms;
   			Destroy(gameObject);
   	}
 
+    //Start CREATING!
+    void Start() {
+      //TODO: Somehow get list of mainRooms for this floor and the entrance room into these variables
+      //List<SpecialRoom> room;
+      //SpecialRoom entrance;
+      //TODO: Somehow get what the floorsize and level is supposed to be
+			Floor thisFloor = new Floor(5,5,room, entrance);
+
+			RoomManager.instance.createFloor(thisFloor);
+    }
+
     //Define important constants
     public const int ROOM_CHANCE = 50;
     public static List<SpecialRoom> mainRooms;
 
 
     public void createFloor(Floor thisFloor) {
+      //Get RoomTemplate that is part of the MazeGenerator Object
       roomList = GameObject.FindWithTag("Rooms").GetComponent<RoomTemplate>();
+      //roomList = this.gameObject.GetComponent<RoomTemplate>();
+      if(!roomList)
+        Debug.LogException(new Exception("Could not find RoomTemplate object!"));
 
       //Get the full list of rooms from floor class
       mainRooms = thisFloor.GetRooms();

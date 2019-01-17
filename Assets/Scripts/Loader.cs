@@ -11,18 +11,10 @@ public class Loader : MonoBehaviour {
 	public Text subNameText;
 	public Text subDialogueText;
 
-	//Stuff for testing purposes
-	public List<SpecialRoom> room;
-	public SpecialRoom entrance;
-
 	// Use this for initialization
 	void Awake () {
 		if (GameManager.instance == null) {
 			Instantiate (gameManager);
-
-			//Test FloorMaker
-			Floor testFloor = new Floor(5,5,room, entrance);
-			RoomManager.instance.createFloor(testFloor);
 
 			//gameController.GetComponent<DialogueManager>().nameText = subNameText;
 			//gameController.GetComponent<DialogueManager>().dialogueText = subDialogueText;

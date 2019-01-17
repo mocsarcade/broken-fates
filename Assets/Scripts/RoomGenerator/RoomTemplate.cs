@@ -9,6 +9,16 @@ public class RoomTemplate : MonoBehaviour {
     public List<Room> leftRooms;
     public List<Room> rightRooms;
 
+    void Awake() {
+      //Somehow get this Floor's level
+
+      //Import all rooms from this floor's level file (Resources FloorX, x=floor number)
+
+      //Sort imported rooms into the four Lists. The same room CAN be in all four lists
+      //If it has an exit in all four directions
+      
+    }
+
     public List<Room> getRooms(int direction) {
       switch(direction) {
         case 0:
