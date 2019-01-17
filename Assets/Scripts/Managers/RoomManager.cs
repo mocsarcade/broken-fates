@@ -49,10 +49,10 @@ using SpecialDungeonRooms;
     public const int ROOM_CHANCE = 50;
     public static List<SpecialRoom> mainRooms;
 
-
     public void createFloor(Floor thisFloor) {
       //Get RoomTemplate that is part of the MazeGenerator Object
-      roomList = GameObject.FindWithTag("Rooms").GetComponent<RoomTemplate>();
+      //roomList = GameObject.FindWithTag("Rooms").GetComponent<RoomTemplate>();
+      roomList = gameObject.GetComponent<RoomTemplate>();
       //roomList = this.gameObject.GetComponent<RoomTemplate>();
       if(!roomList)
         Debug.LogException(new Exception("Could not find RoomTemplate object!"));
@@ -68,8 +68,8 @@ using SpecialDungeonRooms;
       foreach (SpecialRoom _room in mainRooms) {
         bool repeat=false;
         do {
-          _room.x = Random.Range(1, thisFloor.xSize-2);
-          _room.y = Random.Range(1, thisFloor.xSize-2);
+          _room.x = (int) Random.Range(0, thisFloor.xSize-1);
+          _room.y = (int) Random.Range(0, thisFloor.ySize-1);
           repeat = CheckSpot(_room.x, _room.y, floorLayout);
           if(repeat == false) {
             //After going through exits, create this mainRoom
@@ -119,15 +119,13 @@ using SpecialDungeonRooms;
         //Go through all SpecialRooms and check if any are not connected
         foreach(SpecialRoom _room in createdMainRooms)
         {
-          for(int attempt=0; attempt<4; attempt++) {
+          for(int attempt=0; attempt<3; attempt++) {
             if(_room.isConnected() == false) {
               // Force a connection by calling tunnel on an outskirt room
               //Build towards a random room
               SpecialRoom targetRoom = null;
-              do {
-                targetRoom = createdMainRooms[Random.Range( 0, createdMainRooms.Count )];
-              }
-              while(targetRoom == _room);
+              for(int index=0;index<createdMainRooms.Count && targetRoom == _room;index++)
+                targetRoom = createdMainRooms[index];
               _room.BuildTowards(targetRoom, _room, floorLayout);
             }
           }
@@ -172,24 +170,19 @@ using SpecialDungeonRooms;
 
     public static bool CheckSpot(int x, int y, Room[,] floorLayout) {
       int check = 0;
-      if(floorLayout[x,y] == null) {
-        check++;
-      }
-      for(int i=0; i<4; i++) {
-        if(floorLayout[x+DirectionUtility.getX(i),y+DirectionUtility.getY(i)] == null) {
-          check++;
-        }
-        for(int j=0; j<4; j++) {
-          if(x+DirectionUtility.getX(i)+DirectionUtility.getX(j)>0 && x+DirectionUtility.getX(i)+DirectionUtility.getX(j)<floorLayout.GetLength(0) && y+DirectionUtility.getY(i)+DirectionUtility.getY(j)>0 && y+DirectionUtility.getY(i)+DirectionUtility.getY(j)<floorLayout.GetLength(1)) {
-            if(floorLayout[x+DirectionUtility.getX(i)+DirectionUtility.getX(j),y+DirectionUtility.getY(i)+DirectionUtility.getY(j)] == null) {
+      for(int xOff = -1; xOff <= 1; xOff++) {
+        for(int yOff = -1; yOff <= 1; yOff++) {
+          //Check area of box being checked is within bounds
+          if(x+xOff>0 && x+xOff<floorLayout.GetLength(0) && y+yOff>0 && y+yOff<floorLayout.GetLength(1)) {
+            if(floorLayout[x+xOff,y+yOff] == null)
               check++;
-            }
           } else {
+            //If not within bounds, that spot is absolutely legal!
             check++;
           }
         }
       }
-      if(check==21) {
+      if(check==9) {
         return false;
       }
       return true;

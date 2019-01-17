@@ -1708,6 +1708,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1978567687}
   - component: {fileID: 1978567686}
+  - component: {fileID: 1978567688}
   m_Layer: 0
   m_Name: MazeGenerator
   m_TagString: Untagged
@@ -1726,7 +1727,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5053539ad8228444b7307a84f576e8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  room: []
+  room:
+  - {fileID: 114744351635238220, guid: b966d6b3abbb85f47aaa668b481048b3, type: 2}
+  - {fileID: 114013073727860584, guid: 7c20b7a68e8d73f4ba12bd47d1b5ebd4, type: 2}
   entrance: {fileID: 114383029106276796, guid: 5af037fecb8d5482ba78820344847870, type: 2}
 --- !u!4 &1978567687
 Transform:
@@ -1735,12 +1738,59 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1978567685}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 230.87463, y: 232.66833, z: 25.25}
+  m_LocalPosition: {x: 0, y: 0, z: 25.25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1978567688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1978567685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3efd3544646e66479edf938cfead62d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  topRooms:
+  - {fileID: 114979867903135072, guid: 137ab3118a5cf2a4b905b8a839799411, type: 2}
+  - {fileID: 114000548514278104, guid: e725967ceda6c2240a1daf8a384a5e84, type: 2}
+  - {fileID: 114352702960096926, guid: ea4bd321a4dea6340bd808f4016a3b18, type: 2}
+  - {fileID: 114117305623580482, guid: 9eb1bd842affbe540b234b835a27e8cf, type: 2}
+  - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 2}
+  - {fileID: 114446220118418492, guid: 72229bfb0a781634885e1c9b09daf2c6, type: 2}
+  - {fileID: 114370465113329542, guid: 489ef5a1e558b79419bf11fb782cebca, type: 2}
+  - {fileID: 114899617958851146, guid: d289a869f58e22e478a6617fd9c7db28, type: 2}
+  bottomRooms:
+  - {fileID: 114887170548322584, guid: f69784732c8c6464183647809dbb3ece, type: 2}
+  - {fileID: 114123770959623894, guid: 3e954d585d05b1148854f706162a8c9e, type: 2}
+  - {fileID: 114686580655022278, guid: abce334d82f85d541a8cc7f5222cebf7, type: 2}
+  - {fileID: 114500069461498382, guid: d93eea0ef3329a24f82f66ab9e39a5ae, type: 2}
+  - {fileID: 114000548514278104, guid: e725967ceda6c2240a1daf8a384a5e84, type: 2}
+  - {fileID: 114352702960096926, guid: ea4bd321a4dea6340bd808f4016a3b18, type: 2}
+  - {fileID: 114117305623580482, guid: 9eb1bd842affbe540b234b835a27e8cf, type: 2}
+  - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 2}
+  leftRooms:
+  - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 2}
+  - {fileID: 114446220118418492, guid: 72229bfb0a781634885e1c9b09daf2c6, type: 2}
+  - {fileID: 114352702960096926, guid: ea4bd321a4dea6340bd808f4016a3b18, type: 2}
+  - {fileID: 114139291389944916, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 2}
+  - {fileID: 114066860589161446, guid: 6b89673c36e4e3a438a7fdcf4fef4b09, type: 2}
+  - {fileID: 114686580655022278, guid: abce334d82f85d541a8cc7f5222cebf7, type: 2}
+  - {fileID: 114123770959623894, guid: 3e954d585d05b1148854f706162a8c9e, type: 2}
+  - {fileID: 114370465113329542, guid: 489ef5a1e558b79419bf11fb782cebca, type: 2}
+  rightRooms:
+  - {fileID: 114686580655022278, guid: abce334d82f85d541a8cc7f5222cebf7, type: 2}
+  - {fileID: 114500069461498382, guid: d93eea0ef3329a24f82f66ab9e39a5ae, type: 2}
+  - {fileID: 114139291389944916, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 2}
+  - {fileID: 114695299458527774, guid: 6f64493f487c38b4c9d75b4fa51c78fe, type: 2}
+  - {fileID: 114117305623580482, guid: 9eb1bd842affbe540b234b835a27e8cf, type: 2}
+  - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 2}
+  - {fileID: 114370465113329542, guid: 489ef5a1e558b79419bf11fb782cebca, type: 2}
+  - {fileID: 114899617958851146, guid: d289a869f58e22e478a6617fd9c7db28, type: 2}
 --- !u!1 &1978772207
 GameObject:
   m_ObjectHideFlags: 0
