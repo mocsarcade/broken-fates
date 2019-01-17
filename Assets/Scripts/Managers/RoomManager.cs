@@ -40,7 +40,9 @@ using SpecialDungeonRooms;
       //List<SpecialRoom> room;
       //SpecialRoom entrance;
       //TODO: Somehow get what the floorsize and level is supposed to be
-			Floor thisFloor = new Floor(5,5,room, entrance);
+      int floorSizeX = 5;
+      int floorSizeY = 5;
+			Floor thisFloor = new Floor(floorSizeX,floorSizeY,room, entrance);
 
 			RoomManager.instance.createFloor(thisFloor);
     }
