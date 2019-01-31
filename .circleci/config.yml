@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+    environment:
+      ACCEPT_HIGHCHARTS_LICENSE: YES
+    steps:
+      - checkout
+      - run:
+          name: Small Test
+          command: npm test
