@@ -1,12 +1,64 @@
 version: 2
-jobs:
-  build:
+references:
+  docker_image: &docker_image
     docker:
-      - image: circleci/node:10
-    environment:
-      ACCEPT_HIGHCHARTS_LICENSE: YES
+    - image: gableroux/unity3d:2018.3.3f1
+  setup_unity_license_env_var: &setup_unity_license_env_var
+    command: |
+      openssl version
+      openssl aes-256-cbc -md md5 -d -in ./ci/Unity_v2018.x.ulf-cipher -out Unity_v2018.x.ulf -k $KEY
+      export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
+      rm Unity_v2018.x.ulf
+jobs:
+  test_editmode:
+    <<: *docker_image
     steps:
-      - checkout
-      - run:
-          name: Small Test
-          command: npm test
+    # TODO: Update once git is added to image
+    - run:
+        command: apt-get update && apt-get install -y git && git --version
+    - checkout
+    - run:
+        <<: *setup_unity_license_env_var
+    - run:
+        environment:
+          TEST_PLATFORM: editmode
+        command: "./ci/test.sh"
+    - store_artifacts:
+        path: "$(pwd)/$TEST_PLATFORM-results.xml"
+        destination: "$TEST_PLATFORM-results.xml"
+  test_playmode:
+    <<: *docker_image
+    steps:
+    - run:
+        command: apt-get update && apt-get install -y git && git --version
+    - checkout
+    - run:
+        <<: *setup_unity_license_env_var
+    - run:
+        environment:
+          TEST_PLATFORM: playmode
+        command: "./ci/test.sh"
+    - store_artifacts:
+        path: "$(pwd)/$TEST_PLATFORM-results.xml"
+        destination: "$TEST_PLATFORM-results.xml"
+  build_StandaloneLinux64:
+    <<: *docker_image
+    steps:
+    - run:
+        command: apt-get update && apt-get install -y git && git --version
+    - checkout
+    - run:
+        <<: *setup_unity_license_env_var
+    - run:
+        environment:
+          BUILD_TARGET: StandaloneLinux64
+        command: "./ci/build.sh"
+    - store_artifacts:
+        path: "./Builds/"
+workflows:
+  version: 2
+  test_and_build:
+    jobs:
+    - test_editmode
+    - test_playmode
+    - build_StandaloneLinux64
