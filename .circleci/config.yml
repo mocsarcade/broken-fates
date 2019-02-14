@@ -22,7 +22,7 @@ jobs:
     - run:
         environment:
           TEST_PLATFORM: editmode
-        command: "./ci/test.sh"
+        command: "chmod +x ./ci/test.sh && ./ci/test.sh"
     - store_artifacts:
         path: "$(pwd)/$TEST_PLATFORM-results.xml"
         destination: "$TEST_PLATFORM-results.xml"
@@ -37,7 +37,7 @@ jobs:
     - run:
         environment:
           TEST_PLATFORM: playmode
-        command: "./ci/test.sh"
+        command: "chmod +x ./ci/test.sh && ./ci/test.sh"
     - store_artifacts:
         path: "$(pwd)/$TEST_PLATFORM-results.xml"
         destination: "$TEST_PLATFORM-results.xml"
@@ -52,7 +52,7 @@ jobs:
     - run:
         environment:
           BUILD_TARGET: StandaloneLinux64
-        command: "./ci/build.sh"
+        command: "chmod +x ./ci/test.sh && ./ci/build.sh"
     - store_artifacts:
         path: "./Builds/"
 workflows:
