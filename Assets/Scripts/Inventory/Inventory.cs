@@ -90,10 +90,14 @@ public class Inventory : MonoBehaviour {
             Destroy(handObject);
           handObject = obj;
           handScript = obj.GetComponent<Material>();
-          //Tell item it has been picked up
-          handScript.PickedUp(Player.GetPlayer().gameObject);
-          newlyHeldObject = true;
-          return true;
+          if(handScript) {
+            //Tell item it has been picked up
+            handScript.PickedUp(Player.GetPlayer().gameObject);
+            newlyHeldObject = true;
+            return true;
+          } else {
+            return false;
+          }
         } else {
           //NOTE: Later make this try to move object in hand into the players' hand, and return false only if that fails.
           return false;
