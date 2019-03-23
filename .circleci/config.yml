@@ -1,64 +1,108 @@
-version: 2
-references:
-  docker_image: &docker_image
+version: 2.1
+
+executors:
+  unity_exec:
     docker:
-    - image: gableroux/unity3d:2018.3.3f1
-  setup_unity_license_env_var: &setup_unity_license_env_var
-    command: |
-      openssl version
-      openssl aes-256-cbc -md md5 -d -in ./ci/Unity_v2018.x.ulf-cipher -out Unity_v2018.x.ulf -k $KEY
-      export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
-      rm Unity_v2018.x.ulf
+      - image: gableroux/unity3d:2018.3.4f1
+    environment:
+      BUILD_NAME: Broken Fates
+      UNITY_LICENSE_CONTENT: PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48cm9vdD4KICAgIDxMaWNlbnNlIGlkPSJUZXJtcyI+CiAgICAgICAgPE1hY2hpbmVCaW5kaW5ncz4KICAgICAgICAgICAgPEJpbmRpbmcgS2V5PSIxIiBWYWx1ZT0iIi8+CiAgICAgICAgPC9NYWNoaW5lQmluZGluZ3M+CiAgICAgICAgPE1hY2hpbmVJRCBWYWx1ZT0iMmptajdsNXJTdzB5VmIvdmxXQVlrSy9ZQndrPSIvPgogICAgICAgIDxTZXJpYWxIYXNoIFZhbHVlPSIwMjE4NzcyMGM5YjQ5MDZmZDViNjFiZTMxNWNmNDg1YzU5MmQyNWNlIi8+CiAgICAgICAgPEZlYXR1cmVzPgogICAgICAgICAgICA8RmVhdHVyZSBWYWx1ZT0iMzMiLz4KICAgICAgICAgICAgPEZlYXR1cmUgVmFsdWU9IjEiLz4KICAgICAgICAgICAgPEZlYXR1cmUgVmFsdWU9IjEyIi8+CiAgICAgICAgICAgIDxGZWF0dXJlIFZhbHVlPSIyIi8+CiAgICAgICAgICAgIDxGZWF0dXJlIFZhbHVlPSIyNCIvPgogICAgICAgICAgICA8RmVhdHVyZSBWYWx1ZT0iMyIvPgogICAgICAgICAgICA8RmVhdHVyZSBWYWx1ZT0iMzYiLz4KICAgICAgICAgICAgPEZlYXR1cmUgVmFsdWU9IjE3Ii8+CiAgICAgICAgICAgIDxGZWF0dXJlIFZhbHVlPSIxOSIvPgogICAgICAgICAgICA8RmVhdHVyZSBWYWx1ZT0iNjIiLz4KICAgICAgICA8L0ZlYXR1cmVzPgogICAgICAgIDxEZXZlbG9wZXJEYXRhIFZhbHVlPSJBUUFBQUVZMExUTkdNMUl0V0U1QldTMVRXVWRhTFZKRFJqVXRXVFZDUlE9PSIvPgogICAgICAgIDxTZXJpYWxNYXNrZWQgVmFsdWU9IkY0LTNGM1ItWE5BWS1TWUdaLVJDRjUtWFhYWCIvPgogICAgICAgIDxTdGFydERhdGUgVmFsdWU9IjIwMTgtMDEtMDVUMTc6NDM6NDgiLz4KICAgICAgICA8VXBkYXRlRGF0ZSBWYWx1ZT0iMjAxOS0wMy0xNlQxNzozNzowMiIvPgogICAgICAgIDxJbml0aWFsQWN0aXZhdGlvbkRhdGUgVmFsdWU9IjIwMTgtMDEtMDVUMTc6NDM6NDgiLz4KICAgICAgICA8TGljZW5zZVZlcnNpb24gVmFsdWU9IjYueCIvPgogICAgICAgIDxDbGllbnRQcm92aWRlZFZlcnNpb24gVmFsdWU9IjIwMTguMy4zZjEiLz4KICAgICAgICA8QWx3YXlzT25saW5lIFZhbHVlPSJmYWxzZSIvPgogICAgICAgIDxFbnRpdGxlbWVudHM+CiAgICAgICAgICAgIDxFbnRpdGxlbWVudCBOcz0idW5pdHlfZWRpdG9yIiBUYWc9IlVuaXR5UGVyc29uYWwiIFR5cGU9IkVESVRPUiIgVmFsaWRUbz0iOTk5OS0xMi0zMVQwMDowMDowMCIvPgogICAgICAgIDwvRW50aXRsZW1lbnRzPgogICAgPC9MaWNlbnNlPgo8U2lnbmF0dXJlIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIj48U2lnbmVkSW5mbz48Q2Fub25pY2FsaXphdGlvbk1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnL1RSLzIwMDEvUkVDLXhtbC1jMTRuLTIwMDEwMzE1I1dpdGhDb21tZW50cyIvPjxTaWduYXR1cmVNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjcnNhLXNoYTEiLz48UmVmZXJlbmNlIFVSST0iI1Rlcm1zIj48VHJhbnNmb3Jtcz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI2VudmVsb3BlZC1zaWduYXR1cmUiLz48L1RyYW5zZm9ybXM+PERpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNzaGExIi8+PERpZ2VzdFZhbHVlPlFLS0pRcEcxcGJVRUFObWplOXRYdzRjMUkvYz08L0RpZ2VzdFZhbHVlPjwvUmVmZXJlbmNlPjwvU2lnbmVkSW5mbz48U2lnbmF0dXJlVmFsdWU+VmpvUjE5SFl4T2JkVUkrU2pnT3RVR3pzdnk3aHIrdVpCY2FZekI2dEkvcVJCOE9wWlhxdE1oK1dWcVQ3WnduTmJjRC9HYzNGS0JjegpGUHJJSFJUMUNjeDY0RFNRUFM2d0VrcEJrSkJpSW5yME5kUExia2M0VWFsS2pmRW1CVGdGeWI0N3pWcDF6YzJnYTk2cG45S3hzZXFOClNRT2U5UHA5TGN5NzUvWVVyZkZJT1pnb0Z4djNubTRTUVNTQ0NDSnUrTUFYeENiNzFqMUdRL203clJQaFhmbkRmbnNidXdzcFlJYkoKbi9oRkszRExUaGpUVUxqVTJXVU5qZGxIbDhCcFVCcGt0bklWdzgxcmRDaVFweEhtNTBvem1pYmhneXlIdzBDL2FORVNJOFZTUU81OQpKUzRycVF6bVNxY3NaaHJoSTU2eElDZmtESGZkcUVsUGtqV2VLQT09PC9TaWduYXR1cmVWYWx1ZT48L1NpZ25hdHVyZT48L3Jvb3Q+
+
+.test: &test
+  executor: unity_exec
+  steps:
+    - checkout
+    - run:
+        name: Fetching build scripts
+        command: |
+          apt update && apt install -y git 
+          git clone https://github.com/qwertyuu/unity-ci-build-scripts.git
+    - run:
+        name: Getting build scripts for your unity version if possible
+        command: UNITY_VERSION=2018.3.4f1; if [ $(git ls-remote https://github.com/qwertyuu/unity-ci-build-scripts.git "$UNITY_VERSION" | wc -l) -eq 1 ]; then cd unity-ci-build-scripts && git pull origin "$UNITY_VERSION" && cd ..; fi
+    - run:
+        name: Injecting build scripts into the project
+        command: |
+          cp -r unity-ci-build-scripts/Assets/Editor ./Assets
+          cp -r unity-ci-build-scripts/ci ./ci
+    - run: 
+        name: Converting Unity license
+        command: chmod +x ./ci/before_script.sh && ./ci/before_script.sh
+    - run:
+        name: Running tests
+        command: chmod +x ./ci/test.sh && ./ci/test.sh
+    - store_artifacts:
+        path: $(pwd)/$TEST_PLATFORM-results.xml
+
+.build: &build
+  executor: unity_exec
+  steps:
+    - checkout
+    - run:
+        name: Fetching build scripts
+        command: |
+          apt update && apt install -y git 
+          git clone https://github.com/qwertyuu/unity-ci-build-scripts.git
+    - run:
+        name: Getting build scripts for your unity version if possible
+        command: UNITY_VERSION=2018.3.4f1; if [ $(git ls-remote https://github.com/qwertyuu/unity-ci-build-scripts.git "$UNITY_VERSION" | wc -l) -eq 1 ]; then cd unity-ci-build-scripts && git pull origin "$UNITY_VERSION" && cd ..; fi
+    - run:
+        name: Injecting build scripts into the project
+        command: |
+          cp -r unity-ci-build-scripts/Assets/Editor ./Assets
+          cp -r unity-ci-build-scripts/ci ./ci
+    - run: 
+        name: Converting Unity license
+        command: chmod +x ./ci/before_script.sh && ./ci/before_script.sh
+    - run: ls -ls /usr/bin/python*
+    - run:
+        name: Building game binaries
+        command: chmod +x ./ci/build.sh && ./ci/build.sh
+    - run: 
+        name: Zipping build
+        command: apt update && apt -y install zip && zip -r "build.zip" ./Builds/
+    - store_artifacts:
+        path: build.zip
+
 jobs:
   test_editmode:
-    <<: *docker_image
-    steps:
-    # TODO: Update once git is added to image, remove this
-    - run:
-        command: apt-get update && apt-get install -y git && git --version
-    - checkout
-    - run:
-        <<: *setup_unity_license_env_var
-    - run:
-        environment:
-          TEST_PLATFORM: editmode
-        command: "chmod +x ./ci/test.sh && ./ci/test.sh"
-    - store_artifacts:
-        path: "$(pwd)/$TEST_PLATFORM-results.xml"
-        destination: "$TEST_PLATFORM-results.xml"
+    <<: *test
+    environment:
+      TEST_PLATFORM: editmode
   test_playmode:
-    <<: *docker_image
-    steps:
-    - run:
-        command: apt-get update && apt-get install -y git && git --version
-    - checkout
-    - run:
-        <<: *setup_unity_license_env_var
-    - run:
-        environment:
-          TEST_PLATFORM: playmode
-        command: "chmod +x ./ci/test.sh && ./ci/test.sh"
-    - store_artifacts:
-        path: "$(pwd)/$TEST_PLATFORM-results.xml"
-        destination: "$TEST_PLATFORM-results.xml"
-  build_StandaloneLinux64:
-    <<: *docker_image
-    steps:
-    - run:
-        command: apt-get update && apt-get install -y git && git --version
-    - checkout
-    - run:
-        <<: *setup_unity_license_env_var
-    - run:
-        environment:
-          BUILD_TARGET: StandaloneLinux64
-        command: "chmod +x ./ci/build.sh && ./ci/build.sh"
-    - store_artifacts:
-        path: "./Builds/"
+    <<: *test
+    environment:
+      TEST_PLATFORM: playmode
+
+  build_windows:
+    <<: *build
+    environment:
+      BUILD_TARGET: StandaloneWindows64
+  build_osx:
+    <<: *build
+    environment:
+      BUILD_TARGET: StandaloneOSX
+  build_linux:
+    <<: *build
+    environment:
+      BUILD_TARGET: StandaloneLinux64
+
 workflows:
   version: 2
-  test_and_build:
+  build:
     jobs:
-    - test_editmode
-    - test_playmode
-    - build_StandaloneLinux64
+      - test_editmode
+      - test_playmode
+
+      - build_windows:
+          requires:
+          - test_editmode
+          - test_playmode
+      - build_osx:
+          requires:
+          - test_editmode
+          - test_playmode
+      - build_linux:
+          requires:
+          - test_editmode
+          - test_playmode

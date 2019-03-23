@@ -28,7 +28,14 @@ public class VibrationCollision : MonoBehaviour {
 	public virtual void OnTriggerEnter2D(Collider2D touched) {
 		GameObject touchedObj = touched.gameObject;
 		if(touchedObj != parent) {
-			touchedObj.GetComponent<Shadow>().FeelVibration((Vector2) transform.position);
+			Shadow touchedShadow = touchedObj.GetComponent<Shadow>();
+			if(touchedShadow != null) {
+				touchedShadow.FeelVibration(((Vector2) transform.position));
+			}
+		}
+		Trap touchedTrap = touchedObj.GetComponent<Trap>();
+		if(touchedTrap != null) {
+			touchedTrap.FeelVibration(((Vector2) transform.position));
 		}
 	}
 
