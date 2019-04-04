@@ -6,7 +6,7 @@ public class spikeTrap : Trap  {
 
     List<GameObject> collided;
 
-    void Awake() {
+    new void Awake() {
         collided = new List<GameObject>();
     }
 

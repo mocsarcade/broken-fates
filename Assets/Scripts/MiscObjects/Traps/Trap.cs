@@ -4,39 +4,19 @@ using System.Collections.Generic;
 
 public class Trap : MonoBehaviour {
 
-	 //public Memento curMemento;
-
-    public const int SHADOW_CHANGE_RATE = 5;
-    public const float FALL_VIBRATION_SIZE = 25f;
-
-		public const float AVERAGE_DELTA_TIME = 0.02f; //DeltaTime varies and by that causes the "throw" distance to...
-		//well, fluctuate. Greater consistency is required, so we have provided a constant "average deltaTime"
-
 		protected string defSortingLayer;
-    //Weight is important. An object's weight can be from 1 to 3, with different levels
-    //Of max throw height depending on how heavy the object is. An object of weight 3
-    //Can only be thrown a third of the distance as an object of weight 1. vibrations
-    //Are also made according to player's strength*weight
 
     //Local GameObject variables
-    protected Transform myTransform;
     protected Collider2D myCollider;
     protected SpriteRenderer myRenderer;
     protected bool destroyed;
     //public SpriteRenderer renderer;
-    public GameObject shadowObj;
     protected Rigidbody2D rb2d;
     //PickedUp object holds the object holding this object. Otherwise, it is null
-  	//protected GameObject thrower;
 
     //Runtime Variables
     //protected GameObject MementoType;
     //protected MementoData mementoData;
-		public bool beingThrown;
-		protected bool toReverse;
-		protected Vector3 _lastPosition;
-		//protected Collider2D throwerCollider;
-		protected Material throwerScript;
 		public List<GameObject> damagedObjects = new List<GameObject>();
 
 
@@ -76,10 +56,6 @@ public class Trap : MonoBehaviour {
   	//This method is called whenever a vibration touches a moving object in the BlockingLayer collision layer
   	public virtual void FeelVibration (Vector2 sourcePosition) {
 			Activate();
-		}
-
-		public Vector3 GetPosition() {
-			return myTransform.position;
 		}
 
 		public Collider2D GetCollider() {
