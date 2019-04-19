@@ -3,13 +3,13 @@ sudo: required
 language: bash
 env:
   global:
-    - IMAGE_NAME=gableroux/unity3d:2018.2.6f1
+    - IMAGE_NAME=gableroux/unity3d:2010.1.0f2
     - BUILD_NAME=ExampleProjectName
 services:
   - docker
 before_install:
-  - openssl aes-256-cbc -K $encrypted_d7414d26b208_key
-      -iv $encrypted_d7414d26b208_iv -in Unity_v2018.x.ulf.enc
+  - openssl aes-256-cbc -K $encrypted_ab060ede2b3d_key
+      -iv $encrypted_ab060ede2b3d_iv -in Unity_v2018.x.ulf.enc
       -out ./Unity_v2018.x.ulf -d
   - export UNITY_LICENSE_CONTENT=`cat Unity_v2018.x.ulf`
   - rm Unity_v2018.x.ulf
