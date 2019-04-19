@@ -3,7 +3,7 @@ sudo: required
 language: bash
 env:
   global:
-    - IMAGE_NAME=gableroux/unity3d:2010.1.0f2
+    - IMAGE_NAME=gableroux/unity3d:2019.1.0f2
     - BUILD_NAME=ExampleProjectName
 services:
   - docker
