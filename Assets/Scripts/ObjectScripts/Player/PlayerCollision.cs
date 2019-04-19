@@ -37,9 +37,11 @@ public class PlayerCollision : MonoBehaviour {
 				layerMask);
 			playerCollider.enabled = true;
 			//Pick up the object
-			if(touched.collider != null) {
-				playerInstance.PickUp(touched.collider.gameObject);
-			}
+			
+			if(touched.collider.gameObject.GetComponent<Material>())
+				if(touched.collider != null) {
+					playerInstance.PickUp(touched.collider.gameObject);
+				}
     }
 	}
 }

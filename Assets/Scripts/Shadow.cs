@@ -99,6 +99,10 @@ public class Shadow : MonoBehaviour {
 		Timing.RunCoroutine(Gravity().CancelWith(_parent.gameObject), Segment.FixedUpdate);
 	}
 
+	public void setVisible(bool visible) {
+		GetComponent<SpriteRenderer>().enabled = visible;
+	}
+
 	public void UpdateSize () {
 		float dist = z_offset;
 		if(dist>size)
