@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 10
+    serializedVersion: 12
     m_Resolution: 2
     m_BakeResolution: 40
     m_AtlasSize: 1024
@@ -62,6 +62,7 @@ LightmapSettings:
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
     m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
     m_Padding: 2
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
@@ -76,10 +77,16 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 500
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 2
+    m_PVRDenoiserTypeDirect: 0
+    m_PVRDenoiserTypeIndirect: 0
+    m_PVRDenoiserTypeAO: 0
     m_PVRFilterTypeDirect: 0
     m_PVRFilterTypeIndirect: 0
     m_PVRFilterTypeAO: 0
-    m_PVRFilteringMode: 1
+    m_PVREnvironmentMIS: 0
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
@@ -88,6 +95,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
+    m_ExportTrainingData: 0
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -392,7 +400,7 @@ MonoBehaviour:
   dialogueText: {fileID: 1274386791}
   SceneCanvas: {fileID: 1491378721}
   animator: {fileID: 1978772211}
-  speaker: {fileID: 0}
+  speaker: {fileID: 1601109648}
 --- !u!1 &886475152
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,17 +615,20 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
+    m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
   m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
@@ -786,17 +797,20 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
     m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
     m_PressedTrigger: Pressed
+    m_SelectedTrigger: Highlighted
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1219511110}
@@ -1085,9 +1099,10 @@ Camera:
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -1175,8 +1190,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 1174451432255360, guid: 4521a78789799e749b24f004253aec87,
     type: 3}
-  subNameText: {fileID: 1601109650}
-  subDialogueText: {fileID: 1274386791}
+  subNameText: {fileID: 0}
+  subDialogueText: {fileID: 0}
 --- !u!58 &1289932575
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1746,8 +1761,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   room:
-  - {fileID: 114744351635238220, guid: b966d6b3abbb85f47aaa668b481048b3, type: 3}
   - {fileID: 114013073727860584, guid: 7c20b7a68e8d73f4ba12bd47d1b5ebd4, type: 3}
+  - {fileID: 114744351635238220, guid: b966d6b3abbb85f47aaa668b481048b3, type: 3}
   entrance: {fileID: 114383029106276796, guid: 5af037fecb8d5482ba78820344847870, type: 3}
 --- !u!4 &1978567687
 Transform:
@@ -1779,11 +1794,11 @@ MonoBehaviour:
   - {fileID: 114979867903135072, guid: 137ab3118a5cf2a4b905b8a839799411, type: 3}
   - {fileID: 114000548514278104, guid: e725967ceda6c2240a1daf8a384a5e84, type: 3}
   - {fileID: 114352702960096926, guid: ea4bd321a4dea6340bd808f4016a3b18, type: 3}
-  - {fileID: 114117305623580482, guid: 9eb1bd842affbe540b234b835a27e8cf, type: 3}
   - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 3}
   - {fileID: 114446220118418492, guid: 72229bfb0a781634885e1c9b09daf2c6, type: 3}
   - {fileID: 114370465113329542, guid: 489ef5a1e558b79419bf11fb782cebca, type: 3}
   - {fileID: 114899617958851146, guid: d289a869f58e22e478a6617fd9c7db28, type: 3}
+  - {fileID: 114117305623580482, guid: 9eb1bd842affbe540b234b835a27e8cf, type: 3}
   bottomRooms:
   - {fileID: 114887170548322584, guid: f69784732c8c6464183647809dbb3ece, type: 3}
   - {fileID: 114123770959623894, guid: 3e954d585d05b1148854f706162a8c9e, type: 3}
@@ -1794,13 +1809,13 @@ MonoBehaviour:
   - {fileID: 114117305623580482, guid: 9eb1bd842affbe540b234b835a27e8cf, type: 3}
   - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 3}
   leftRooms:
-  - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 3}
-  - {fileID: 114446220118418492, guid: 72229bfb0a781634885e1c9b09daf2c6, type: 3}
-  - {fileID: 114352702960096926, guid: ea4bd321a4dea6340bd808f4016a3b18, type: 3}
-  - {fileID: 114139291389944916, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 3}
+  - {fileID: 114123770959623894, guid: 3e954d585d05b1148854f706162a8c9e, type: 3}
   - {fileID: 114066860589161446, guid: 6b89673c36e4e3a438a7fdcf4fef4b09, type: 3}
   - {fileID: 114686580655022278, guid: abce334d82f85d541a8cc7f5222cebf7, type: 3}
-  - {fileID: 114123770959623894, guid: 3e954d585d05b1148854f706162a8c9e, type: 3}
+  - {fileID: 114139291389944916, guid: 90939e9cd250e454e8e8811f330e0e6c, type: 3}
+  - {fileID: 114352702960096926, guid: ea4bd321a4dea6340bd808f4016a3b18, type: 3}
+  - {fileID: 114062067566402728, guid: 71d834ac4a6309d458123302879ef804, type: 3}
+  - {fileID: 114446220118418492, guid: 72229bfb0a781634885e1c9b09daf2c6, type: 3}
   - {fileID: 114370465113329542, guid: 489ef5a1e558b79419bf11fb782cebca, type: 3}
   rightRooms:
   - {fileID: 114686580655022278, guid: abce334d82f85d541a8cc7f5222cebf7, type: 3}
