@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 	//Player's max stamina will increase as the player Gets upgrades. This variable is the current max
 	private int CURRENT_MAX_STAMINA = 200;
 	private const float STAMINA_REGEN_RATE = 0.25f;
-	private const float STAMINA_CAP_DRAIN_RATE = 0.01f;
+	private const int STAMINA_CAP_DRAIN_THRESHOLD = 100;
 	private int STAMINA_BOX_WIDTH = 125;
 
 	//Player-damage variables
@@ -52,9 +52,9 @@ public class GameManager : MonoBehaviour {
 		if(sliderBarObject) {
 			staminaBarSlider = sliderBarObject.GetComponent<Slider>();
 			staminaBarObject = (RectTransform) sliderBarObject.GetComponent<RectTransform>().parent;
-			StaminaCap = CURRENT_MAX_STAMINA;
-			Stamina = CURRENT_MAX_STAMINA;
 		}
+		StaminaCap = CURRENT_MAX_STAMINA;
+		Stamina = CURRENT_MAX_STAMINA;
 
 		//Load ScreenTexture Image
 		GameObject ScreenTexture = GameObject.FindWithTag("ScreenTexture");
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour {
 	}
 
 	//Declare variables made for only keeping track of the FixedUpdate
-	private int regenCount; private int drainCount;
+	private int regenCount = 0; private int drainCount = 0;
 	//FixedUpdate regenerates the players' stamina and very slowly drains the max stamina cap
 	void FixedUpdate() {
 		//Regenerate Stamina
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour {
 		}
 		//Drain Stamina Cap
 		drainCount++;
-		if(drainCount >= (1/STAMINA_CAP_DRAIN_RATE)) {
+		if(drainCount >= STAMINA_CAP_DRAIN_THRESHOLD) {
 			DrainCap(1);
 			drainCount=0;
 		}
@@ -160,17 +160,17 @@ public class GameManager : MonoBehaviour {
 	private IEnumerator<float> SlowDrain(int drainAmo) {
 		int drainLeft = drainAmo;
 		while(drainLeft > 0) {
-		if(StaminaCap >= 1) {
-			StaminaCap -= 1;
-		if(Stamina > StaminaCap)
-			Stamina = StaminaCap;
-		UpdateStamina();
-		} else {
-			//If there isn't enough stamina available, swap worlds
-			swapWorld();
-		}
-		drainLeft--;
-		yield return Timing.WaitForOneFrame;
+			if(StaminaCap >= 1) {
+				StaminaCap -= 1;
+				if(Stamina > StaminaCap)
+					Stamina = StaminaCap;
+				UpdateStamina();
+			} else {
+				//If there isn't enough stamina available, swap worlds
+				swapWorld();
+			}
+			drainLeft--;
+			yield return Timing.WaitForOneFrame;
 		}
 	}
 
